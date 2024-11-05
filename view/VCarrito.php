@@ -1,3 +1,4 @@
+<!-- Cambiar a HTML/JSON -->
 <?php
 
 class VCarrito{
