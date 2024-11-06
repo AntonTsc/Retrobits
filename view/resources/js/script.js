@@ -26,7 +26,7 @@ async function verProductos(){
 
             const celdaBotonEliminar = document.createElement('td');
                     const botonEliminar = document.createElement('button');
-                    botonEliminar.textContent = 'Eliminar';
+                    botonEliminar.textContent = 'Eliminar producto del carrito';
                     botonEliminar.onclick = function () {
                         eliminarProducto(producto.idProducto);
                     };
@@ -44,3 +44,23 @@ async function verProductos(){
 window.onload = function(){
     verProductos();
 };
+
+async function eliminarProducto(idProducto) {
+    try {
+        const response = await fetch(`/Retrobits/controller/eliminarProducto.php`,{
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idProducto: idProducto })
+    });
+        const eliminarProductos = await response.json();
+        console.log(eliminarProductos);
+        console.log(`${idProducto} eliminado exitosamente`);
+            
+        verProductos();
+        
+    } catch (error) {
+        console.error('Error al eliminar', error);
+    }
+}

@@ -34,9 +34,12 @@ class MCarrito extends Conexion{
 
     }
 
-    public function editCarrito(){
-
-
+    public function eliminarProducto($idProducto){
+        
+        $sentencia = $this->getCon()->prepare("DELETE FROM productos_pedidos WHERE idProducto = ?");
+        $sentencia->bind_param("i", $idProducto);
+        
+        return $sentencia->execute();
 
     }
 
