@@ -1,3 +1,4 @@
+//Register
 async function insertUsuario(){
     const data = {
         username: document.getElementById("floatingUser").value,
@@ -15,7 +16,9 @@ async function insertUsuario(){
         });
 
         if(response.ok){
-           alert("Se ha creado el usuario.");
+            alert("Se ha creado el usuario.");
+        } else {
+            alert("Ya existe ese usuario/correo electrónico.");
         }
 
     } catch (error) {
@@ -23,6 +26,7 @@ async function insertUsuario(){
     }
 }
 
+//TODO: Login
 async function cargarUsuarios(){
     try{
         const response = await fetch("/Retrobits/controller/registrarUsuario.php");

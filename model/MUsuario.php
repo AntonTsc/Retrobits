@@ -13,17 +13,30 @@
             return $usuarios;
         }
 
-        //TODO: verificar que no deje crear un usuario, cuando está ya en la bbdd
+        public function getUsuario($user, $email){
+            $query = $this->getCon()->prepare("SELECT * FROM usuarios WHERE username = ? OR email = ?");
+            $query->bind_param("ss", $user, $email);
+            $query->execute();
+            $usuarios = [];
+
+            while($fila = $query->get_result()->fetch_assoc()){
+                $usuarios[] = $fila;
+            }
+
+            return (count($usuarios) > 0) ? true : false;
+        }
+
         public function insertUsuario($data){
-            $query = $this->getCon()->prepare("INSERT INTO usuarios (`nombre`, `email`, `password`, `admin`, `deleted`) VALUES (?, ?, ?, 0, 0);");
-            $query->bind_param("sss", $data['username'], $data['email'], $data['password']);
+            if(!($this->getUsuario($data['username'], $data['email']))){
+                $query = $this->getCon()->prepare("INSERT INTO usuarios (`username`, `email`, `password`, `admin`, `deleted`) VALUES (?, ?, ?, 0, 0);");
+                $query->bind_param("sss", $data['username'], $data['email'], $data['password']);
+                $query->execute();
+                $query->close();
 
-            $comp = false;
-            ($query->execute()) ? $comp = true : null;
-
-            $query->close();
-
-            return $comp;
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 ?>
