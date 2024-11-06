@@ -7,5 +7,8 @@ require_once(__DIR__ . '/../view/VCarrito.php');
 $conexion = new MCarrito();
 $productos = $conexion->getCarrito();
 
-$vista = new VCarrito();
-$vista -> tablaCarrito($productoCarrito);
+header('Content-Type: application/json');
+
+echo json_encode($productos);
+
+?>
