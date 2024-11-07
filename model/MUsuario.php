@@ -17,11 +17,16 @@
             $query = $this->getCon()->prepare("SELECT * FROM usuarios WHERE username = ? OR email = ?");
             $query->bind_param("ss", $user, $email);
             $query->execute();
+
+            $result = $query->get_result();
             $usuarios = [];
 
-            while($fila = $query->get_result()->fetch_assoc()){
+            while($fila = $result->fetch_assoc()){
                 $usuarios[] = $fila;
             }
+            
+            // Liberar el resultado antes de ejecutar otro comando
+            $result->free();
 
             return (count($usuarios) > 0) ? true : false;
         }

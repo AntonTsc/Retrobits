@@ -12,13 +12,20 @@ async function insertUsuario(){
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: 'username=' + data.username + '&email=' + data.email + '&password=' + data.password
-        });
+            // Usamos encodeURIComponent para asegurar que los datos se codifiquen correctamente
+            // y evitar problemas con caracteres especiales como '&', '=', o espacios en blanco
+            body: 'username=' + encodeURIComponent(data.username) + 
+                  '&email=' + encodeURIComponent(data.email) + 
+                  '&password=' + encodeURIComponent(data.password)
+        }); 
 
-        if(response.ok){
-            alert("Se ha creado el usuario.");
+        const datos = await response.json();
+
+        // Ver si usamos alertas u otro tipo de mensaje mejor visualmente.
+        if (datos.status === 'OK') {
+            alert(datos.message);
         } else {
-            alert("Ya existe ese usuario/correo electrónico.");
+            alert(datos.message);
         }
 
     } catch (error) {
