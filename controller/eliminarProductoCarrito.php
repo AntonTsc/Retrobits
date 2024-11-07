@@ -1,4 +1,5 @@
 <?php
+
 require(__DIR__ . '/../model/MCarrito.php');
 
 header('Content-Type: application/json');
@@ -8,7 +9,7 @@ $idProducto = $eleccion['idProducto'] ?? null;
 
 if($idProducto){
     $conexion = new MCarrito();
-    $resultado = $conexion->eliminarProducto($idProducto);
+    $resultado = $conexion->eliminarProductoCarrito($idProducto);
 
     if ($resultado) {
             echo json_encode(['message' => 'Producto eliminado correctamente']);
@@ -17,4 +18,5 @@ if($idProducto){
         }
 
 }
+
 ?>

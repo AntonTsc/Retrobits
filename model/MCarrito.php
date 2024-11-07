@@ -3,7 +3,7 @@
 require_once 'Conexion.php';
 
 class MCarrito extends Conexion{
-
+    //Función que recoge un producto específico de productos_pedidos
     public function getProductoCarrito($productoCarrito){
 
         $nombreProducto = null;
@@ -20,7 +20,7 @@ class MCarrito extends Conexion{
         return $nombreProducto;
 
     }
-
+    //Función para recoger los datos de los productos incluídos en productos_pedidos para mostrarlos en el carrito
     public function getCarrito(){
 
         $query = $this -> getCon() -> query('SELECT * from productos_pedidos');
@@ -34,7 +34,8 @@ class MCarrito extends Conexion{
 
     }
 
-    public function eliminarProducto($idProducto){
+    //Función para eliminar el producto del carrito
+    public function eliminarProductoCarrito($idProducto){
         
         $sentencia = $this->getCon()->prepare("DELETE FROM productos_pedidos WHERE idProducto = ?");
         $sentencia->bind_param("i", $idProducto);

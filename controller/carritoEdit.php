@@ -1,10 +1,9 @@
 <?php
 
-require(__DIR__ . '/../model/MCarrito.php');
+// require(__DIR__ . '/../model/MCarrito.php');
 
-
-    VCarrito::inithtml();
-    VCarrito::tablaCarrito($productosCarrito);
-    VCArrito::endhtml();
+//     VCarrito::inithtml();
+//     VCarrito::tablaCarrito($productosCarrito);
+//     VCArrito::endhtml();
 
 ?>

@@ -2,11 +2,14 @@
 
 require(__DIR__. '/../model/MCarrito.php');
 
-$conexion = new MCarrito();
-$productos = $conexion->getCarrito();
+//COMENTARIO TEMPORAL HASTA QUE ESTÉ PREPARADO EL JSON CORRESPONDIENTE
 
-header('Content-Type: application/json');
+//Recoge los datos de la función getCarrito y los mete en un json
+// $conexion = new MCarrito();
+// $productos = $conexion->getCarrito();
 
-echo json_encode($productos);
+// header('Content-Type: application/json');
+
+// echo json_encode($productos);
 
 ?>
