@@ -12,9 +12,9 @@ async function verProductos(){
         productos.forEach(producto => {
             const fila = document.createElement('tr');
 
-            const celdaIdPedido = document.createElement('td');
-            celdaIdPedido.textContent = producto.idPedido;
-            fila.appendChild(celdaIdPedido);
+            // const celdaIdPedido = document.createElement('td');
+            // celdaIdPedido.textContent = producto.idPedido;
+            // fila.appendChild(celdaIdPedido);
 
             const celdaIdProducto = document.createElement('td');
             celdaIdProducto.textContent = producto.idProducto;
