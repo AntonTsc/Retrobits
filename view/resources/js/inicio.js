@@ -1,3 +1,39 @@
+//Slider
+const swiper = new Swiper('.slider-wrapper', {
+    loop: false,
+    grabCursor: true,
+    spaceBetween: 10,
+    centeredSlides: false,
+    slideShadows: true,
+  
+    // Pagination bullets
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+      dynamicBullets: true
+    },
+  
+    // Navigation arrows
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  
+    // Responsive breakpoints
+    breakpoints: {
+      0: {
+        slidesPerView: 2.5
+      },
+      768: {
+        slidesPerView: 3.5
+      },
+      1024: {
+        slidesPerView: 6.5
+      }
+    }
+  });
+
+
 // Función para obtener y mostrar todos los productos en una tabla
 async function obtenerProductos() {
     try {
@@ -5,53 +41,10 @@ async function obtenerProductos() {
         const productos = await response.json();
         productos.sort(function(a, b){return b.descuento - a.descuento});
         console.log(productos);
-        
-        let tituloCartas = document.getElementsByClassName('card-title');
-        console.log(productos[1].nombre);
-        let i = 0;
-        for (let i = 0; i < tituloCartas.length; i++) {
-            tituloCartas[i].innerHTML = productos[i].nombre;
+
+        for (let i = 0; i < 12; i++) {
+            generador(productos[i])
         }
-        
-
-
-        // // Obtener el cuerpo de la tabla
-        // const tbody = document.getElementById('usersTableBody');
-
-        // // Limpiar cualquier fila anterior en la tabla
-        // tbody.innerHTML = '';
-
-        // // Recorrer cada usuario y crear una fila en la tabla
-        // // Recorrer cada usuario y crear una fila en la tabla
-        // productos.forEach(usuario => {
-        //     const fila = document.createElement('tr');
-
-        //     // Crear y añadir celdas para cada propiedad del usuario
-        //     const celdaUsername = document.createElement('td');
-        //     celdaUsername.textContent = usuario.username;
-        //     fila.appendChild(celdaUsername);
-
-        //     const celdaNombre = document.createElement('td');
-        //     celdaNombre.textContent = usuario.nombre;
-        //     fila.appendChild(celdaNombre);
-
-        //     const celdaPassword = document.createElement('td');
-        //     celdaPassword.textContent = usuario.password;
-        //     fila.appendChild(celdaPassword);
-
-        //     // Crear la celda de acciones (botón eliminar)
-        //     const celdaAcciones = document.createElement('td');
-        //     const botonEliminar = document.createElement('button');
-        //     botonEliminar.textContent = 'Eliminar';
-        //     botonEliminar.onclick = function () {
-        //         eliminarUsuario(usuario.username);  // Llamar a la función de eliminación
-        //     };
-        //     celdaAcciones.appendChild(botonEliminar);
-        //     fila.appendChild(celdaAcciones);
-
-        //     // Añadir la fila a la tabla
-        //     tbody.appendChild(fila);
-        // });
     } catch (error) {
         console.error('Error:', error);
     }
@@ -61,3 +54,21 @@ async function obtenerProductos() {
 window.onload = function () {
     obtenerProductos();
 };
+
+//Genera cartas con los descuentos mas altos
+function generador(producto) {
+    const button = document.createElement("button");
+    button.classList = "card-item swiper-slide";
+  
+    const img = document.createElement("img");
+    img.src = "https://www.chollogames.es/88016-large_default/famicom-mini-classic.jpg"
+    img.alt = "...";
+
+    const p = document.createElement("p");
+    p.classList = "card-title fs-4"
+    p.innerHTML = producto.nombre;
+  
+    button.appendChild(img);
+    button.appendChild(p);
+    document.getElementById("card-list").appendChild(button);
+  }
