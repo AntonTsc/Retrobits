@@ -57,7 +57,7 @@
             </div>
 
             <div class="d-flex d-sm-none w-100 mt-2">
-                <input type="text" class="flex-grow-1 bg-light p-1 rounded-start-1 border border-end-0 pl-1" placeholder="Apple II, Game Boy, Tamagotchi...">
+                <input type="text" class="flex-grow-1 bg-light p-1 rounded-0 rounded-start-1 border border-end-0 pl-1" placeholder="Apple II, Game Boy, Tamagotchi...">
                 <button class="btn btn-light rounded-0 rounded-end-1 border border-start-0"><i class="bi bi-search"></i></button>
             </div>
         </nav>
@@ -84,7 +84,7 @@
             </div>
         </div>
     </div>
-    <div class="inicioCartas row m-1">
+    <!-- <div class="inicioCartas row m-1">
         <div class="carta1 col-6 p-0">
             <div class="border border-2 border-dark"></div>
         </div>
@@ -105,22 +105,160 @@
         <div class="carta3 col-8 p-0">
                 <div class="border border-2 border-dark"></div>
         </div>
-    </div>
+    </div> -->
+    
+    <button class="d-flex justify-content-around bannerInfo w-100 mb-2" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <span class="d-flex text-dark">Envío gratis<span class="d-none d-md-flex">&nbsp;en pedidos mayores a 100€</span></span>
+        <span class="d-flex text-dark">Entrega rápida<span class="d-none d-md-block">, reembolso por fallo de entrega</span></span>
+        <span class="d-flex text-dark">Devoluciones gratis<span class="d-none d-md-block">&nbsp;en articulos defectuosos</span></span>
+    </button>
 
-    <hr>
-    <h2 class="text-center">Productos con grandes descuentos</h2>
-    <div class="swiper">
-      <div class="slider-wrapper">
-        <div id="card-list" class="card-list swiper-wrapper">
-          <!--Aqui se cargan las cartas de forma dinamica-->
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content bg-light">
+                <div class="modal-header bg-white">
+                    <h4 class="modal-title" id="exampleModalLabel">Compromiso de RetroBits</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5 class="bi bi-truck"> Envío gratis</h5>
+                    <p class="text-secondary">Envío gratis en pedidos mayores a 100€.</p>
 
+                    <h5 class="bi bi-box2"> Entrega rápida</h5>
+                    <p class="text-secondary">Recibe una entrega rápida y obtén reembolsos por cualquier problema.<br>
+                        <ul class="text-secondary">
+                            <li>Por artículos que llegan dañados.</li>
+                            <li>Por pérdida del paquete.</li>
+                            <li>Si no llega en 45 días.</li>
+                        </ul>
+                    </p>
+
+                    <h5 class="bi bi-reply"> Devolución gratis</h5>
+                    <p class="text-secondary">Si sabes que tu pedido ha llegado defectuoso ponte en <a href="">contacto</a> con nosotros dentro de los 90 días posteriores a la realización del pedido o 15/30 días después de la recepción (dependiendo de dónde se envíe).</p>
+                </div>
+            </div>
         </div>
-        <div class="swiper-pagination"></div>
-        <div class="swiper-slide-button swiper-button-prev px-4"></div>
-        <div class="swiper-slide-button swiper-button-next px-4"></div>
-      </div>
     </div>
-    <hr>  
+
+    <div class="position-relative container">
+        <h2>Descuentos <a href="#" class="todosBtn fs-6 text-light text-decoration-none bg-danger p-1 pe-3 rounded ">Todos</a></h2>
+        <div class="swiper">
+            <div class="slider-wrapper slider-descuentos">
+                <div id="card-list-descuentos" class="card-list swiper-wrapper">
+                    <!--Aqui se cargan las cartas de forma dinamica-->
+
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-slide-button swiper-button-prev px-4"></div>
+                <div id="swiper-button-next" class="swiper-slide-button swiper-button-next px-4"></div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="position-relative container">
+        <h2>Consolas</h2>
+        <div class="swiper">
+            <div class="slider-wrapper slider-seccion">
+                <div id="card-list-consolas" class="card-list swiper-wrapper">
+                    <!--Aqui se cargan las cartas de forma dinamica-->
+
+                    <button class="card-item swiper-slide btnVerMas">
+                        <span class="text-dark">Ver más ⇢</span>
+                    </button>
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-slide-button swiper-button-prev px-4"></div>
+                <div id="swiper-button-next" class="swiper-slide-button swiper-button-next px-4"></div>
+            </div>
+        </div>
+    </div>
+    <div class="position-relative container">
+        <h2>Computadoras</h2>
+        <div class="swiper">
+            <div class="slider-wrapper slider-seccion">
+                <div id="card-list-computadoras" class="card-list swiper-wrapper">
+                    <!--Aqui se cargan las cartas de forma dinamica-->
+
+                    <button class="card-item swiper-slide btnVerMas">
+                        <span class="text-dark">Ver más ⇢</span>
+                    </button>
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-slide-button swiper-button-prev px-4"></div>
+                <div id="swiper-button-next" class="swiper-slide-button swiper-button-next px-4"></div>
+            </div>
+        </div>
+    </div>
+    <div class="position-relative container">
+        <h2>Cámaras</h2>
+        <div class="swiper">
+            <div class="slider-wrapper slider-seccion">
+                <div id="card-list-camaras" class="card-list swiper-wrapper">
+                    <!--Aqui se cargan las cartas de forma dinamica-->
+
+                    <button class="card-item swiper-slide btnVerMas">
+                        <span class="text-dark">Ver más ⇢</span>
+                    </button>
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-slide-button swiper-button-prev px-4"></div>
+                <div id="swiper-button-next" class="swiper-slide-button swiper-button-next px-4"></div>
+            </div>
+        </div>
+    </div>
+    <div class="position-relative container">
+        <h2>Radios</h2>
+        <div class="swiper">
+            <div class="slider-wrapper slider-seccion">
+                <div id="card-list-radios" class="card-list swiper-wrapper">
+                    <!--Aqui se cargan las cartas de forma dinamica-->
+
+                    <button class="card-item swiper-slide btnVerMas">
+                        <span class="text-dark">Ver más ⇢</span>
+                    </button>
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-slide-button swiper-button-prev px-4"></div>
+                <div id="swiper-button-next" class="swiper-slide-button swiper-button-next px-4"></div>
+            </div>
+        </div>
+    </div>
+    <div class="position-relative container">
+        <h2>Teléfonos</h2>
+        <div class="swiper">
+            <div class="slider-wrapper slider-seccion">
+                <div id="card-list-telefonos" class="card-list swiper-wrapper">
+                    <!--Aqui se cargan las cartas de forma dinamica-->
+
+                    <button class="card-item swiper-slide btnVerMas">
+                        <span class="text-dark">Ver más ⇢</span>
+                    </button>
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-slide-button swiper-button-prev px-4"></div>
+                <div id="swiper-button-next" class="swiper-slide-button swiper-button-next px-4"></div>
+            </div>
+        </div>
+    </div>
+    <div class="position-relative container">
+        <h2>Electrodomésticos</h2>
+        <div class="swiper">
+            <div class="slider-wrapper slider-seccion">
+                <div id="card-list-electrodomesticos" class="card-list swiper-wrapper">
+                    <!--Aqui se cargan las cartas de forma dinamica-->
+
+                    <button class="card-item swiper-slide btnVerMas">
+                        <span class="text-dark">Ver más ⇢</span>
+                    </button>
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-slide-button swiper-button-prev px-4"></div>
+                <div id="swiper-button-next" class="swiper-slide-button swiper-button-next px-4"></div>
+            </div>
+        </div>
+    </div>
+    <hr>
 
   </body>
 </html>
