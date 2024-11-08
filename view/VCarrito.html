@@ -1,28 +1,28 @@
-<!-- Cambiar a HTML/JSON -->
-
 <!DOCTYPE html>
     <html lang="es">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Carrito</title>
-        <link rel="stylesheet" href="css/styles.css">
+        <link rel="stylesheet" href="resources/css/styleCarrito.css" type="text/css" />
     </head>
     <body>
-        <h2>Productos en carrito</h2>
+        <div class=""titulo">
+            <h2>Productos en carrito</h2>
+        </div>
+        
     <div class="container">
-        <table border="1" border-color = "black">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                </tr>
-            </thead>
-            
-            <tbody id="generarTabla">
-                
-            </tbody>
-           
+        <table class="tablaCarrito">
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+            </tr>
+            <tr>
+                <tbody id="generarTabla">
+                </tbody>
+                <tbody id="botonComprar">
+                </tbody>
+            </tr>
         </table>
         
         <script src="resources/js/script.js"></script>

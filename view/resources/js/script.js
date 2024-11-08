@@ -27,6 +27,7 @@ async function verProductos(){
             const celdaIdProducto = document.createElement('td');
             celdaIdProducto.textContent = producto.idProducto;
             fila.appendChild(celdaIdProducto);
+            //Aquí debe mostrar nombre ------------------------->PENDIENTE
 
             //Cantidad de dicho producto
             const celdaCantidad = document.createElement('td');
@@ -38,7 +39,7 @@ async function verProductos(){
                     const botonEliminar = document.createElement('button');
                     botonEliminar.textContent = 'Eliminar producto del carrito';
                     botonEliminar.onclick = function () {
-                        arrayProductos.removeItem(producto.idProducto);
+                        // arrayProductos.removeItem(producto.idProducto);
                         // eliminarProductoCarrito(producto.idProducto);
                     };
                     celdaBotonEliminar.appendChild(botonEliminar);
@@ -54,6 +55,37 @@ async function verProductos(){
 
 window.onload = function(){
     verProductos();
+};
+
+async function comprarProductos(){
+    try{
+        const tbody = document.getElementById('botonComprar');
+
+        tbody.innerHTML = '';
+
+        productos.forEach(producto => {
+            const fila = document.createElement('tr');
+         //Botón para comprar los productos del carrito
+         const celdaBotonComprar = document.createElement('td');
+         const botonComprar = document.createElement('button');
+         botonComprar.textContent = 'Comprar productos del carrito';
+         botonComprar.onclick = function () {
+             
+         };
+         celdaBotonComprar.appendChild(botonComprar);
+         fila.appendChild(celdaBotonComprar);
+
+         // Añadir la fila a la tabla
+         tbody.appendChild(fila);
+        });
+
+    } catch (error) {
+        console.error('Error;', error);
+    }
+}
+
+window.onload = function(){
+    comprarProductos();
 };
 
 //FUNCIÓN QUE ELIMINA EL PRODUCTO DE LA BASE DE DATOS --------------> DESACTUALIZADO

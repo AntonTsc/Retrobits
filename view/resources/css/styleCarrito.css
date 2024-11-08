@@ -1,0 +1,9 @@
+
+container{
+    display:flex;
+    align-items: center;
+}
+table{
+    text-align: center;
+    border: 2px solid black; 
+}
