@@ -5,7 +5,7 @@
 }
 
 .todosBtn{
-  clip-path: polygon(0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%);
+  clip-path: polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%);
 }
 .btnVerMas{
   background-color: #ebebeb !important;
