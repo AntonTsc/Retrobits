@@ -53,31 +53,27 @@ async function verProductos(){
     }
 }
 
-window.onload = function(){
-    verProductos();
-};
-
 async function comprarProductos(){
     try{
         const tbody = document.getElementById('botonComprar');
 
         tbody.innerHTML = '';
 
-        productos.forEach(producto => {
+        
             const fila = document.createElement('tr');
-         //Botón para comprar los productos del carrito
-         const celdaBotonComprar = document.createElement('td');
-         const botonComprar = document.createElement('button');
-         botonComprar.textContent = 'Comprar productos del carrito';
-         botonComprar.onclick = function () {
-             
-         };
-         celdaBotonComprar.appendChild(botonComprar);
-         fila.appendChild(celdaBotonComprar);
+            //Botón para comprar los productos del carrito
+            const celdaBotonComprar = document.createElement('td');
+            const botonComprar = document.createElement('button');
+            botonComprar.textContent = 'Comprar productos del carrito';
+            botonComprar.onclick = function () {
+                
+            };
+            celdaBotonComprar.appendChild(botonComprar);
+            fila.appendChild(celdaBotonComprar);
 
-         // Añadir la fila a la tabla
-         tbody.appendChild(fila);
-        });
+            // Añadir la fila a la tabla
+            tbody.appendChild(fila);
+        
 
     } catch (error) {
         console.error('Error;', error);
@@ -85,6 +81,7 @@ async function comprarProductos(){
 }
 
 window.onload = function(){
+    verProductos();
     comprarProductos();
 };
 
