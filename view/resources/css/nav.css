@@ -13,7 +13,7 @@ img.arrow {
     transition: transform 0.5s ease;
 }
 
-button[aria-expanded="true"] img.arrow {
+nav button[aria-expanded="true"] img.arrow {
     transform: rotate(-180deg);
 }
 

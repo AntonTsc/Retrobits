@@ -1,4 +1,4 @@
-<?php
+    <?php
     require_once("Conexion.php");
 
     class MUsuario extends Conexion{

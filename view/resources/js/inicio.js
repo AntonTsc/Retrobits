@@ -84,32 +84,26 @@ async function obtenerProductos() {
             case "1":
               count1 < 6 && generador(productos[i], "consolas");
               count1++;
-              console.log("count1:", count1);
               break;
             case "2":
               count2 < 6 && generador(productos[i], "computadoras");
               count2++;
-              console.log("count2:", count2);
               break;
             case "3":
               count3 < 6 && generador(productos[i], "camaras");
               count3++;
-              console.log("count3:", count3);
               break;
             case "4":
               count4 < 6 && generador(productos[i], "radios");
               count4++;
-              console.log("count4:", count4);
               break;
             case "5":
               count5 < 6 && generador(productos[i], "telefonos");
               count5++;
-              console.log("count5:", count5);
               break;
             case "6":
               count6 < 6 && generador(productos[i], "electrodomesticos");
               count6++;
-              console.log("count6:", count6);
               break;
           }
         }

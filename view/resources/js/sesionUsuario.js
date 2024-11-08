@@ -34,7 +34,7 @@ async function insertUsuario(){
 }
 
 //TODO: Login
-async function cargarUsuarios(){
+async function cargarUsuario(){
     try{
         const response = await fetch("/Retrobits/controller/registrarUsuario.php");
         const usuarios = await response.json(); // Este response.json lo convierte en un array
