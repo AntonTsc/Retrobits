@@ -1,0 +1,59 @@
+ body{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+ }
+ 
+ main{
+  flex-grow: 1;
+ }
+ 
+/* Barra de filtros fija al lado izquierdo */
+.sidebar {
+  flex-grow: 1;
+  position: relative;
+}
+.sidebarCont {
+  position: sticky;
+  bottom: 0;
+  top: 60px;
+  left: 0;
+  width: 250px;
+  padding: 1rem;
+  /*overflow-y: auto; /* Para tener scroll si hay demasiados filtros */
+}
+
+/* Contenedor de las cartas con scroll interno */
+.content {
+  padding: 1rem;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.card {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.card .botones {
+  z-index: 5;
+  top: 5px;
+  left: 5px;
+  display: none;
+  transition: opacity 0.3s ease;
+  position: absolute;
+}
+
+.card .botones a{
+  border-radius: 100%;
+  background-color: rgba(128, 128, 128, 0.39);
+  padding: 5px 10px;
+}
+
+.card .botones a:hover{
+  color: green;
+}
+
+.card:hover .botones {
+  display: block;
+}

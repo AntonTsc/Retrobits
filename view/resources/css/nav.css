@@ -1,0 +1,86 @@
+*{
+    padding: 0;
+    margin: 0;
+    font-family: monospace;
+}
+
+nav{
+    background-color: #9c2227;
+}
+
+img.arrow {
+    transform: none;
+    transition: transform 0.5s ease;
+}
+
+nav button[aria-expanded="true"] img.arrow {
+    transform: rotate(-180deg);
+}
+
+.collapse{
+    box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.25);
+}
+
+#enlaces{
+    flex-grow: 1;
+}
+
+.enlaceArea{
+    text-decoration: none;
+    color: black;
+    padding: 20px 0;
+    font-weight: bold;
+    font-size:  1.2rem;
+    transition: letter-spacing  0.5s;
+}
+
+.enlaceArea img{
+    padding-top: 5px;
+    width: 50px;
+    transition: 0.5s;
+}
+
+.enlaceArea:hover{
+    letter-spacing: 0.2rem;
+    transition: letter-spacing 0.5s;
+}
+
+.enlaceArea:hover img{
+    width: 55px;
+    padding-top: 0px;
+    transition: 0.5s;
+}
+
+.enlaceArea a{
+    color: black;
+    text-decoration: none;
+}
+
+#enlaces .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#enlaces .col {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.e1{
+    background-color: #13dadd;
+}
+.e2{
+    background-color: #a6eed6;
+}
+.e3{
+    background-color: #ffecb3;
+}
+.e4{
+    background-color: #f8bf7e;
+}
+.e5{
+    background-color: #FF9C38;
+}
+.e6{
+    background-color: #F88000;
+}
