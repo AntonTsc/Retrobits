@@ -24,9 +24,6 @@
             while($fila = $result->fetch_assoc()){
                 $usuarios[] = $fila;
             }
-            
-            // Liberar el resultado antes de ejecutar otro comando
-            $result->free();
 
             return (count($usuarios) > 0) ? true : false;
         }

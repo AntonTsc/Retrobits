@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-11-2024 a las 14:52:08
+-- Tiempo de generación: 08-11-2024 a las 09:15:07
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -170,7 +170,7 @@ INSERT INTO `seccion` (`id`, `nombre`) VALUES
 
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
-  `usuario` varchar(25) NOT NULL,
+  `username` varchar(25) NOT NULL,
   `email` varchar(50) NOT NULL,
   `password` varchar(20) NOT NULL,
   `admin` tinyint(4) NOT NULL,
@@ -181,7 +181,7 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `usuario`, `email`, `password`, `admin`, `deleted`) VALUES
+INSERT INTO `usuarios` (`id`, `username`, `email`, `password`, `admin`, `deleted`) VALUES
 (1, 'Juanpe', 'juan@example.com', 'password123', 1, 0),
 (2, 'Analo', 'ana@example.com', 'pass456', 0, 0),
 (3, 'Carlosga', 'carlos@example.com', 'secure789', 0, 1),
