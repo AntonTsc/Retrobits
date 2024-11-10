@@ -1,59 +1,159 @@
  body{
+  min-width: 270px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
  }
  
  main{
+  display: flex;
   flex-grow: 1;
+  max-width: 1440px;
+  width: 100%;
+  margin: auto;
  }
  
 /* Barra de filtros fija al lado izquierdo */
 .sidebar {
-  flex-grow: 1;
   position: relative;
 }
 .sidebarCont {
   position: sticky;
-  bottom: 0;
   top: 60px;
-  left: 0;
-  width: 250px;
-  padding: 1rem;
-  /*overflow-y: auto; /* Para tener scroll si hay demasiados filtros */
+  width: 185px;
+  padding: 16px;
+}
+
+.checkSeccion:checked{
+  background-color: #9c2227;
+  border-color: #9c2227;
+}
+
+.checkSeccion:hover{
+  border-color: #9c2227;
+  cursor: pointer;
+}
+
+.checkSeccion:focus{
+  box-shadow: #9c2227;
+}
+
+.labelSeccion:hover{
+  color: #9c2227;
+  cursor: pointer;
+}
+
+
+#minPrecio, #maxPrecio{
+  border: none;
+  border-bottom: 1px solid;
+  outline: none;
+  width: 50%;
+  background-color: transparent;
+  border-radius: 0;
+  text-align: end;
+}
+#minPrecio:hover, #minPrecio:focus, #maxPrecio:hover, #maxPrecio:focus{
+  border-color: #9c2227;
+}
+
+.sidebarCont .btn{
+  color: #000000;
+  border: 1px solid rgb(231, 231, 231);
+  border-radius: 0;
+}
+
+.sidebarCont .btn:hover{
+  background-color: #9c222656;
 }
 
 /* Contenedor de las cartas con scroll interno */
 .content {
   padding: 1rem;
   flex-grow: 1;
-  overflow-y: auto;
 }
 
 .card {
   margin-bottom: 1rem;
-  position: relative;
 }
 
-.card .botones {
-  z-index: 5;
-  top: 5px;
-  left: 5px;
-  display: none;
-  transition: opacity 0.3s ease;
-  position: absolute;
+.card .card-text {
+  font-size: 1rem;
 }
 
-.card .botones a{
+.card a{
   border-radius: 100%;
-  background-color: rgba(128, 128, 128, 0.39);
+  background-color: rgba(0, 0, 0, 0.25);
   padding: 5px 10px;
+  margin: 5px;
+  color: rgb(255, 255, 255);
+  z-index: 5;
+  display: none;
+  backdrop-filter: blur(1px);
 }
 
-.card .botones a:hover{
-  color: green;
+.card a:hover{
+  color: rgb(187, 255, 187);
 }
 
-.card:hover .botones {
-  display: block;
+.card:hover a {
+  display: block !important;
+}
+
+.noProductos{
+  position: absolute;
+  width: 100%;
+  font-size: 2rem;
+  color: rgb(196, 196, 196);
+}
+
+.card p{
+  -webkit-line-clamp: 1;
+  overflow : hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+
+@media (max-width: 992px){
+  .sidebar{
+    z-index: 4;
+    transform: translateX(-100%);
+    transition: 0.5s;
+    position: fixed;
+    width: 100%;
+    background-color: #000000d5 !important;
+    backdrop-filter: blur(2px);
+  }
+  .sidebarCont{
+    width: 100%;
+    height: 100vh;
+    text-align: center;
+    font-size: 2rem;
+    color: white;
+    overflow-y: auto;
+    padding-bottom: 70px;
+  }
+  .sidebarCont a{
+    font-size: 2.5rem !important;
+    color: white !important;
+  }
+  #minPrecio, #maxPrecio{
+    color: white !important;
+  }
+  .btnFiltros{
+    display: block !important;
+  }
+}
+@media (min-width: 993px) {
+  .sidebar {
+    transform: translateX(0);  /* Siempre visible en pantallas grandes */
+  }
+}
+
+@media (max-width: 576px){
+  .sidebarCont{
+    padding-bottom: 138px;
+  }
 }
