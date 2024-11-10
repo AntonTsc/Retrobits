@@ -14,12 +14,12 @@
     if($mUsuario->insertUsuario($data)){
         $datos = [
             'status' => 'OK',
-            'message' => 'Usuario creado.',
+            'message' => 'Usuario creado.'
         ];
     } else {
         $datos = [
             'status' => 'ERROR',
-            'message' => 'Usuario ya existente.',
+            'message' => 'Usuario ya existente.'
         ];
     }
     

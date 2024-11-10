@@ -21,11 +21,24 @@ async function insertUsuario(){
 
         const datos = await response.json();
 
-        // Ver si usamos alertas u otro tipo de mensaje mejor visualmente.
         if (datos.status === 'OK') {
-            alert(datos.message);
+            window.location.href = "http://localhost/Retrobits/index.html";
         } else {
-            alert(datos.message);
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.onmouseenter = Swal.stopTimer;
+                  toast.onmouseleave = Swal.resumeTimer;
+                }
+              });
+              Toast.fire({
+                icon: "error",
+                title: "Ya existe un usuario con ese nombre/email"
+              });
         }
 
     } catch (error) {
@@ -33,13 +46,45 @@ async function insertUsuario(){
     }
 }
 
-//TODO: Login
-async function cargarUsuario(){
+//Login
+async function loginUsuario(){
+    const data = {
+        user: document.getElementById("floatingInput").value,
+        password: document.getElementById("floatingPassword").value
+    }
+
     try{
-        const response = await fetch("/Retrobits/controller/registrarUsuario.php");
-        const usuarios = await response.json(); // Este response.json lo convierte en un array
-        
-        
+        const response = await fetch("/Retrobits/controller/cargarUsuario.php", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'user=' + encodeURIComponent(data.user) + 
+                  '&password=' + encodeURIComponent(data.password)
+        }); 
+
+        const datos = await response.json();
+
+        if (datos.status === 'OK') {
+            window.location.href = "http://localhost/Retrobits/index.html";
+        } else {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.onmouseenter = Swal.stopTimer;
+                  toast.onmouseleave = Swal.resumeTimer;
+                }
+              });
+              Toast.fire({
+                icon: "error",
+                title: "Datos de sesión incorrectos!"
+              });
+        }
+
     } catch (error) {
         console.error("Error: ", error);
     }

@@ -1,3 +1,4 @@
+
 //Slider
 const swiperDescuentos = new Swiper('.slider-descuentos', {
     spaceBetween: 10,
@@ -168,4 +169,19 @@ function generador(producto, seccion) {
     button.appendChild(pPrecio);
     let cardList = document.getElementById(`card-list-${seccion}`);
     cardList.insertBefore(button, cardList.firstChild);
+  }
+  console.log(comprobarSesion());
+  async function comprobarSesion(){
+    try{
+        const response = await fetch("/Retrobits/controller/sesionComp.php");
+        const sesion = await response.json();
+  
+        if (sesion.status === 'OK') {
+            return sesion.user;
+        } else {
+            return sesion.status;
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
   }
