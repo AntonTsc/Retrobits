@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Retrobits - Electronica antigua o vintage, todo tipo de consolas, cámaras y más...</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+    <link rel="stylesheet" href="resources/css/nav.css" />
+    <link rel="stylesheet" href="resources/css/productos.css" />
+
+    <script src="resources/js/productos.js" defer></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <script src="resources/js/barraBuscar.js" defer></script>
+
+    <!--SWEET ALERT-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma/bulma.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2/dist/sweetalert2.min.js" defer></script>
+
+
+    <meta http-equiv="content-language" content="es" />
+    <meta http-equiv="content-script-type" content="text/javascript">
+    <meta http-equiv="content-style-type" content="text/css">
+    <meta name="robots" content="index,follow">
+    <meta name="description" content="Herramientas y electronica antigua o vintage, todo tipo de consolas, cámaras y más...">
+    <meta name="keywords" content="herramientas, electronica, consola, consolas, cámara, cámaras, pc, ordenador, computadora, radios, teléfonos, Electrodomésticos, antiguo, vintage, viejo">
+  </head>
+  <body class="bg-light">
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg px-5 py-3">
+            <div class="container">
+                <div class="flex-grow-1">
+                    <button id="nav-toggle" class="border-0 bg-transparent text-light fs-4 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#enlaces" aria-expanded="false" aria-controls="enlaces">
+                        RetroBits <img class="arrow" src="view/resources/images/svg/flecha.svg" alt="">
+                    </button>
+                </div>
+    
+                <div class="d-none d-sm-flex flex-grow-1 position-relative">
+                    <input id="buscadorPC" type="text" class="flex-grow-1 bg-light p-1 rounded-start-1 border border-end-0 pl-1" placeholder="Apple II, Game Boy, Tamagotchi...">
+                    <button onclick="buscar()" id="botonBuscar" class="btn btn-light rounded-0 rounded-end-1 border border-start-0"><i class="bi bi-search"></i></button>
+
+                    <div id="suggestionsContainer" class="suggestions"></div>
+                </div>
+                <div class="d-flex justify-content-end flex-grow-1 gap-4">
+                    <button onclick="mostrarFiltros()" class="btn btn-light bi bi-filter d-none btnFiltros"> Filtros</button>
+                    <a href="#" class="text-light fs-3"><i class="bi bi-person-circle"></i></a>
+                    <a href="#" class="text-light position-relative p-0 mr-5 ">
+                        <i class="bi bi-bag-fill fs-3"></i>
+                        <span id="cestaNumero" class="position-absolute top-50 start-50 translate-middle mt-1 text-dark fw-bold fs-6" >4</span>
+                    </a>
+                </div>
+    
+                <div class="d-flex d-sm-none w-100 mt-2">
+                    <input id="buscadorMovil" type="text" class="flex-grow-1 bg-light p-1 rounded-0 rounded-start-1 border border-end-0 pl-1" placeholder="Apple II, Game Boy, Tamagotchi...">
+                    <button class="btn btn-light rounded-0 rounded-end-1 border border-start-0"><i class="bi bi-search"></i></button>
+                </div>
+            </div>
+        </nav>
+        <div class="collapse text-center" id="enlaces">
+            <div class="row">
+                <a class="enlaceArea col-4 col-xl-2 e1" href="">
+                    <img src="view/resources/images/svg/consola.svg" alt="" srcset=""><br>Consolas
+                </a>
+                <a class="enlaceArea col-4 col-xl-2 e2" href="">
+                    <img src="view/resources/images/svg/computadora.svg" alt="" srcset=""><br>Computadoras
+                </a>
+                <a class="enlaceArea col-4 col-xl-2 e3" href="">
+                    <img src="view/resources/images/svg/camara.svg" alt="" srcset=""><br>Cámaras
+                </a>
+                <a class="enlaceArea col-4 col-xl-2 e4" href="">
+                    <img src="view/resources/images/svg/radio.svg" alt="" srcset=""><br>Radios
+                </a>
+                <a class="enlaceArea col-4 col-xl-2 e5" href="">
+                    <img src="view/resources/images/svg/telefono.svg" alt="" srcset=""><br>Teléfonos
+                </a>
+                <a class="enlaceArea col-4 col-xl-2 e6" href="">
+                    <img src="view/resources/images/svg/electrodomestico.svg" alt="" srcset=""><br>Electrodomésticos
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div id="overlay" class="overlay"></div>
+
+    <main class="">
+        <!-- Barra de Filtros -->
+        <div class="sidebar"><!--d-none d-lg-block-->
+            <div class="sidebarCont">
+                <div>
+                    <a href="#secciones" class="text-dark fs-5 text-decoration-none" data-bs-toggle="collapse" data-bs-target="#secciones" aria-expanded="true" aria-controls="secciones">
+                        Secciones&nbsp;▼
+                    </a>
+                    <div class="collapse show shadow-none ms-1 ps-2 border-start" id="secciones">
+                        <!-- AQUI SE GENERAL LAS SECCIONES DE FORMA DINAMICA -->
+    
+                    </div>
+                </div>
+                <div>
+                    <a href="#precios" class="text-dark fs-5 text-decoration-none" data-bs-toggle="collapse" data-bs-target="#precios" aria-expanded="true" aria-controls="precios">
+                        Precio&nbsp;▼
+                    </a>
+                    <div class="collapse show shadow-none ms-1 ps-2 border-start" id="precios">
+                        <div>
+                            <div class="d-flex">
+                                <label for="minPrecio">Min:</label>
+                                <input type="number" id="minPrecio" min="0" step="10">
+                                <label for="minPrecio">€</label>
+                            </div>
+                            <div class="d-flex nowrap">
+                                <label for="maxPrecio">Max:</label>
+                                <input type="number" id="maxPrecio" min="0" step="10">
+                                <label for="maxPrecio">€</label>
+                            </div>
+                            <div class="mt-2 text-start">
+                                <input type="checkbox" class="form-check-input checkSeccion" id="checkboxRebajado" value="1">
+                                <label class="form-check-label ps-1 labelSeccion" for="checkboxRebajado">Rebajado</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex gap-1">
+                    <a onclick="filtrar()" type="button" class="btn mt-4 flex-grow-1"> Aplicar</a>
+                    <a onclick="limpiarFiltro()" type="button" class="btn mt-4 bi bi-backspace-fill"></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenedor de Cartas -->
+        <div class="content">
+
+            <div id="listaCartas" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 crow-cols-xxl-2 position-relative">
+            <!-- Las cartas de productos se generan de forma dinamica aqui -->
+
+
+            <!--? Carta de ejemplo -->
+            <!--<div class="col mb-2">
+                <div class="card rounded-0">
+                    <button class="btn text-start p-0">
+             block !important;     <div class="position-relative">
+                            <img src="resources/images/img/150.png" class="card-img-top" alt="Imagen">
+                            <a onclick="anadirProducto()" class="position-absolute end-0 bottom-0 d-block d-lg-none bi bi-bag-plus-fill fs-4"></a>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">TITULO</h5>
+                            <p class="card-text" title="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Est recusandae magnam, id esse, minus eius repellendus earum pariatur aperiam, repellat ducimus nostrum dolorum nulla placeat temporibus impedit in unde minima!">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Est recusandae magnam, id esse, minus eius repellendus earum pariatur aperiam, repellat ducimus nostrum dolorum nulla placeat temporibus impedit in unde minima!</p>
+                            <span>50€ </span><span class="text-decoration-line-through text-dark text-opacity-75">60€</span>
+                        </div>
+                    </button>
+                </div>
+            </div>-->
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-warning">
+        SOY EL FOOTER
+    </footer>
+</body>
+</html>
