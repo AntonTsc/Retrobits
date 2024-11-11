@@ -1,4 +1,4 @@
-async function comprobarSesion(){
+export async function comprobarSesion(){
     try{
         const response = await fetch("/Retrobits/controller/sesionComp.php");
         const sesion = await response.json();

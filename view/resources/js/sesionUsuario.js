@@ -1,3 +1,10 @@
+// Ojo del input contraseña para visualizarla
+const togglePassword = document.querySelector('#togglePassword');
+const password = document.querySelector('#floatingPassword');
+const fl = document.getElementById('FL');
+const fr = document.getElementById('FR');
+
+
 //Register
 async function insertUsuario(){
     const data = {
@@ -22,7 +29,7 @@ async function insertUsuario(){
         const datos = await response.json();
 
         if (datos.status === 'OK') {
-            window.location.href = "http://localhost/Retrobits/index.html";
+            window.location.href = "login.html";
         } else {
             const Toast = Swal.mixin({
                 toast: true,
@@ -66,7 +73,7 @@ async function loginUsuario(){
         const datos = await response.json();
 
         if (datos.status === 'OK') {
-            window.location.href = "http://localhost/Retrobits/index.html";
+            window.location.href = "../index.html";
         } else {
             const Toast = Swal.mixin({
                 toast: true,
@@ -88,4 +95,26 @@ async function loginUsuario(){
     } catch (error) {
         console.error("Error: ", error);
     }
+}
+
+togglePassword.addEventListener('click', () => {
+    const type = password
+        .getAttribute('type') === 'password' ?
+        'text' : 'password';
+    password.setAttribute('type', type);
+    togglePassword.classList.toggle('bi-eye');
+});
+
+
+if (fl){
+    document.getElementById('FL').addEventListener('submit', (e) => {
+        e.preventDefault(); 
+        loginUsuario();
+    });
+}
+if (fr){
+    document.getElementById('FR').addEventListener('submit', (e) => {
+        e.preventDefault(); 
+        insertUsuario();
+    });
 }

@@ -1,6 +1,7 @@
+const despleglable = document.getElementById("botonesUsuario");
 
 //Slider
-const swiperDescuentos = new Swiper('.slider-descuentos', {
+  const swiperDescuentos = new Swiper('.slider-descuentos', {
     spaceBetween: 10,
     centeredSlides: false,
     
@@ -71,7 +72,24 @@ const swiperDescuentos = new Swiper('.slider-descuentos', {
     }
   });
 
+async function comprobarSesion(){
+  try{
+      const response = await fetch("/Retrobits/controller/sesionComp.php");
+      const sesion = await response.json();
 
+      if (sesion.status === 'OK') {
+        if (sesion.user.admin){
+          botonesAdmin();
+        }else{
+          botonesUser();
+        }
+      } else {
+          botonesAnon();
+      }
+  } catch (error) {
+      console.error("Error: ", error);
+  }
+}
 // Función para obtener y mostrar todos los productos en una tabla
 async function obtenerProductos() {
     try {
@@ -118,43 +136,40 @@ async function obtenerProductos() {
     }
 }
 
-// Ejecutar la función obtenerProductos cuando se cargue la página
-window.onload = function () {
-    obtenerProductos();
-};
 
 //Genera cartas con los descuentos mas altos
 function generador(producto, seccion) {
-    const button = document.createElement("button");
-    button.classList = "card-item swiper-slide btn rounded-0";
+  const button = document.createElement("button");
+  button.classList = "card-item swiper-slide btn rounded-0";
   
-    const img = document.createElement("img");
-    img.src = `view/resources/images/img/${producto.nombre}.jpg`;
-    img.alt = "...";
-
-    const pNombre = document.createElement("p");
-    pNombre.classList = "text-start card-title text-dark fs-5 px-1"
+  const img = document.createElement("img");
+  //img.src = `view/resources/images/img/${producto.nombre}.jpg`;
+  img.src = `view/resources/images/img/Game Gear.jpg`;
+  img.alt = "...";
+  
+  const pNombre = document.createElement("p");
+  pNombre.classList = "text-start card-title text-dark fs-5 px-1"
     pNombre.innerHTML = producto.nombre;
 
     const pPrecio = document.createElement("p");
     pPrecio.classList = "text-start card-title text-dark fs-5 px-1"
-
+    
     if(producto.descuento > 0){
       const spanRebajado = document.createElement("span");
       spanRebajado.classList = "fs-5"
       spanRebajado.innerHTML = `${(producto.precio*(1 - (producto.descuento/100))).toFixed(2)}€ `;
-  
+      
       const spanNoRebajado = document.createElement("span");
       spanNoRebajado.classList = "text-decoration-line-through text-dark text-opacity-75 fs-6"
       spanNoRebajado.innerHTML = `${producto.precio}€`;
-  
+      
       pPrecio.appendChild(spanRebajado);
       pPrecio.appendChild(spanNoRebajado);
 
       const span = document.createElement("span");
       span.classList = "position-absolute top-0 end-0 badge rounded-0 bg-danger"
       span.innerHTML = `-${producto.descuento}%`;
-
+      
       button.appendChild(span);
     }else{
       const spanPrecio = document.createElement("span");
@@ -162,26 +177,100 @@ function generador(producto, seccion) {
       spanPrecio.innerHTML = `${producto.precio}€ `;
       pPrecio.appendChild(spanPrecio);
     }
-
-  
+    
+    
     button.appendChild(img);
     button.appendChild(pNombre);
     button.appendChild(pPrecio);
     let cardList = document.getElementById(`card-list-${seccion}`);
     cardList.insertBefore(button, cardList.firstChild);
   }
-  console.log(comprobarSesion());
-  async function comprobarSesion(){
-    try{
-        const response = await fetch("/Retrobits/controller/sesionComp.php");
-        const sesion = await response.json();
   
-        if (sesion.status === 'OK') {
-            return sesion.user;
-        } else {
-            return sesion.status;
-        }
-    } catch (error) {
-        console.error("Error: ", error);
-    }
-  }
+function botonesAdmin(){
+  console.log("sesion Admin");
+
+  const separador = document.createElement("div");
+  separador.classList = "border border-secondary"
+
+  const li1 = document.createElement("li");
+  const btnLogin = document.createElement("a");
+  btnLogin.classList = "dropdown-item mt-1 mb-2";
+  btnLogin.href = "view/perfil.html";
+  btnLogin.innerHTML = "Ver perfil";
+  li1.appendChild(btnLogin);
+  
+  const li2 = document.createElement("li");
+  const btnPanelAdmin = document.createElement("a");
+  btnPanelAdmin.classList = "d-flex justify-content-center btn btn-primary rounded-2 m-2";
+  btnPanelAdmin.href = "controller/panelAdmin.php";
+  btnPanelAdmin.innerHTML = "Panel Admin";
+  li2.appendChild(btnPanelAdmin);
+
+  const li3 = document.createElement("li");
+  const btnSignin = document.createElement("a");
+  btnSignin.classList = "d-flex justify-content-center btn btn-danger rounded-2 mx-2 mt-2";
+  btnSignin.href = "controller/logout.php";
+  btnSignin.innerHTML = "Cerrar sesión";
+  li3.appendChild(btnSignin);
+
+  despleglable.appendChild(li1);
+  despleglable.appendChild(li2);
+  despleglable.appendChild(separador);
+  despleglable.appendChild(li3);
+}
+
+function botonesUser(){
+  console.log("sesion iniciada");
+
+  const separador = document.createElement("div");
+  separador.classList = "border border-secondary"
+
+  const li1 = document.createElement("li");
+  const btnLogin = document.createElement("a");
+  btnLogin.classList = "dropdown-item mt-1 mb-2";
+  btnLogin.href = "view/perfil.html";
+  btnLogin.innerHTML = "Ver perfil";
+  li1.appendChild(btnLogin);
+
+  const li2 = document.createElement("li");
+  const btnSignin = document.createElement("a");
+  btnSignin.classList = "d-flex justify-content-center btn btn-danger rounded-2 mx-2 mt-2";
+  btnSignin.href = "controller/logout.php";
+  btnSignin.innerHTML = "Cerrar sesión";
+  li2.appendChild(btnSignin);
+
+  despleglable.appendChild(li1);
+  despleglable.appendChild(separador);
+  despleglable.appendChild(li2);
+}
+
+function botonesAnon(){
+  console.log("sesion anonima");
+
+  const separador = document.createElement("div");
+  separador.classList = "border border-secondary"
+
+  const li1 = document.createElement("li");
+  const btnLogin = document.createElement("a");
+  btnLogin.classList = "dropdown-item mt-1 mb-2";
+  btnLogin.href = "view/login.html";
+  btnLogin.innerHTML = "Iniciar sesión";
+  li1.appendChild(btnLogin);
+
+  const li2 = document.createElement("li");
+  const btnSignin = document.createElement("a");
+  btnSignin.classList = "dropdown-item mt-1 mb-2";
+  btnSignin.href = "view/signin.html";
+  btnSignin.innerHTML = "Registrarse";
+  li2.appendChild(btnSignin);
+
+  despleglable.appendChild(li1);
+  despleglable.appendChild(li2);
+
+}
+
+// Ejecutar la función obtenerProductos cuando se cargue la página
+window.onload = function () {
+    obtenerProductos();
+    comprobarSesion();
+};

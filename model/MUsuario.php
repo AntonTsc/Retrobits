@@ -45,7 +45,7 @@
         }
 
         public function loginUsuario($data){
-            $query = $this->getCon()->prepare("SELECT * FROM usuarios WHERE username = ? OR email = ?");
+            $query = $this->getCon()->prepare("SELECT * FROM usuarios WHERE (username = ? OR email = ?) AND deleted = 0");
             $query->bind_param("ss", $data['user'], $data['user']);
             $query->execute();
 

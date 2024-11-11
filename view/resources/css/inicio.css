@@ -68,6 +68,49 @@
   .card-list .btn:hover{
     background-color: #fcfcfc !important;
   }
+
+/* Estilo del contenedor de sugerencias */
+.suggestions {
+  top: 30px;
+  position: absolute;
+  width: 100%;
+  max-height: 300px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  overflow-y: auto;
+  display: none; /* Oculto por defecto */
+  z-index: 1000;
+}
+
+.suggestions div {
+  padding: 5px;
+  cursor: pointer;
+}
+
+/* Sugerencias al pasar el cursor */
+.suggestions div:hover {
+  background-color: #f0f0f0;
+}
+
+.overlay {
+  display: none; /* Oculto por defecto */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Color oscuro semi-transparente */
+  z-index: 999; /* Asegura que quede sobre otros elementos */
+}
+
+@media (max-width: 992px){
+  .suggestions {
+    width: 150%;
+    transform: translateX(-25%);
+  }
+}
+
+
   @media (min-width: 768px) {
     .slider-wrapper .swiper-pagination-bullet, .slider-wrapper .swiper-pagination-bullet-active {
       display: none;

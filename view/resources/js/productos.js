@@ -102,9 +102,9 @@
       cardList.innerHTML = "";
       if (filtro != null) {
         for (let i = 0; i < productos.length; i++) {
-          let coincide = true
+          let coincide = true;
           if(filtro.secciones.length != 0 && !filtro.secciones.includes(productos[i].idSeccion)){
-            coincide = false
+            coincide = false;
           }
 
           let precio = productos[i].precio;
