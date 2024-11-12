@@ -8,9 +8,99 @@ const fr = document.getElementById('FR');
 //Register
 async function insertUsuario(){
     const data = {
-        username: document.getElementById("floatingUser").value,
-        email: document.getElementById("floatingEmail").value,
-        password: document.getElementById("floatingPassword").value
+        username: document.getElementById("floatingUser"),
+        email: document.getElementById("floatingEmail"),
+        password: document.getElementById("floatingPassword")
+    }
+
+    // Validación de los campos utilizando expresiones regulares
+    // Username
+    const valUsername = (username) => {
+        return String(username).match(
+            /^[a-zA-Z0-9_]{4,20}$/
+        );
+    };
+
+    // Email
+    const valEmail = (email) => {
+        return String(email).toLocaleLowerCase().match(
+            /^[\w-\.]+@[\w-]+.[\w-]{2,}$/
+        );
+    };
+
+    // Password
+    const valPassword = (password) => {
+        return String(password).match(
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*()\.]).{8,40}$/
+        );
+    };
+
+    // Validaciones
+    if(!valUsername(data.username.value)){
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "error",
+            title: "El nombre de usuario debe tener entre 4 y 20 caracteres y solo puede contener letras, números y guiones bajos"
+          });
+          data.username.style.borderColor = "red";
+
+        return; // Detiene la ejecución si el username es inválido
+    } else {
+        data.username.style.borderColor = "green";
+    }
+
+    if(!valEmail(data.email.value)){
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "error",
+            title: "Por favor ingrese un correo electrónico válido"
+          });
+          data.email.style.borderColor = "red";
+
+        return; // Detiene la ejecución si el email es inválido
+    } else {
+        data.email.style.borderColor = "green";
+    }
+
+    if(!valPassword(data.password.value)){
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "error",
+            title: "La contraseña debe tener mínimo 8 caracteres, incluyendo una mayúscula, una minúscula, un número y un carácter especial"
+          });
+          data.password.style.borderColor = "red";
+
+        return; // Detiene la ejecución si la password es inválida
     }
 
     try{
@@ -21,9 +111,9 @@ async function insertUsuario(){
             },
             // Usamos encodeURIComponent para asegurar que los datos se codifiquen correctamente
             // y evitar problemas con caracteres especiales como '&', '=', o espacios en blanco
-            body: 'username=' + encodeURIComponent(data.username) + 
-                  '&email=' + encodeURIComponent(data.email) + 
-                  '&password=' + encodeURIComponent(data.password)
+            body: 'username=' + encodeURIComponent(data.username.value) + 
+                  '&email=' + encodeURIComponent(data.email.value) + 
+                  '&password=' + encodeURIComponent(data.password.value)
         }); 
 
         const datos = await response.json();
