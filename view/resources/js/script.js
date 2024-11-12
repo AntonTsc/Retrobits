@@ -21,6 +21,8 @@ let cesta = {
 
 async function verProductos(){
     try{
+        
+        let total = 0;
 
         // const response = await fetch('/Retrobits/controller/productos.php');
         // const productos = await response.json();
@@ -56,9 +58,25 @@ async function verProductos(){
             fila.appendChild(celdaPrecio);
 
             //Precio total de dicho producto
+            const precioTotal = (producto.cantidad * producto.precio).toFixed(2);
             const celdaPrecioTotal = document.createElement('td');
-            celdaPrecioTotal.textContent = (producto.cantidad * producto.precio).toFixed(2);
+            celdaPrecioTotal.textContent = precioTotal;
             fila.appendChild(celdaPrecioTotal);
+
+            total+= parseFloat(precioTotal);
+
+            if(total < 2500){
+    
+                const celdaEnvio = document.createElement('td');
+                const costeEnvio = 3; 
+                celdaEnvio.textContent = costeEnvio.toFixed(2);
+                fila.appendChild(celdaEnvio);
+            
+            } else {
+                const celdaEnvio = document.createElement('td');
+                celdaEnvio.textContent = 'Envío gratis';
+                fila.appendChild(celdaEnvio);
+            }
 
             // Botón para aumentar la cantidad del producto
             const celdaBotonAumentar = document.createElement('td');
@@ -80,9 +98,15 @@ async function verProductos(){
                 celdaBotonEliminar.appendChild(botonEliminar);
                 fila.appendChild(celdaBotonEliminar);
 
+            
+        
+            
             // Añadir la fila a la tabla
             tbody.appendChild(fila);
+        
+
         });
+        
     } catch (error) {
         console.error('Error;', error);
     }
