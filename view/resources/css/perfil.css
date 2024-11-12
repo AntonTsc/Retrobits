@@ -1,19 +1,10 @@
-.btnLog .btn{
+.btn{
     background-color: #9c2227;
     font-size: 16px;
 }
 
-.btnLog .btn:hover{
+.btn:hover{
     background-color: #891c20;
-}
-
-.btnLog .btn:last-child:hover{
-    background-color: rgba(128, 128, 128, 0.14);
-}
-
-.btnLog .btn:last-child{
-    background-color: transparent;
-    border-color: #9c2227;
 }
 
 .form-control{
@@ -21,7 +12,7 @@
 }
 
 .form-control:focus {
-    border-color: #9c2227;
+    border-color: #9c2227   ;
     box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
 }
 

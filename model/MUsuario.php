@@ -61,5 +61,29 @@
                 return false;
             }
         }
+
+        public function editUsuario($data){
+            $query = $this->getCon()->prepare("UPDATE usuarios SET username = ?, email = ? WHERE id = ?");
+            $query->bind_param("ssi", $data['username'], $data['email'], $data['id']);
+
+            $comp = ($query->execute()) ? true : false;
+            
+            $query->close();
+
+            return $comp;
+        }
+
+        public function editPassword($data){
+            $query = $this->getCon()->prepare("UPDATE usuarios SET password = ? WHERE id = ?");
+
+            $encPass = password_hash($data['password'], PASSWORD_DEFAULT);
+            $query->bind_param("si", $encPass, $data['id']);
+            
+            $comp = ($query->execute()) ? true : false;
+            
+            $query->close();
+
+            return $comp;
+        }
     }
 ?>

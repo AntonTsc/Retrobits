@@ -3,7 +3,9 @@ const togglePassword = document.querySelector('#togglePassword');
 const password = document.querySelector('#floatingPassword');
 const fl = document.getElementById('FL');
 const fr = document.getElementById('FR');
-
+const fm = document.getElementById('FM');
+const path = window.location.pathname;
+const pagPerfil = path.split('/').pop();
 
 //Register
 async function insertUsuario(){
@@ -41,7 +43,6 @@ async function insertUsuario(){
             toast: true,
             position: "top",
             showConfirmButton: false,
-            timer: 3000,
             timerProgressBar: true,
             didOpen: (toast) => {
               toast.onmouseenter = Swal.stopTimer;
@@ -64,12 +65,7 @@ async function insertUsuario(){
             toast: true,
             position: "top",
             showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
+            timerProgressBar: true
           });
           Toast.fire({
             icon: "error",
@@ -87,12 +83,7 @@ async function insertUsuario(){
             toast: true,
             position: "top",
             showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
+            timerProgressBar: true
           });
           Toast.fire({
             icon: "error",
@@ -126,11 +117,7 @@ async function insertUsuario(){
                 position: "top-end",
                 showConfirmButton: false,
                 timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                  toast.onmouseenter = Swal.stopTimer;
-                  toast.onmouseleave = Swal.resumeTimer;
-                }
+                timerProgressBar: true
               });
               Toast.fire({
                 icon: "error",
@@ -167,18 +154,88 @@ async function loginUsuario(){
         } else {
             const Toast = Swal.mixin({
                 toast: true,
-                position: "top-end",
+                position: "top",
                 showConfirmButton: false,
                 timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                  toast.onmouseenter = Swal.stopTimer;
-                  toast.onmouseleave = Swal.resumeTimer;
-                }
+                timerProgressBar: true
               });
               Toast.fire({
                 icon: "error",
-                title: "Datos de sesión incorrectos!"
+                title: "¡Datos de sesión incorrectos!"
+              });
+        }
+
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+async function comprobarSesion(){
+    const userInput = document.getElementById("floatingUsername");
+    const emailInput = document.getElementById("floatingEmail");
+
+    try{
+        const response = await fetch("/Retrobits/controller/sesionComp.php");
+        const sesion = await response.json();
+        
+        if (sesion.status === 'OK') {
+            userInput.value = sesion.user.username;
+            emailInput.value = sesion.user.email;
+
+            return true;
+        } else {
+            window.location.href = "../index.html";
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+async function modificarUsuario(){
+    const data = {
+        username: document.getElementById("floatingUsername").value,
+        email: document.getElementById("floatingEmail").value,
+        password: document.getElementById("floatingPassword").value
+    }
+
+    try{
+        const response = await fetch("/Retrobits/controller/modificarUsuario.php", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: '&username=' + encodeURIComponent(data.username) + 
+                  '&email=' + encodeURIComponent(data.email) + 
+                  '&password=' + encodeURIComponent(data.password)
+        }); 
+
+        const datos = await response.json();
+
+        if (datos.status === 'OK') {
+            comprobarSesion();
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+              });
+              Toast.fire({
+                icon: "success",
+                title: datos.message
+              });
+        } else {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+              });
+              Toast.fire({
+                icon: "warning",
+                title: datos.message
               });
         }
 
@@ -197,14 +254,28 @@ togglePassword.addEventListener('click', () => {
 
 
 if (fl){
-    document.getElementById('FL').addEventListener('submit', (e) => {
+    fl.addEventListener('submit', (e) => {
         e.preventDefault(); 
         loginUsuario();
     });
 }
 if (fr){
-    document.getElementById('FR').addEventListener('submit', (e) => {
+    fr.addEventListener('submit', (e) => {
         e.preventDefault(); 
         insertUsuario();
     });
+}
+if (fm){
+    fm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if(comprobarSesion()){
+            modificarUsuario();
+        }
+    });
+}
+
+if(pagPerfil == "perfil.html") {
+    window.onload = () => {
+        comprobarSesion();
+    }
 }
