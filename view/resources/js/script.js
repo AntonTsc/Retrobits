@@ -40,7 +40,7 @@ async function verProductos(){
                     botonEliminar.textContent = 'Eliminar producto del carrito';
                     botonEliminar.onclick = function () {
                         // arrayProductos.removeItem(producto.idProducto);
-                        // eliminarProductoCarrito(producto.idProducto);
+                        eliminarProductoCarrito(producto.idProducto);
                     };
                     celdaBotonEliminar.appendChild(botonEliminar);
                     fila.appendChild(celdaBotonEliminar);
@@ -51,6 +51,14 @@ async function verProductos(){
     } catch (error) {
         console.error('Error;', error);
     }
+}
+
+function eliminarProductoCarrito(idProducto){
+
+    productos = productos.filter(producto => producto.idProducto !== idProducto);
+    localStorage.setItem("prod", JSON.stringify(productos));
+    verProductos();
+
 }
 
 async function comprarProductos(){
