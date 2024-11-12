@@ -23,92 +23,109 @@
       crossorigin="anonymous"
       defer
     ></script>
+    <script src="resources/js/barraBuscar.js" defer></script>
+    <script src="resources/js/sesionUsuario.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2/dist/sweetalert2.min.js" defer></script>
 
     <meta http-equiv="content-language" content="es" />
 </head>
-<body class="background-light">
+<body>
     <div class="sticky-top">
-        <nav class="navbar navbar-expand-lg px-5 py-3">
-            <div class="flex-grow-1">
-                <button id="nav-toggle" class="border-0 bg-transparent text-light fs-4 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#enlaces" aria-expanded="false" aria-controls="enlaces">
-                    RetroBits <img class="arrow" src="resources/images/svg/flecha.svg" alt="">
-                </button>
-            </div>
-
-            <div class="d-none d-sm-flex flex-grow-1">
-                <input type="text" class="flex-grow-1 bg-light p-1 rounded-start-1 border border-end-0 pl-1" placeholder="Apple II, Game Boy, Tamagotchi...">
-                <button class="btn btn-light rounded-0 rounded-end-1 border border-start-0"><i class="bi bi-search"></i></button>
-            </div>
-            
-            <!--BOTON PERFIL-->
-            <div class="d-flex justify-content-end flex-grow-1 gap-4">
-                <a href="login.html" class="text-light fs-3"><i class="bi bi-person-circle"></i></a>
-                <a href="#" class="text-light position-relative p-0 mr-5 ">
-                    <i class="bi bi-bag-fill fs-3"></i>
-                    <span class="position-absolute top-50 start-50 translate-middle mt-1 text-dark fw-bold fs-6">4</span>
-                </a>
-            </div>
-            
-            <!--BOTON BOLSA-->
-            <div class="d-flex d-sm-none w-100 mt-2">
-                <input type="text" class="flex-grow-1 bg-light p-1 rounded-0 rounded-start-1 border border-end-0 pl-1" placeholder="Apple II, Game Boy, Tamagotchi...">
-                <button class="btn btn-light rounded-0 rounded-end-1 border border-start-0"><i class="bi bi-search"></i></button>
+        <nav class="navbar navbar-expand-lg px-5 py-1">
+            <div class="container">
+                <div class="flex-grow-1">
+                    <button id="nav-toggle" class="border-0 bg-transparent text-light fs-4 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#enlaces" aria-expanded="false" aria-controls="enlaces">
+                        RetroBits <img class="arrow" src="resources/images/svg/flecha.svg" alt="">
+                    </button>
+                </div>
+        
+                <!-- Buscador Unificado -->
+                <div id="nav" class="d-flex flex-grow-1 position-relative">
+                    <a href="../" class="btn btn-light rounded-0 rounded-end-0 border border-start-1 rounded-start-1">
+                        <i class="bi bi-house-door"></i>
+                    </a>
+                    <input id="buscador" type="text" class="flex-grow-1 bg-light p-1 rounded-0 border border-end-0 pl-1" placeholder="Apple II, Game Boy, Tamagotchi...">
+                    <button class="btn btn-light rounded-0 rounded-end-1 border border-start-0">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <div id="suggestionsContainer" class="suggestions"></div>
+                </div>
+        
+                <!-- Elementos de perfil y bolsa -->
+                <div class="d-flex justify-content-end flex-grow-1 gap-4">
+                    <!--BOTON PERFIL-->
+                    <div class="dropdown dropstart">
+                        <button class="btn border-0 text-light bi bi-person-circle fs-2 mt-1 fw-bold" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="-5,10"></button>
+                        <ul id="botonesUsuario" class="dropdown-menu rounded-2 shadow pb-0">
+                            <button class="dropdown-item rounded-bottom-2 mt-2 bg-light text-secondary">Guía de usuario</button>
+                        </ul>
+                    </div>
+        
+                    <!--BOTON BOLSA-->
+                    <a href="#" class="text-light position-relative p-0 mr-5 mt-2">
+                        <i class="bi bi-bag-fill fs-2"></i>
+                        <span id="cestaNumero" class="position-absolute top-50 start-50 translate-middle text-dark fw-bold fs-5"></span>
+                    </a>
+                </div>
             </div>
         </nav>
         <div class="collapse text-center" id="enlaces">
             <div class="row">
-                <a class="enlaceArea col-4 col-xl-2 e1" href="">
+                <a class="enlaceArea col-4 col-xl-2 e1" href="productos.html?1">
                     <img src="resources/images/svg/consola.svg" alt="" srcset=""><br>Consolas
                 </a>
-                <a class="enlaceArea col-4 col-xl-2 e2" href="">
+                <a class="enlaceArea col-4 col-xl-2 e2" href="productos.html?2">
                     <img src="resources/images/svg/computadora.svg" alt="" srcset=""><br>Computadoras
                 </a>
-                <a class="enlaceArea col-4 col-xl-2 e3" href="">
+                <a class="enlaceArea col-4 col-xl-2 e3" href="productos.html?3">
                     <img src="resources/images/svg/camara.svg" alt="" srcset=""><br>Cámaras
                 </a>
-                <a class="enlaceArea col-4 col-xl-2 e4" href="">
+                <a class="enlaceArea col-4 col-xl-2 e4" href="productos.html?4">
                     <img src="resources/images/svg/radio.svg" alt="" srcset=""><br>Radios
                 </a>
-                <a class="enlaceArea col-4 col-xl-2 e5" href="">
+                <a class="enlaceArea col-4 col-xl-2 e5" href="productos.html?5">
                     <img src="resources/images/svg/telefono.svg" alt="" srcset=""><br>Teléfonos
                 </a>
-                <a class="enlaceArea col-4 col-xl-2 e6" href="">
+                <a class="enlaceArea col-4 col-xl-2 e6" href="productos.html?6">
                     <img src="resources/images/svg/electrodomestico.svg" alt="" srcset=""><br>Electrodomésticos
                 </a>
             </div>
         </div>
     </div>
-    <div class="logo mt-4 d-flex justify-content-center align-items-center">
-        <img src="../view/resources/images/img/LOGO_BARRA2.png" alt="Logo">
-    </div>
-    <div class="container col-12 col-md-7 col-xl-5 align-self-center">
-        <div class="titulo mt-4">
-            <h1 class="display-3 fw-bold text-center">INICIAR SESIÓN</h1>
+
+    <div id="overlay" class="overlay"></div>
+
+    <main class="overflow-hidden shadow bg-light">
+        <div class="logo d-flex justify-content-center">
+            <img src="../view/resources/images/img/LOGO_BARRA2.png" alt="Logo">
         </div>
-        <form method="post" id="FL" class="mt-4">
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control form-control-lg" id="floatingInput" placeholder="Usuario o correo electronico">
-                <label for="floatingInput">Usuario o correo electrónico</label>
+        <div class="p-5 pt-2">
+            <div class="mt-4">
+                <h1 class="fw-bold text-center">INICIAR SESIÓN</h1>
             </div>
-            <div>
+            <form method="post" id="FL" class="mt-4">
                 <div class="form-floating mb-3">
-                    <input type="password" class="form-control form-control-lg" id="floatingPassword" placeholder="Contraseña">
-                    <i type="button" class="bi bi-eye-slash fs-3" id="togglePassword"></i>
-                    <label for="floatingPassword">Contraseña</label>
+                    <input type="text" class="form-control form-control-lg rounded-1" id="floatingInput" placeholder="Usuario o correo electronico">
+                    <label for="floatingInput">Usuario o correo electrónico</label>
                 </div>
-            </div>
-            <div class="d-grid gap-2 col-6 mx-auto mt-4 btnLog">
-                <button class="btn btn-dark text-light fw-bold" type="submit" id="btnLogin">Iniciar sesión</button>
-                <div class="d-flex flew-row justify-content-between gap-3 align-items-center mt-2">
-                    <div class="h-0 border border-dark flex-grow-1"></div>
-                    <span class="flex-shrink-1">O</span>
-                    <div class="h-0 border border-dark flex-grow-1"></div>
+                <div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control form-control-lg rounded-1" id="floatingPassword" placeholder="Contraseña">
+                        <i type="button" class="bi bi-eye-slash fs-3" id="togglePassword"></i>
+                        <label for="floatingPassword">Contraseña</label>
+                    </div>
                 </div>
-                <a href="signin.html" class="btn text-dark fw-bold" id="btnRegister" type="button">Registrarse</a>
-            </div>
-        </form>
-    </div>
-    <script src="resources/js/sesionUsuario.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2/dist/sweetalert2.min.js"></script>
+                <div class="mx-auto mt-4 btnLog">
+                    <button class="btn btn-dark text-light fw-bold w-100 rounded-1" type="submit" id="btnLogin">Iniciar sesión</button>
+                    <div class="d-flex flew-row justify-content-between gap-3 align-items-center mt-2">
+                        <div class="h-0 border border-dark flex-grow-1"></div>
+                        <span class="flex-shrink-1">O</span>
+                        <div class="h-0 border border-dark flex-grow-1"></div>
+                    </div>
+                    <a href="signin.html" class="btn text-dark fw-bold w-100 rounded-1" id="btnRegister" type="button">Registrarse</a>
+                </div>
+            </form>
+        </div>
+    </main>
 </body>
 </html>

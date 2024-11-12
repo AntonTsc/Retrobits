@@ -219,7 +219,7 @@ function botonesAdmin(){
   const li2 = document.createElement("li");
   const btnPanelAdmin = document.createElement("a");
   btnPanelAdmin.classList = "d-flex justify-content-center btn btn-primary rounded-2 m-2";
-  btnPanelAdmin.href = "controller/panelAdmin.php";
+  btnPanelAdmin.href = "view/panelAdmin.php";
   btnPanelAdmin.innerHTML = "Panel Admin";
   li2.appendChild(btnPanelAdmin);
 

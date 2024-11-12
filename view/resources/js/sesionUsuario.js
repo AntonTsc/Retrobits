@@ -41,7 +41,6 @@ async function insertUsuario(){
             toast: true,
             position: "top",
             showConfirmButton: false,
-            timer: 3000,
             timerProgressBar: true,
             didOpen: (toast) => {
               toast.onmouseenter = Swal.stopTimer;
@@ -64,12 +63,7 @@ async function insertUsuario(){
             toast: true,
             position: "top",
             showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
+            timerProgressBar: true
           });
           Toast.fire({
             icon: "error",
@@ -87,12 +81,7 @@ async function insertUsuario(){
             toast: true,
             position: "top",
             showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
+            timerProgressBar: true
           });
           Toast.fire({
             icon: "error",
@@ -126,11 +115,7 @@ async function insertUsuario(){
                 position: "top-end",
                 showConfirmButton: false,
                 timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                  toast.onmouseenter = Swal.stopTimer;
-                  toast.onmouseleave = Swal.resumeTimer;
-                }
+                timerProgressBar: true
               });
               Toast.fire({
                 icon: "error",
@@ -167,14 +152,10 @@ async function loginUsuario(){
         } else {
             const Toast = Swal.mixin({
                 toast: true,
-                position: "top-end",
+                position: "top",
                 showConfirmButton: false,
                 timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                  toast.onmouseenter = Swal.stopTimer;
-                  toast.onmouseleave = Swal.resumeTimer;
-                }
+                timerProgressBar: true
               });
               Toast.fire({
                 icon: "error",

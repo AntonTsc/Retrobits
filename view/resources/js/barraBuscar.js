@@ -1,4 +1,4 @@
-const searchInput = document.getElementById("buscadorPC");
+const searchInput = document.getElementById("buscador");
 const suggestionsContainer = document.getElementById("suggestionsContainer");
 const buttonBuscar = document.getElementById("botonBuscar");
 const suggestions = [];
@@ -51,8 +51,10 @@ searchInput.addEventListener("keyup", (e) => {
 
         if (query.length > 0) {
             overlay.style.display = "block"; // Mostrar overlay
+            document.body.style.overflow = "hidden"; // Bloquear el desplazamiento
         } else {
             overlay.style.display = "none"; // Ocultar overlay
+            document.body.style.overflow = "auto"; // Bloquear el desplazamiento
         }
 
         // Mostrar sugerencias filtradas
@@ -114,6 +116,7 @@ searchInput.addEventListener("keyup", (e) => {
 // Cerrar sugerencias y overlay si se hace clic fuera
 overlay.addEventListener("click", function() {
     overlay.style.display = "";
+    document.body.style.overflow = "auto";
 });
 
 // Ocultar sugerencias cuando se hace clic fuera del input

@@ -3,8 +3,6 @@
   const cestaNumero = document.getElementById("cestaNumero");
   const cardList = document.getElementById(`listaCartas`);
   const collapseSecciones = document.getElementById(`secciones`);
-  let barraBusquedaPC = document.querySelector("#buscadorPC");
-  let barraBusquedaMovil = document.querySelector("#buscadorMovil");
   let sidebarVisible = false; 
     // GUARDAR SESION EN LA CESTA
   let userSesion = "anonymous";
@@ -192,14 +190,6 @@
     });
   }
 
-  function buscador(e){
-    if(e.target.id == "buscadorPC"){
-      barraBusquedaMovil.value = e.target.value;
-    }
-    if(e.target.id == "buscadorMovil"){
-      barraBusquedaPC.value = e.target.value;
-    }
-  }
 // Controla el estado de la sidebar
   function mostrarFiltros() {
     const sidebar = document.querySelector(".sidebar");
@@ -316,11 +306,11 @@ function botonesAnon(){
     const div1 = document.createElement("div");
     div1.classList = "col mb-2";
 
-    const div2 = document.createElement("div");
-    div2.classList = "card rounded-0";
+    const div2 = document.createElement("a");
+    div2.classList = "card border-0 btn rounded-1 shadow p-0";
 
-    const buttonCard = document.createElement("button");
-    buttonCard.classList = "btn text-start p-0";
+    const contenido = document.createElement("div");
+    contenido.classList = "btn text-start p-0";
 
     const div3 = document.createElement("div");
     div3.classList = "position-relative";
@@ -334,8 +324,7 @@ function botonesAnon(){
     linkCarrito.onclick = () => {
       guardarProductoCesta(producto);
     };
-    linkCarrito.classList =
-      "position-absolute end-0 bottom-0 d-none bi bi-bag-plus-fill fs-4";
+    linkCarrito.classList = "position-absolute end-0 bottom-0 d-none bi bi-bag-plus-fill fs-4";
 
     div3.appendChild(imagen);
     div3.appendChild(linkCarrito);
@@ -364,15 +353,14 @@ function botonesAnon(){
       spanRebajado.classList = "me-1";
 
       const spanNoRebajado = document.createElement("span");
-      spanNoRebajado.classList =
-        "text-decoration-line-through text-dark text-opacity-75";
+      spanNoRebajado.classList = "text-decoration-line-through text-danger text-opacity-75";
       spanNoRebajado.innerHTML = `${producto.precio}€`;
 
       div4.appendChild(spanRebajado);
       div4.appendChild(spanNoRebajado);
 
       const span = document.createElement("span");
-      span.classList = "text-white position-absolute top-0 end-0 rounded-0 px-1 bg-danger";
+      span.classList = "text-white position-absolute top-0 end-0 rounded-0 px-1 bg-danger rounded-start-0 rounded-top-1";
       span.innerHTML = `-${producto.descuento}%`;
 
       div3.appendChild(span);
@@ -382,10 +370,10 @@ function botonesAnon(){
       div4.appendChild(spanPrecio);
     }
 
-    buttonCard.appendChild(div3);
-    buttonCard.appendChild(div4);
+    contenido.appendChild(div3);
+    contenido.appendChild(div4);
 
-    div2.appendChild(buttonCard);
+    div2.appendChild(contenido);
     div1.appendChild(div2);
 
     cardList.appendChild(div1);
@@ -422,8 +410,6 @@ function botonesAnon(){
 //* LISTENERS =========================================================
   // Detectamos cuando cambia el tamaño de la pantalla
   window.addEventListener("resize", checkScreenSize);
-  barraBusquedaPC.addEventListener("keyup", buscador)
-  barraBusquedaMovil.addEventListener("keyup", buscador)
 
 //* ONLOAD ============================================================
   window.onload = () => {
