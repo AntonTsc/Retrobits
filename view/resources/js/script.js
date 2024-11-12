@@ -2,7 +2,7 @@
 let cesta = {
     anonymous: {
       0:{
-        cantidad: 1,
+        cantidad: 2,
         deleted: "0",
         descripcion: "Laptop de alto rendimiento para profesionales",
         descuento: "5",
@@ -75,7 +75,11 @@ async function verProductos(){
 
 function eliminarProductoCarrito(eleccion){
 
-    delete productos[eleccion];
+    if (productos[eleccion].cantidad > 1){
+        productos[eleccion].cantidad--;
+    }else{
+        delete productos[eleccion];
+    }
     localStorage.setItem("prod", JSON.stringify({anonymous: productos}));
     verProductos();
 
