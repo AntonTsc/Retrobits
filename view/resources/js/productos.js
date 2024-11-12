@@ -1,4 +1,5 @@
 //* GLOBALES =========================================================
+  const despleglable = document.getElementById("botonesUsuario");
   const cestaNumero = document.getElementById("cestaNumero");
   const cardList = document.getElementById(`listaCartas`);
   const collapseSecciones = document.getElementById(`secciones`);
@@ -6,18 +7,18 @@
   let barraBusquedaMovil = document.querySelector("#buscadorMovil");
   let sidebarVisible = false; 
     // GUARDAR SESION EN LA CESTA
-  const sesion = "naner";
+  let userSesion = "anonymous";
   let cestaSesion = {};
 
 //* HELPERS ==========================================================
   function filtrar() {
+    let checkBoxes = collapseSecciones.querySelectorAll("input");
     let filtro = {
       minPrecio: parseInt(document.getElementById("minPrecio").value),
       maxPrecio: parseInt(document.getElementById("maxPrecio").value),
       secciones: [],
       rebajado: document.querySelector("#checkboxRebajado").checked
     };
-    let checkBoxes = collapseSecciones.querySelectorAll("input");
     checkBoxes.forEach((element) => {
       element.checked && filtro.secciones.push(element.value);
     });
@@ -31,7 +32,6 @@
   }
   function limpiarFiltro() {
     let checkBoxes = collapseSecciones.querySelectorAll("input");
-
     checkBoxes.forEach((element) => {
       element.checked = false;
     });
@@ -42,19 +42,46 @@
   }
 
 //* FUNCIONES =========================================================
+  async function comprobarSesion(){
+    try{
+        const response = await fetch("/Retrobits/controller/sesionComp.php");
+        const sesion = await response.json();
+
+        if (sesion.status === 'OK') {
+          userSesion = sesion.user.username;
+          cestaComp();
+          if (sesion.user.admin){
+            botonesAdmin();
+          }else{
+            botonesUser();
+          }
+        } else {
+            botonesAnon();
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+  }
   function obtenerCesta() {
     localStorage.getItem("cesta") != null &&
       (cestaSesion = JSON.parse(localStorage.getItem("cesta")));
     return cestaSesion;
   }
+  function cestaComp(){
+    if (obtenerCesta()[userSesion] == null) {
+      cestaNumero.innerHTML = 0;
+    } else {
+      cestaNumero.innerHTML = obtenerCesta()[userSesion].length;
+    }
+  }
   function guardarProductoCesta(producto) {
     let cesta = [];
 
-    if (obtenerCesta()[sesion] == null) {
-      cestaSesion[sesion] = [];
-      cesta = cestaSesion[sesion];
+    if (obtenerCesta()[userSesion] == null) {
+      cestaSesion[userSesion] = [];
+      cesta = cestaSesion[userSesion];
     } else {
-      cesta = obtenerCesta()[sesion];
+      cesta = obtenerCesta()[userSesion];
     }
 
     let repetido = false;
@@ -74,10 +101,10 @@
 
     !repetido && cesta.push(producto);
 
-    cestaSesion[sesion].push = cesta;
+    cestaSesion[userSesion].push = cesta;
 
     localStorage.setItem("cesta", JSON.stringify(cestaSesion));
-    cestaNumero.innerHTML = obtenerCesta()[sesion].length;
+    cestaNumero.innerHTML = obtenerCesta()[userSesion].length;
 
     const Toast = Swal.mixin({
       toast: true,
@@ -142,9 +169,27 @@
       for (let i = 0; i < secciones.length; i++) {
         generadorSeccion(secciones[i]);
       }
+      comprobarFiltro()
     } catch (error) {
       console.error("Error:", error);
     }
+  }
+
+  function comprobarFiltro(){
+    const queryString = window.location.search.substring(1);
+    if (queryString == "0"){
+      document.querySelector("#checkboxRebajado").checked = true;
+      filtrar();
+      return;
+    }
+    let checkBoxes = collapseSecciones.querySelectorAll("input");
+    checkBoxes.forEach((element) => {
+      if (element.value == queryString){
+        element.checked = true;
+        filtrar();
+        return;
+      }
+    });
   }
 
   function buscador(e){
@@ -185,6 +230,87 @@
   }
 
 //* MANIPULACIONES DE DOM =============================================
+function botonesAdmin(){
+  console.log("sesion Admin");
+
+  const separador = document.createElement("div");
+  separador.classList = "border"
+
+  const li1 = document.createElement("li");
+  const btnLogin = document.createElement("a");
+  btnLogin.classList = "dropdown-item mt-1 mb-2";
+  btnLogin.href = "perfil.html";
+  btnLogin.innerHTML = "Ver perfil";
+  li1.appendChild(btnLogin);
+  
+  const li2 = document.createElement("li");
+  const btnPanelAdmin = document.createElement("a");
+  btnPanelAdmin.classList = "d-flex justify-content-center btn btn-primary rounded-2 m-2";
+  btnPanelAdmin.href = "panelAdmin.php";
+  btnPanelAdmin.innerHTML = "Panel Admin";
+  li2.appendChild(btnPanelAdmin);
+
+  const li3 = document.createElement("li");
+  const btnSignin = document.createElement("a");
+  btnSignin.classList = "d-flex justify-content-center btn btn-danger rounded-2 mx-2 mt-2";
+  btnSignin.href = "../controller/logout.php";
+  btnSignin.innerHTML = "Cerrar sesión";
+  li3.appendChild(btnSignin);
+
+  despleglable.insertBefore(li3, despleglable.firstChild);
+  despleglable.insertBefore(separador, despleglable.firstChild);
+  despleglable.insertBefore(li2, despleglable.firstChild);
+  despleglable.insertBefore(li1, despleglable.firstChild);
+}
+
+function botonesUser(){
+  console.log("sesion iniciada");
+
+  const separador = document.createElement("div");
+  separador.classList = "border"
+
+  const li1 = document.createElement("li");
+  const btnLogin = document.createElement("a");
+  btnLogin.classList = "dropdown-item mt-1 mb-2";
+  btnLogin.href = "perfil.html";
+  btnLogin.innerHTML = "Ver perfil";
+  li1.appendChild(btnLogin);
+
+  const li2 = document.createElement("li");
+  const btnSignin = document.createElement("a");
+  btnSignin.classList = "d-flex justify-content-center btn btn-danger rounded-2 mx-2 mt-2";
+  btnSignin.href = "../controller/logout.php";
+  btnSignin.innerHTML = "Cerrar sesión";
+  li2.appendChild(btnSignin);
+
+  despleglable.insertBefore(li2, despleglable.firstChild);
+  despleglable.insertBefore(separador, despleglable.firstChild);
+  despleglable.insertBefore(li1, despleglable.firstChild);
+}
+
+function botonesAnon(){
+  console.log("sesion anonima");
+
+  const separador = document.createElement("div");
+  separador.classList = "border"
+
+  const li1 = document.createElement("li");
+  const btnLogin = document.createElement("a");
+  btnLogin.classList = "dropdown-item mt-1 mb-2";
+  btnLogin.href = "login.html";
+  btnLogin.innerHTML = "Iniciar sesión";
+  li1.appendChild(btnLogin);
+
+  const li2 = document.createElement("li");
+  const btnSignin = document.createElement("a");
+  btnSignin.classList = "dropdown-item mt-1 mb-2";
+  btnSignin.href = "signin.html";
+  btnSignin.innerHTML = "Registrarse";
+  li2.appendChild(btnSignin);
+
+  despleglable.insertBefore(li2, despleglable.firstChild);
+  despleglable.insertBefore(li1, despleglable.firstChild);
+}
   //Genera cartas con los descuentos mas altos
   function generadorProducto(producto) {
     const div1 = document.createElement("div");
@@ -301,13 +427,10 @@
 
 //* ONLOAD ============================================================
   window.onload = () => {
+    comprobarSesion();
     obtenerProductos();
     obtenerSecciones();
     checkScreenSize();
-
-    if (obtenerCesta()[sesion] == null) {
-      cestaNumero.innerHTML = 0;
-    } else {
-      cestaNumero.innerHTML = obtenerCesta()[sesion].length;
-    }
+    mostrarFiltros();
+    cestaComp();
   };

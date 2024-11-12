@@ -1,4 +1,7 @@
 const despleglable = document.getElementById("botonesUsuario");
+let userSesion = "anonymous";
+let cestaSesion = {};
+
 
 //Slider
   const swiperDescuentos = new Swiper('.slider-descuentos', {
@@ -26,7 +29,7 @@ const despleglable = document.getElementById("botonesUsuario");
     // Responsive breakpoints
     breakpoints: {
       0: {
-        slidesPerView: 1,
+        slidesPerView: 1.2,
         spaceBetween: 20
       },
       576: {
@@ -59,7 +62,7 @@ const despleglable = document.getElementById("botonesUsuario");
     // Responsive breakpoints
     breakpoints: {
       0: {
-        slidesPerView: 1,
+        slidesPerView: 1.2,
         spaceBetween: 20
       },
       576: {
@@ -78,6 +81,8 @@ async function comprobarSesion(){
       const sesion = await response.json();
 
       if (sesion.status === 'OK') {
+        userSesion = sesion.user.username;
+        cestaComp();
         if (sesion.user.admin){
           botonesAdmin();
         }else{
@@ -135,24 +140,36 @@ async function obtenerProductos() {
         console.error('Error:', error);
     }
 }
-
+function obtenerCesta() {
+  localStorage.getItem("cesta") != null &&
+    (cestaSesion = JSON.parse(localStorage.getItem("cesta")));
+  return cestaSesion;
+}
+function cestaComp(){
+  if (obtenerCesta()[userSesion] == null) {
+    cestaNumero.innerHTML = 0;
+  } else {
+    cestaNumero.innerHTML = obtenerCesta()[userSesion].length;
+  }
+}
 
 //Genera cartas con los descuentos mas altos
 function generador(producto, seccion) {
-  const button = document.createElement("button");
-  button.classList = "card-item swiper-slide btn rounded-0";
+  const button = document.createElement("a");
+  button.classList = "card-item bg-light swiper-slide border-0 btn rounded-1 shadow";
   
   const img = document.createElement("img");
   //img.src = `view/resources/images/img/${producto.nombre}.jpg`;
   img.src = `view/resources/images/img/Game Gear.jpg`;
   img.alt = "...";
+  img.classList = "rounded-top-1";
   
   const pNombre = document.createElement("p");
-  pNombre.classList = "text-start card-title text-dark fs-5 px-1"
+  pNombre.classList = "text-start card-title text-dark fs-5 p-3 pt-2 pb-0 fw-bold text-truncate"
     pNombre.innerHTML = producto.nombre;
 
     const pPrecio = document.createElement("p");
-    pPrecio.classList = "text-start card-title text-dark fs-5 px-1"
+    pPrecio.classList = "text-start card-title text-dark fs-5 p-3 pt-0 text-truncate"
     
     if(producto.descuento > 0){
       const spanRebajado = document.createElement("span");
@@ -160,14 +177,14 @@ function generador(producto, seccion) {
       spanRebajado.innerHTML = `${(producto.precio*(1 - (producto.descuento/100))).toFixed(2)}€ `;
       
       const spanNoRebajado = document.createElement("span");
-      spanNoRebajado.classList = "text-decoration-line-through text-dark text-opacity-75 fs-6"
+      spanNoRebajado.classList = "text-decoration-line-through text-danger text-opacity-75 fs-6"
       spanNoRebajado.innerHTML = `${producto.precio}€`;
       
       pPrecio.appendChild(spanRebajado);
       pPrecio.appendChild(spanNoRebajado);
 
       const span = document.createElement("span");
-      span.classList = "position-absolute top-0 end-0 badge rounded-0 bg-danger"
+      span.classList = "position-absolute top-0 end-0 badge rounded-0 bg-danger rounded-start-0 rounded-top-1"
       span.innerHTML = `-${producto.descuento}%`;
       
       button.appendChild(span);
@@ -190,7 +207,7 @@ function botonesAdmin(){
   console.log("sesion Admin");
 
   const separador = document.createElement("div");
-  separador.classList = "border border-secondary"
+  separador.classList = "border"
 
   const li1 = document.createElement("li");
   const btnLogin = document.createElement("a");
@@ -213,17 +230,17 @@ function botonesAdmin(){
   btnSignin.innerHTML = "Cerrar sesión";
   li3.appendChild(btnSignin);
 
-  despleglable.appendChild(li1);
-  despleglable.appendChild(li2);
-  despleglable.appendChild(separador);
-  despleglable.appendChild(li3);
+  despleglable.insertBefore(li3, despleglable.firstChild);
+  despleglable.insertBefore(separador, despleglable.firstChild);
+  despleglable.insertBefore(li2, despleglable.firstChild);
+  despleglable.insertBefore(li1, despleglable.firstChild);
 }
 
 function botonesUser(){
   console.log("sesion iniciada");
 
   const separador = document.createElement("div");
-  separador.classList = "border border-secondary"
+  separador.classList = "border"
 
   const li1 = document.createElement("li");
   const btnLogin = document.createElement("a");
@@ -239,16 +256,16 @@ function botonesUser(){
   btnSignin.innerHTML = "Cerrar sesión";
   li2.appendChild(btnSignin);
 
-  despleglable.appendChild(li1);
-  despleglable.appendChild(separador);
-  despleglable.appendChild(li2);
+  despleglable.insertBefore(li2, despleglable.firstChild);
+  despleglable.insertBefore(separador, despleglable.firstChild);
+  despleglable.insertBefore(li1, despleglable.firstChild);
 }
 
 function botonesAnon(){
   console.log("sesion anonima");
 
   const separador = document.createElement("div");
-  separador.classList = "border border-secondary"
+  separador.classList = "border"
 
   const li1 = document.createElement("li");
   const btnLogin = document.createElement("a");
@@ -264,13 +281,13 @@ function botonesAnon(){
   btnSignin.innerHTML = "Registrarse";
   li2.appendChild(btnSignin);
 
-  despleglable.appendChild(li1);
-  despleglable.appendChild(li2);
-
+  despleglable.insertBefore(li2, despleglable.firstChild);
+  despleglable.insertBefore(li1, despleglable.firstChild);
 }
 
 // Ejecutar la función obtenerProductos cuando se cargue la página
 window.onload = function () {
-    obtenerProductos();
-    comprobarSesion();
+  comprobarSesion();
+  obtenerProductos();
+  cestaComp();
 };
