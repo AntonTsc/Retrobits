@@ -55,22 +55,46 @@ async function verProductos(){
             celdaPrecio.textContent = producto.precio;
             fila.appendChild(celdaPrecio);
 
+            //Precio total de dicho producto
+            const celdaPrecioTotal = document.createElement('td');
+            celdaPrecioTotal.textContent = (producto.cantidad * producto.precio).toFixed(2);
+            fila.appendChild(celdaPrecioTotal);
+
+            // Botón para aumentar la cantidad del producto
+            const celdaBotonAumentar = document.createElement('td');
+                const botonAumentar = document.createElement('button');
+                botonAumentar.textContent = 'Aumentar';
+                botonAumentar.onclick = function () {
+                    aumentarProductoCarrito(eleccion);
+                };
+                celdaBotonAumentar.appendChild(botonAumentar);
+                fila.appendChild(celdaBotonAumentar);
+
             //Botón para eliminar producto del carrito
             const celdaBotonEliminar = document.createElement('td');
-                    const botonEliminar = document.createElement('button');
-                    botonEliminar.textContent = 'Eliminar producto del carrito';
-                    botonEliminar.onclick = function () {
-                        eliminarProductoCarrito(eleccion);
-                    };
-                    celdaBotonEliminar.appendChild(botonEliminar);
-                    fila.appendChild(celdaBotonEliminar);
+                const botonEliminar = document.createElement('button');
+                botonEliminar.textContent = 'Eliminar producto del carrito';
+                botonEliminar.onclick = function () {
+                    eliminarProductoCarrito(eleccion);
+                };
+                celdaBotonEliminar.appendChild(botonEliminar);
+                fila.appendChild(celdaBotonEliminar);
 
-                    // Añadir la fila a la tabla
-                    tbody.appendChild(fila);
+            // Añadir la fila a la tabla
+            tbody.appendChild(fila);
         });
     } catch (error) {
         console.error('Error;', error);
     }
+}
+
+function aumentarProductoCarrito(eleccion){
+
+    productos[eleccion].cantidad++;
+    
+    localStorage.setItem("prod", JSON.stringify({anonymous: productos}));
+    verProductos();
+
 }
 
 function eliminarProductoCarrito(eleccion){
