@@ -22,7 +22,7 @@ let cesta = {
 async function verProductos(){
     try{
         
-        let total = 0;
+        let totalProductos = 0;
         const tbody = document.getElementById('generarTabla');
         tbody.innerHTML = '';
 
@@ -62,7 +62,7 @@ async function verProductos(){
             celdaPrecioTotal.textContent = precioTotal;
             fila.appendChild(celdaPrecioTotal);
 
-            total+= parseFloat(precioTotal);
+            totalProductos+= parseFloat(precioTotal);
 
             // Botón para aumentar la cantidad del producto
             const celdaBotonAumentar = document.createElement('td');
@@ -88,17 +88,18 @@ async function verProductos(){
             tbody.appendChild(fila);
            
         });
-
+       
+        let costeEnvio = 0;
         const filaEnvio = document.createElement('tr');
         const celdaEnvio = document.createElement('td');
         celdaEnvio.colSpan = 6;
-        let costeEnvio = 0;
+        
 
-        if(total < 2500){
+        if(totalProductos < 2500){
 
             costeEnvio = 3; 
             celdaEnvio.textContent = costeEnvio.toFixed(2);
-            total += costeEnvio;
+            
         
         } else {
             celdaEnvio.textContent = 'Envío gratis';
@@ -107,9 +108,9 @@ async function verProductos(){
         filaEnvio.appendChild(celdaEnvio);
         tbody.appendChild(filaEnvio);
 
-        document.getElementById('precioProductos').textContent = `Total de productos: ${total.toFixed(2)} €`;
+        document.getElementById('precioProductos').textContent = `Total de productos: ${totalProductos.toFixed(2)} €`;
         document.getElementById('costeEnvio').textContent = `Envío: ${costeEnvio.toFixed(2)} €`;
-        document.getElementById('totalFinal').textContent = `Total: ${(total + costeEnvio).toFixed(2)} €`;
+        document.getElementById('totalFinal').textContent = `Total: ${(totalProductos + costeEnvio).toFixed(2)} €`;
         
     } catch (error) {
         console.error('Error al ver productos', error);
