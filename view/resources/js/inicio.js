@@ -104,37 +104,41 @@ async function obtenerProductos() {
 
         let count1 = 0, count2 = 0, count3 = 0, count4 = 0, count5 = 0, count6 = 0;
         for (let i = 0; i < productos.length; i++) {
-          switch (productos[i].idSeccion) {
-            case "1":
-              count1 < 6 && generador(productos[i], "consolas");
-              count1++;
-              break;
-            case "2":
-              count2 < 6 && generador(productos[i], "computadoras");
-              count2++;
-              break;
-            case "3":
-              count3 < 6 && generador(productos[i], "camaras");
-              count3++;
-              break;
-            case "4":
-              count4 < 6 && generador(productos[i], "radios");
-              count4++;
-              break;
-            case "5":
-              count5 < 6 && generador(productos[i], "telefonos");
-              count5++;
-              break;
-            case "6":
-              count6 < 6 && generador(productos[i], "electrodomesticos");
-              count6++;
-              break;
+          if(productos[i].deleted == 0){
+            switch (productos[i].idSeccion) {
+              case "1":
+                count1 < 6 && generador(productos[i], "consolas");
+                count1++;
+                break;
+              case "2":
+                count2 < 6 && generador(productos[i], "computadoras");
+                count2++;
+                break;
+              case "3":
+                count3 < 6 && generador(productos[i], "camaras");
+                count3++;
+                break;
+              case "4":
+                count4 < 6 && generador(productos[i], "radios");
+                count4++;
+                break;
+              case "5":
+                count5 < 6 && generador(productos[i], "telefonos");
+                count5++;
+                break;
+              case "6":
+                count6 < 6 && generador(productos[i], "electrodomesticos");
+                count6++;
+                break;
+            }
           }
         }
 
         productos.sort(function(a, b){return b.descuento - a.descuento});
         for (let i = 0; i < 12; i++) {
+          if(productos[i].deleted == 0){
             generador(productos[i], "descuentos")
+          }
         }
     } catch (error) {
         console.error('Error:', error);

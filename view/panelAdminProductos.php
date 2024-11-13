@@ -12,19 +12,22 @@ $response = ob_get_clean(); // Capturar la salida
 $productos = json_decode($response, true);
 ?>
 
-
-<div class="buscador input-group my-1 d-flex flex-nowrap">
-    <select id="selector" class="border rounded-start-1 p-1">
-        <option value="nombre" selected>Nombre</option>
-        <option value="id">ID</option>
-        <option value="descripcion">Descripción</option>
-        <option value="precio">Precio</option>
-        <option value="stock">Stock</option>
-        <option value="descuento">Descuento</option>
-        <option value="idSeccion">ID Sección</option>
-        <option value="deleted">Borrado</option>
-    </select>
-  <input id="buscador" type="text" class="border rounded-end-1 p-1 flex-grow-1" placeholder="Buscar...">
+<div class="w-100 d-flex justify-content-between">
+  <div class="buscador input-group my-1 d-flex flex-nowrap">
+      <select id="selector" class="border rounded-start-1 p-1">
+          <option value="nombre" selected>Nombre</option>
+          <option value="id">ID</option>
+          <option value="descripcion">Descripción</option>
+          <option value="precio">Precio</option>
+          <option value="stock">Stock</option>
+          <option value="descuento">Descuento</option>
+          <option value="idSeccion">ID Sección</option>
+          <option value="deleted">Borrado</option>
+      </select>
+    <input id="buscador" type="text" class="border rounded-end-1 p-1 flex-grow-1" placeholder="Buscar...">
+  </div>
+  
+  <button class="btn btn-success bi bi-database-fill-add"> Añadir producto</button>
 </div>
 
 <table class="table">

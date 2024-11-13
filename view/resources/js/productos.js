@@ -127,30 +127,34 @@
       cardList.innerHTML = "";
       if (filtro != null) {
         for (let i = 0; i < productos.length; i++) {
-          let coincide = true;
-          if(filtro.secciones.length != 0 && !filtro.secciones.includes(productos[i].idSeccion)){
-            coincide = false;
+          if (productos[i].deleted == 0){
+            let coincide = true;
+            if(filtro.secciones.length != 0 && !filtro.secciones.includes(productos[i].idSeccion)){
+              coincide = false;
+            }
+  
+            let precio = productos[i].precio;
+            if(productos[i].descuento > 0){
+              precio = (precio * (1 - productos[i].descuento / 100)).toFixed(2);
+            }
+  
+            if (filtro.minPrecio && precio < filtro.minPrecio) {
+              coincide = false;
+            }
+            if (filtro.maxPrecio && precio > filtro.maxPrecio) {
+              coincide = false;
+            }
+            if (filtro.rebajado && productos[i].descuento == 0) {
+              coincide = false;
+            }
+            coincide && generadorProducto(productos[i]);
           }
-
-          let precio = productos[i].precio;
-          if(productos[i].descuento > 0){
-            precio = (precio * (1 - productos[i].descuento / 100)).toFixed(2);
-          }
-
-          if (filtro.minPrecio && precio < filtro.minPrecio) {
-            coincide = false;
-          }
-          if (filtro.maxPrecio && precio > filtro.maxPrecio) {
-            coincide = false;
-          }
-          if (filtro.rebajado && productos[i].descuento == 0) {
-            coincide = false;
-          }
-          coincide && generadorProducto(productos[i]);
         }
       } else {
         for (let i = 0; i < productos.length; i++) {
+          if (productos[i].deleted == 0){
             generadorProducto(productos[i]);
+          }
         }
       }
 
