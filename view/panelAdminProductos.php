@@ -38,7 +38,7 @@ $categorias = json_decode($response, true);
   <button id="agregarScroll"  class="btn btn-success bi bi-database-fill-add fs-3" data-bs-toggle="modal" data-bs-target="#modalAgregarProducto"></button>
 </div>
 
-<table class="table">
+<table class="table mb-5 pb-5">
   <thead class="position-sticky top-0">
     <tr>
       <th scope="col">ID</th>
@@ -118,6 +118,11 @@ $categorias = json_decode($response, true);
             <label for="exampleFormControlInput1" class="form-label">Descuento:</label>
             <input type="number" min="0" max="100" class="form-control" id="nuevoDescuento">
           </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="imagen" class="form-label">Imagen:</label>
+            <input type="file" class="form-control" accept="image/*" id="imagen">
           </div>
   
           <div class="d-flex">

@@ -276,19 +276,23 @@ function cargarContenido(tab) {
         const stock = document.getElementById("nuevoStock");
         const descuento = document.getElementById("nuevoDescuento");
         const borrado = document.getElementById("nuevoBorrado").checked ? 1 : 0;
+        const imagen = document.getElementById("imagen");
         
         let comp = true;
 
         if (nombre.value === "") {
-            nombre.style.borderColor = "red"; comp = false;
+            nombre.style.borderColor = "red";
+            comp = false;
         } else nombre.style.borderColor = "green";
 
         if (descripcion.value === "") {
-            descripcion.style.borderColor = "red"; comp = false;
+            descripcion.style.borderColor = "red";
+            comp = false;
         } else descripcion.style.borderColor = "green";
 
         if (seccion.value === "") {
-            seccion.style.borderColor = "red"; comp = false;
+            seccion.style.borderColor = "red";
+            comp = false;
         } else seccion.style.borderColor = "green";
 
         // validacion de los campos numericos
@@ -306,24 +310,29 @@ function cargarContenido(tab) {
         if (!validarNumero(precio)) comp = false;
         if (!validarNumero(stock)) comp = false;
         if (!validarNumero(descuento, 100)) comp = false;
+        if (imagen.files.length === 0) {
+            imagen.style.borderColor = "red";
+            comp = false;
+        } else imagen.style.borderColor = "green";
 
         if(!comp) return;
+
+        // Crear y enviar el FormData si todo es válido
+        // Se mandara en formData en ved de JSON por que JSON no acepta archivos
+        const formData = new FormData();
+        formData.append("nombre", nombre.value);
+        formData.append("descripcion", descripcion.value);
+        formData.append("idSeccion", seccion.value);
+        formData.append("precio", precio.value);
+        formData.append("stock", stock.value);
+        formData.append("descuento", descuento.value);
+        formData.append("deleted", borrado);
+        formData.append("imagen", imagen.files[0]);
         
         try{
             const response = await fetch("/Retrobits/controller/registrarProducto.php", {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                // Usamos encodeURIComponent para asegurar que los datos se codifiquen correctamente
-                // y evitar problemas con caracteres especiales como '&', '=', o espacios en blanco
-                body: 'nombre=' + encodeURIComponent(nombre.value) + 
-                        '&descripcion=' + encodeURIComponent(descripcion.value) +
-                        '&idSeccion=' + encodeURIComponent(seccion.value) + 
-                        '&precio=' + encodeURIComponent(precio.value) + 
-                        '&stock=' + encodeURIComponent(stock.value) + 
-                        '&descuento=' + encodeURIComponent(descuento.value) + 
-                        '&deleted=' + encodeURIComponent(borrado.borrado)
+                body: formData
             }); 
     
             const datos = await response.json();
@@ -333,7 +342,7 @@ function cargarContenido(tab) {
                 cargarContenidoNuevo("Productos");
                 Swal.fire({
                     position: "top",
-                    title: `${data.nombre.value} ha sido añadido.`,
+                    title: `${nombre.value} ha sido añadido.`,
                     icon: "success",
                     showConfirmButton: false,
                     timer: 2000
