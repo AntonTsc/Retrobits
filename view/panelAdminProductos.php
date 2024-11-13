@@ -38,7 +38,7 @@ $productos = json_decode($response, true);
       <th scope="col">Descuento</th>
       <th scope="col">ID&nbsp;Sección</th>
       <th scope="col">Borrado</th>
-      <th scope="col">&nbsp;</th>
+      <th scope="col"></th>
     </tr>
   </thead>
   <tbody id="cuerpoTabla">

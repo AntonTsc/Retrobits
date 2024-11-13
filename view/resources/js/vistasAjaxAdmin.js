@@ -89,6 +89,26 @@ async function eliminarProductoConfirm(id, producto){
         confirmButtonText: "Eliminar producto"
       }).then((result) => {
         if (result.isConfirmed) {
+            eliminarProducto(id);
+        }
+      });
+}
+
+
+async function eliminarProducto(id){
+    console.log(id);
+    try{
+        const response = await fetch("/Retrobits/controller/eliminarProducto.php", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'id=' + id
+        }); 
+
+        const datos = await response.json();
+
+        if (datos.status === 'OK') {
             //eliminarProducto(id);
             document.getElementById(id).classList.add('remove');
 
@@ -111,22 +131,9 @@ async function eliminarProductoConfirm(id, producto){
               Toast.fire({
                 title: `Producto eliminado de forma definitiva de la base de datos`
               });
+        } else {
+            console.log("ERROR");
         }
-      });
-}
-
-
-async function eliminarProducto(id){
-    try{
-        const response = await fetch("/Retrobits/controller/eliminarProducto.php", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: 'id=' + id
-        }); 
-
-        const datos = await response.json();
 
     } catch (error) {
         console.error("Error: ", error);

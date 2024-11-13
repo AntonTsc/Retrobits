@@ -16,4 +16,13 @@ class MProductos extends Conexion{
         return $productos;
     }
 
+    public function eliminarProducto($id){
+        $query = $this->getCon()->prepare("DELETE FROM `productos` WHERE id = ?;");
+        $query->bind_param("i", $id);
+        $comp = $query->execute() ? true : false;
+        $query->close();
+
+        return $comp;
+    }
+
 }
