@@ -51,7 +51,7 @@ async function verProductos(){
             celdaPrecio.textContent = producto.precio;
             fila.appendChild(celdaPrecio);
 
-            //Precio total de dicho producto
+            //Precio total si hay descuento
             let precioTotal = producto.cantidad * parseFloat(producto.precio);
             if (parseFloat(producto.descuento) > 0){
                 precioTotal = precioTotal - (precioTotal*parseFloat(producto.descuento))/100;
@@ -63,8 +63,6 @@ async function verProductos(){
             fila.appendChild(celdaPrecioTotal);
 
             total+= parseFloat(precioTotal);
-
-            
 
             // Botón para aumentar la cantidad del producto
             const celdaBotonAumentar = document.createElement('td');
@@ -109,16 +107,12 @@ async function verProductos(){
         filaEnvio.appendChild(celdaEnvio);
         tbody.appendChild(filaEnvio);
 
-         // Mostrar el total general en la tabla
-         const filaTotal = document.createElement('tr');
-         const celdaTotal = document.createElement('td');
-         celdaTotal.colSpan = 6;
-         celdaTotal.textContent = total.toFixed(2);
-         filaTotal.appendChild(celdaTotal);
-         tbody.appendChild(filaTotal);
+        document.getElementById('precioProductos').textContent = `Total de productos: ${total.toFixed(2)} €`;
+        document.getElementById('costeEnvio').textContent = `Envío: ${costeEnvio.toFixed(2)} €`;
+        document.getElementById('totalFinal').textContent = `Total: ${(total + costeEnvio).toFixed(2)} €`;
         
     } catch (error) {
-        console.error('Error;', error);
+        console.error('Error al ver productos', error);
     }
 }
 
@@ -145,28 +139,16 @@ function eliminarProductoCarrito(eleccion){
 
 async function comprarProductos(){
     try{
-        const tbody = document.getElementById('botonComprar');
-
-        tbody.innerHTML = '';
-
-        
-            const fila = document.createElement('tr');
-            //Botón para comprar los productos del carrito
-            const celdaBotonComprar = document.createElement('td');
-            const botonComprar = document.createElement('button');
-            botonComprar.textContent = 'Comprar productos del carrito';
-            botonComprar.onclick = function () {
-                
-            };
-            celdaBotonComprar.appendChild(botonComprar);
-            fila.appendChild(celdaBotonComprar);
-
-            // Añadir la fila a la tabla
-            tbody.appendChild(fila);
+        const botonComprar = document.createElement('button');
+        botonComprar.textContent = 'Comprar';
+        botonComprar.onclick = function () {
+            // QUErYS A LA BBDD
+        };
+        document.getElementById('botonComprar').appendChild(botonComprar);
         
 
     } catch (error) {
-        console.error('Error;', error);
+        console.error('Error al realizar la compra', error);
     }
 }
 

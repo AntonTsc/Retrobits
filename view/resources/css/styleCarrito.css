@@ -1,9 +1,10 @@
 
 container{
     display:flex;
-    align-items: center;
+    gap: 20px;
 }
-table{
-    text-align: center;
-    border: 2px solid black; 
+.tablaCarrito {
+    width: 70%;
+    border-collapse: collapse;
 }
+
