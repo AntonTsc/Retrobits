@@ -7,7 +7,7 @@ if ($_SESSION['admin'] != "1") {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,16 +30,18 @@ if ($_SESSION['admin'] != "1") {
                 <a class="btn btn-primary me-2" href="../"><i class="bi bi-house-door-fill"> Inicio</i></a>
             </li>
             <li class="nav-item">
-                <button id="Productos" class="nav-link text-light" onclick="cargarContenido('Productos')">PRODUCTOS</button>
+                <button id="Productos" class="nav-link text-light" onclick="cargarContenidoNuevo('Productos')">PRODUCTOS</button>
             </li>
             <li class="nav-item">
-                <button id="Usuarios" class="nav-link text-light" onclick="cargarContenido('Usuarios')">USUARIOS</button>
+                <button id="Usuarios" class="nav-link text-light" onclick="cargarContenidoNuevo('Usuarios')">USUARIOS</button>
             </li>
             <li class="nav-item">
-                <button id="Pedidos" class="nav-link text-light" onclick="cargarContenido('Pedidos')">PEDIDOS</button>
+                <button id="Pedidos" class="nav-link text-light" onclick="cargarContenidoNuevo('Pedidos')">PEDIDOS</button>
             </li>
         </ul>
     </header>
+
+    <div class="desactualizado"></div>
 
     <!-- Contenedor donde se cargará el contenido dinámico -->
     <div id="contenido" class="p-3"></div>

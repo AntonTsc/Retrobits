@@ -19,6 +19,25 @@ html{
     font-weight: bold !important;
 }
 
+.desactualizado{
+    position: fixed;
+    bottom: 0;
+    color: white;
+    background: #dc3545;
+    width: 100%;
+    text-align: center;
+    z-index: 500;
+}
+
+.cargarDesactualizado{
+    background: transparent;
+    border: 0;
+    text-decoration: underline;
+    color: rgb(255, 255, 255);
+}
+.cargarDesactualizado:hover{
+    color: rgb(235, 235, 235);
+}
 .buscador{
     max-width: 500px;
 }
@@ -32,6 +51,13 @@ html{
 .buscador select:hover{
  cursor: pointer;
  background: #f7f7f7;
+}
+
+#agregarScroll{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 500;
 }
 
 tbody tr{
