@@ -269,15 +269,13 @@ function cargarContenido(tab) {
     }
 
     async function nuevoProducto() {
-        const data = {
-            nombre: document.getElementById("nuevoNombre"),
-            descripcion: document.getElementById("nuevoDescripcion"),
-            seccion: document.getElementById("nuevoSeccion"),
-            precio: document.getElementById("nuevoPrecio"),
-            stock: document.getElementById("nuevoStock"),
-            descuento: document.getElementById("nuevoDescuento"),
-            borrado: document.getElementById("nuevoBorrado").checked ? 1 : 0
-        }
+        const nombre = document.getElementById("nuevoNombre");
+        const descripcion = document.getElementById("nuevoDescripcion");
+        const seccion = document.getElementById("nuevoSeccion");
+        const precio = document.getElementById("nuevoPrecio");
+        const stock = document.getElementById("nuevoStock");
+        const descuento = document.getElementById("nuevoDescuento");
+        const borrado = document.getElementById("nuevoBorrado").checked ? 1 : 0;
         
         let comp = true;
 
@@ -319,13 +317,13 @@ function cargarContenido(tab) {
                 },
                 // Usamos encodeURIComponent para asegurar que los datos se codifiquen correctamente
                 // y evitar problemas con caracteres especiales como '&', '=', o espacios en blanco
-                body: 'nombre=' + encodeURIComponent(data.nombre.value) + 
-                        '&descripcion=' + encodeURIComponent(data.descripcion.value) +
-                        '&idSeccion=' + encodeURIComponent(data.seccion.value) + 
-                        '&precio=' + encodeURIComponent(data.precio.value) + 
-                        '&stock=' + encodeURIComponent(data.stock.value) + 
-                        '&descuento=' + encodeURIComponent(data.descuento.value) + 
-                        '&deleted=' + encodeURIComponent(data.borrado)
+                body: 'nombre=' + encodeURIComponent(nombre.value) + 
+                        '&descripcion=' + encodeURIComponent(descripcion.value) +
+                        '&idSeccion=' + encodeURIComponent(seccion.value) + 
+                        '&precio=' + encodeURIComponent(precio.value) + 
+                        '&stock=' + encodeURIComponent(stock.value) + 
+                        '&descuento=' + encodeURIComponent(descuento.value) + 
+                        '&deleted=' + encodeURIComponent(borrado.borrado)
             }); 
     
             const datos = await response.json();
