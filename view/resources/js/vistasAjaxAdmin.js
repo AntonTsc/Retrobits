@@ -280,30 +280,34 @@ function cargarContenido(tab) {
         }
         
         let comp = true;
-        if (data.nombre.value == ""){
-            data.nombre.style.borderColor = "red";
-            comp = false;
-        }else data.nombre.style.borderColor = "green";
-        if (data.descripcion.value == ""){
-            data.descripcion.style.borderColor = "red";
-            comp = false;
-        }else data.descripcion.style.borderColor = "green";
-        if (data.seccion.value == ""){
-            data.seccion.style.borderColor = "red";
-            comp = false;
-        }else data.seccion.style.borderColor = "green";
-        if (data.precio.value == ""){
-            data.precio.style.borderColor = "red";
-            comp = false;
-        }else data.precio.style.borderColor = "green";
-        if (data.stock.value == ""){
-            data.stock.style.borderColor = "red";
-            comp = false;
-        }else data.stock.style.borderColor = "green";
-        if (data.descuento.value == ""){
-            data.descuento.style.borderColor = "red";
-            comp = false;
-        }else data.descuento.style.borderColor = "green";
+
+        if (nombre.value === "") {
+            nombre.style.borderColor = "red"; comp = false;
+        } else nombre.style.borderColor = "green";
+
+        if (descripcion.value === "") {
+            descripcion.style.borderColor = "red"; comp = false;
+        } else descripcion.style.borderColor = "green";
+
+        if (seccion.value === "") {
+            seccion.style.borderColor = "red"; comp = false;
+        } else seccion.style.borderColor = "green";
+
+        // validacion de los campos numericos
+        const validarNumero = (input, maxValue = null) => {
+            const valor = parseFloat(input.value);
+            if (isNaN(valor) || valor < 0 || (maxValue !== null && valor > maxValue) || /[^\d]/.test(input.value)) {
+                input.style.borderColor = "red";
+                return false;
+            } else {
+                input.style.borderColor = "green";
+                return true;
+            }
+        };
+
+        if (!validarNumero(precio)) comp = false;
+        if (!validarNumero(stock)) comp = false;
+        if (!validarNumero(descuento, 100)) comp = false;
 
         if(!comp) return;
         
