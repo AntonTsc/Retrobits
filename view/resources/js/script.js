@@ -139,13 +139,25 @@ function eliminarProductoCarrito(eleccion){
 
 async function comprarProductos(){
     try{
-        const botonComprar = document.createElement('button');
-        botonComprar.textContent = 'Comprar';
-        botonComprar.onclick = function () {
-            // QUErYS A LA BBDD
-        };
-        document.getElementById('botonComprar').appendChild(botonComprar);
         
+        const botonComprar = document.getElementById('botonComprar');
+        
+        botonComprar.onclick = function () {
+            const direccion = document.getElementById('direccionEnvio').value;
+            const fechaActual = new Date();
+            const fechaEntrega = new Date(fechaActual);
+                fechaEntrega.setDate(fechaActual.getDate() + 3);
+            const usuario = JSON.parse(localStorage.getItem("usuario"));
+            const idUsuario = usuario.id;
+            
+            const pedido = {
+                direccion: direccion,
+                fecha: fechaActual.toISOString().split('T')[0], 
+                fechaEntrega: fechaEntrega.toISOString().split('T')[0], 
+                idUsuario: idUsuario,
+            };
+
+        };        
 
     } catch (error) {
         console.error('Error al realizar la compra', error);
@@ -156,30 +168,3 @@ window.onload = function(){
     verProductos();
     comprarProductos();
 };
-
-//FUNCIÓN QUE ELIMINA EL PRODUCTO DE LA BASE DE DATOS --------------> DESACTUALIZADO
-//Eliminar el producto del carrito
-
-// async function eliminarProductoCarrito(idProducto) {
-
-//     productos.removeItem(idProducto);
-
-
-    // try {
-    //     const response = await fetch(`/Retrobits/controller/eliminarProductoCarrito.php`,{
-    //         method: 'DELETE',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ idProducto: idProducto })
-    // });
-    //     const eliminarProductos = await response.json();
-    //     console.log(eliminarProductos);
-    //     console.log(`${idProducto} eliminado exitosamente`);
-            
-    //     verProductos();
-        
-    // } catch (error) {
-    //     console.error('Error al eliminar', error);
-    // }
-// }
