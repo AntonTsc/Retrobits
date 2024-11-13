@@ -23,13 +23,7 @@ async function verProductos(){
     try{
         
         let total = 0;
-
-        // const response = await fetch('/Retrobits/controller/productos.php');
-        // const productos = await response.json();
-        // console.log(productos);
-
         const tbody = document.getElementById('generarTabla');
-
         tbody.innerHTML = '';
 
         Object.keys(productos).forEach(eleccion => {
@@ -58,54 +52,70 @@ async function verProductos(){
             fila.appendChild(celdaPrecio);
 
             //Precio total de dicho producto
-            const precioTotal = (producto.cantidad * producto.precio).toFixed(2);
+            let precioTotal = producto.cantidad * parseFloat(producto.precio);
+            if (parseFloat(producto.descuento) > 0){
+                precioTotal = precioTotal - (precioTotal*parseFloat(producto.descuento))/100;
+            }
+            precioTotal = precioTotal.toFixed(2);
+
             const celdaPrecioTotal = document.createElement('td');
             celdaPrecioTotal.textContent = precioTotal;
             fila.appendChild(celdaPrecioTotal);
 
             total+= parseFloat(precioTotal);
 
-            if(total < 2500){
-    
-                const celdaEnvio = document.createElement('td');
-                const costeEnvio = 3; 
-                celdaEnvio.textContent = costeEnvio.toFixed(2);
-                fila.appendChild(celdaEnvio);
             
-            } else {
-                const celdaEnvio = document.createElement('td');
-                celdaEnvio.textContent = 'Envío gratis';
-                fila.appendChild(celdaEnvio);
-            }
 
             // Botón para aumentar la cantidad del producto
             const celdaBotonAumentar = document.createElement('td');
-                const botonAumentar = document.createElement('button');
-                botonAumentar.textContent = 'Aumentar';
-                botonAumentar.onclick = function () {
-                    aumentarProductoCarrito(eleccion);
-                };
-                celdaBotonAumentar.appendChild(botonAumentar);
-                fila.appendChild(celdaBotonAumentar);
+            const botonAumentar = document.createElement('button');
+            botonAumentar.textContent = 'Aumentar';
+            botonAumentar.onclick = function () {
+                aumentarProductoCarrito(eleccion);
+            };
+            celdaBotonAumentar.appendChild(botonAumentar);
+            fila.appendChild(celdaBotonAumentar);
 
             //Botón para eliminar producto del carrito
             const celdaBotonEliminar = document.createElement('td');
-                const botonEliminar = document.createElement('button');
-                botonEliminar.textContent = 'Eliminar producto del carrito';
-                botonEliminar.onclick = function () {
-                    eliminarProductoCarrito(eleccion);
-                };
-                celdaBotonEliminar.appendChild(botonEliminar);
-                fila.appendChild(celdaBotonEliminar);
+            const botonEliminar = document.createElement('button');
+            botonEliminar.textContent = 'Eliminar producto del carrito';
+            botonEliminar.onclick = function () {
+                eliminarProductoCarrito(eleccion);
+            };
+            celdaBotonEliminar.appendChild(botonEliminar);
+            fila.appendChild(celdaBotonEliminar);
 
-            
-        
-            
-            // Añadir la fila a la tabla
+             // Añadir la fila a la tabla
             tbody.appendChild(fila);
-        
-
+           
         });
+
+        const filaEnvio = document.createElement('tr');
+        const celdaEnvio = document.createElement('td');
+        celdaEnvio.colSpan = 6;
+        let costeEnvio = 0;
+
+        if(total < 2500){
+
+            costeEnvio = 3; 
+            celdaEnvio.textContent = costeEnvio.toFixed(2);
+            total += costeEnvio;
+        
+        } else {
+            celdaEnvio.textContent = 'Envío gratis';
+        }
+
+        filaEnvio.appendChild(celdaEnvio);
+        tbody.appendChild(filaEnvio);
+
+         // Mostrar el total general en la tabla
+         const filaTotal = document.createElement('tr');
+         const celdaTotal = document.createElement('td');
+         celdaTotal.colSpan = 6;
+         celdaTotal.textContent = total.toFixed(2);
+         filaTotal.appendChild(celdaTotal);
+         tbody.appendChild(filaTotal);
         
     } catch (error) {
         console.error('Error;', error);
