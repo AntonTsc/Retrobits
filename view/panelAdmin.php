@@ -51,8 +51,8 @@ if ($_SESSION['admin'] != "1") {
 
     <div id="menuDesplegable" class="menu-desplegable rounded-2">
     <ul>
-        <li id="md1" class="btn btn-white bi bi-pencil-fill rounded-bottom-0 w-100 text-start p-1" onclick="accion1()"> Editar</li>
-        <li id="md2" class="btn btn-danger bi bi-trash-fill rounded-top-0 w-100 text-start p-1" onclick="accion2()"> Eliminar</li>
+        <li id="md1" class="btn btn-white bi bi-pencil-fill rounded-bottom-0 w-100 text-start p-1" onclick="clickDerechoAccion1()"> Editar</li>
+        <li id="md2" class="btn btn-danger bi bi-trash-fill rounded-top-0 w-100 text-start p-1" onclick="clickDerechoAccion2()"> Eliminar</li>
     </ul>
 </div>
 </div>

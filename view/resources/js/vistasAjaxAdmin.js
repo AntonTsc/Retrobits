@@ -1,552 +1,519 @@
-let ultimoContenido = ""; // Variable para almacenar el contenido previo
-let nuevoContenido = "";
+//* GLOBALES =========================================================
+let ultimoContenido = "";//Guarda el contenido que hemos mostrado en pantalla
+let nuevoContenido = "";//Guarda el contenido de la ultima solicitud
 let tabulacion = "";
 let intervaloProductos = null;
 let intervaloUsuarios = null;
 let intervaloPedidos = null;
+let elementoClickDerecho;
 let cropper;
 
-function cargarContenidoNuevo(tab){
-    ultimoContenido = ""
+
+//* FUNCIONES =========================================================
+//Se encarga de cargar el contenido por completo reiniciando los comparadores
+function cargarContenidoNuevo(tab, desactualizado = false) {
+    //Vacia el contenido que deveriamos ver para poder cargar nuevo contenido
+    ultimoContenido = "";
+
     cargarContenido(tab);
+    if (desactualizado) {
+        Swal.fire({
+            position: "top",
+            title: "Cambios cargados",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500
+        });
+    }
+}
+//Se encarga de obtener por ajax el contenido que mostraremos en la pagina
+function cargarContenido(tab) {
+    tabulacion = tab;
+    const xhr = new XMLHttpRequest(); // Crear una solicitud AJAX
+    
+    //POST = método
+    //panelAdmin${tab}.php = lo que solicito
+    //true = usar un proceso asincrono para la solicitud
+    xhr.open("POST", `panelAdmin${tab}.php`, true);//configura una solicitud
+    // Cuando la solicitud se complete, la función onload se ejecutará
+    xhr.onload = function () {
+        if (xhr.status === 200) {//si la conexion ha sido correcta/OK
+            nuevoContenido = xhr.responseText;
+            analizarContenido(tab);
+        } else if (xhr.status === 404) {//si la conexion ha sido erronea o no encontrada
+            mostrarError404();
+        }
+    };
+
+    xhr.onerror = function () {
+        alert("Error en la solicitud. No se pudo conectar con el servidor.");
+    };
+    xhr.send(); //Manda la solicitud
 }
 
-function cargarContenidoNuevoDes(tab){
-    cargarContenidoNuevo(tab);
+//Analiza el contenido obtenido desde Request
+function analizarContenido(tab) {
+    if (ultimoContenido === "") {
+        document.getElementById("contenido").innerHTML = nuevoContenido;
+        ultimoContenido = nuevoContenido;
+        document.querySelector(".desactualizado").innerHTML = "";
+        actualizarClasesTab(tab);
+        configurarBotonAgregar();
+        gestionarIntervalos(tab);
+        setClickDerecho();
+    } else if (nuevoContenido !== ultimoContenido) {
+        vaciarIntervalos();
+        notificarCambio(tab);
+    }
+}
+
+//Le da el diseño a la pestaña activa
+function actualizarClasesTab(tab) {
+    document.querySelectorAll(".nav-link").forEach(pestana => {
+        pestana.classList.remove("active", "text-dark");
+    });
+    document.getElementById(tab).classList.add("active", "text-dark");
+}
+
+//Los intervalos solo estaran activos en la pestaña actual y se ocupan de comprobar si hay cambios en la base de datos comparado con los datos mostrados.
+//Se desactivan si recibimos cambios y no actualizamos los datos.
+function gestionarIntervalos(tab) {
+    switch (tab) {
+        case "Productos":
+            funcionesProductos();
+            if (!intervaloProductos) intervaloProductos = setInterval(() => cargarContenido("Productos"), 5000)
+            break;
+        case "Usuarios":
+            if (!intervaloUsuarios) intervaloUsuarios = setInterval(() => cargarContenido("Usuarios"), 5000);
+            break;
+        case "Pedidos":
+            if (!intervaloPedidos) intervaloPedidos = setInterval(() => cargarContenido("Pedidos"), 5000);
+            break;
+        default:
+            console.warn("Pestaña desconocida:", tab);
+    }
+    vaciarIntervalos(tab);
+}
+
+//Desactiva todos los intervalos menos el de la pestaña recibida, puede no recibir una pestaña, con lo cual, desactivara todos los intervalos.
+function vaciarIntervalos(gestor = "") {
+    if (gestor !== "Productos" && intervaloProductos) {
+        console.log("hola");
+        clearInterval(intervaloProductos);
+        intervaloProductos = null;
+    }
+    if (gestor !== "Usuarios" && intervaloUsuarios) {
+        clearInterval(intervaloUsuarios);
+        intervaloUsuarios = null;
+    }
+    if (gestor !== "Pedidos" && intervaloPedidos) {
+        clearInterval(intervaloPedidos);
+        intervaloPedidos = null;
+    }
+}
+
+//La pagina del Request no se ha encontrado, nos muestra un mensaje en su lugar
+function mostrarError404() {
+    document.getElementById("contenido").innerHTML = "<h1 class='text-center'>404</h1><p class='text-center'>Página no encontrada</p>";
+    document.querySelectorAll(".nav-link").forEach(pestana => {
+        pestana.classList.remove("active", "text-dark");
+    });
+    vaciarIntervalos();
+}
+
+//SweetAlert2 es una libreria para mostrar alertas dinamicas
+//Muestra un mensaje que nos permitira mantener la pagina actual o refescar los datos por Ajax
+function notificarCambio(tab) {
+
     Swal.fire({
         position: "top",
-        title: "Cambios cargados",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 1500
+        title: "Se han detectado cambios en la base de datos",
+        text: `Se han realizado cambios en '${tab}' de la base de datos, ¿desea ver los nuevos datos?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Cargar nuevos datos",
+        cancelButtonText: "Mantener datos actuales",
+        allowOutsideClick: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.querySelector("#cerrarModal").click();
+            cargarContenidoNuevo(tab, true);
+        } else {
+            mostrarMensajeDatosDesactualizados(tab);
+        }
+    });
+}
+
+//Muestra un mensaje con las consecuencias de no actualizar los datos, y un recordatorio del estado de la paglina
+function mostrarMensajeDatosDesactualizados(tab) {
+
+    const fecha = new Date();
+    const horas = String(fecha.getHours()).padStart(2, '0');
+    const minutos = String(fecha.getMinutes()).padStart(2, '0');
+    document.querySelector(".desactualizado").innerHTML = `Los datos de la página están desactualizados desde las ${horas}:${minutos} - <button class="cargarDesactualizado" onclick="cargarContenidoNuevo('${tab}', true)">actualizar</button>`;
+
+    Swal.fire({
+        position: "top",
+        html: "Los cambios que puedas hacer a partir de ahora podrían llegar a reescribir los cambios de los nuevos datos actuales de la base de datos o devolver errores.<br><br><i>(Cualquier acción (editar, eliminar y añadir) después de ejecutarse actualizara la información de la tabla)</i>",
+        icon: "info",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "Vale",
+        allowOutsideClick: false
+    });
+}
+
+//Esta funcion hace que si el boton de añadir desaparece de pantalla nos muestra una version pequeña en pantalla
+function configurarBotonAgregar() {
+    const botonPrincipal = document.getElementById("agregar");
+    const botonScroll = document.getElementById("agregarScroll");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            botonScroll.style.display = !entry.isIntersecting ? "inline-block" : "none";
+        });
+    }, { threshold: 0 });
+
+    observer.observe(botonPrincipal);
+}
+
+//Devuevle un String, separa las letras con caracter especial y luego elimina el caracter especial
+function eliminarTildes(texto) {
+    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+//* MANIPULACIONES DE DOM =============================================
+
+//Muestra un menú en la posición del clic derecho si es en la tabla. Este menú permite editar o guardar una fila dependiendo de su estado ademas de permitir eliminar la misma.
+//Está configurado para que el menú no se muestre fuera de la pantalla
+function setClickDerecho() {
+    const tabla = document.getElementById('cuerpoTabla');
+    const menu = document.getElementById('menuDesplegable');
+    const md1 = document.getElementById('md1');
+
+    // Mostrar menú en la posición del clic derecho
+    tabla.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+        elementoClickDerecho = event.target;
+
+        //Cambiar opciones según el estado de la fila
+        // Esto -> ?. se utiliza para que en caso de no encontrar un elemento tr cercano no falle y devuelva undefined, de esta forma el codigo continua sin interrumpirse
+        const enEdicion = elementoClickDerecho.closest('tr').classList.contains('editando');
+        md1.innerHTML = enEdicion ? " Guardar" : " Editar";
+        md1.classList.toggle('bi-pencil-fill', !enEdicion);
+        md1.classList.toggle('bi-floppy-fill', enEdicion);
+
+        //Muestra el menu
+        menu.style.display = 'block';
+
+        //Obtengo el ancho y alto del menu
+        const menuWidth = menu.offsetWidth;
+        const menuHeight = menu.offsetHeight;
+
+        //Obtengo el ancho y alto de la ventana
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+
+        //Obtengo las posiciones del raton cuando hizo el click
+        let posicionDesdeIzquierda = event.pageX;//Devuelve los pixeles desde el lateral izquierdo de la pantalla hasta el raton
+        let posicionDesdeArriba = event.pageY;//Devuelve los pixeles desde el lateral superior de la pantalla hasta el raton
+
+        
+        if (event.pageX + menuWidth > windowWidth) {//Si la posicionX del click + el ancho del menu son mas grandes que el ancho de la ventana
+
+            //Le doy a la posicionX el valor normal menos el ancho del menu
+            posicionDesdeIzquierda = event.pageX - menuWidth;
+        }
+
+        if (event.pageY + menuHeight > windowHeight) {//Si la posicionY del click + la altura del menu son mas grandes que la altura de la ventana
+
+            //Le doy a la posicionY el valor normal menos el alto del menu
+            posicionDesdeArriba = event.pageY - menuHeight;
+        }
+
+        //muestro el menu en las posiciones guardadas
+        menu.style.left = `${posicionDesdeIzquierda}px`;
+        menu.style.top = `${posicionDesdeArriba}px`;
+    });
+
+    // Ocultar menú al hacer clic fuera de él o al hacer scroll
+    document.addEventListener('click', () => menu.style.display = 'none');
+    window.addEventListener('scroll', () => menu.style.display = 'none');
+}
+
+// Ejecutar acción de edición o guardado según el estado del menú
+function clickDerechoAccion1() {
+    if (document.getElementById('md1').innerText.trim() === "Editar") {
+        editarFila(elementoClickDerecho);
+    } else {
+        guardarEdiciones(elementoClickDerecho);
+    }
+}
+
+// Ejecutar acción para eliminar producto
+function clickDerechoAccion2() {
+    const tr = elementoClickDerecho.closest('tr');
+    eliminarProductoConfirm(tr.id, tr.children[1].innerText);
+}
+
+//Funciones dedicadar para la pestaña de productos
+function funcionesProductos() {
+    const buscador = document.getElementById("buscador");
+    const selector = document.getElementById("selector");
+    const filas = document.querySelectorAll("table tbody tr");
+
+    //Escucha el input del buscador
+    buscador.addEventListener("input", () => {
+        const filtro = eliminarTildes(buscador.value.toLowerCase());
+        const indice = selector.value;
+
+        //Buscara el contenido dependiendo del indice seleccionado
+        filas.forEach(fila => {
+            const celda = fila.querySelector(`td:nth-child(${indice})`);
+            const textoCelda = celda ? eliminarTildes(celda.textContent.toLowerCase()) : "";
+            //Si el contenido del indice no incluye el contenido del buscador se oculta
+            fila.style.display = textoCelda.includes(filtro) ? "" : "none";
+        });
+    });
+
+    
+    configurarCropper();
+}
+
+//Cropper.js es una libreria para poder recortar una imagen
+//Nos permite cargar una imagen y configurar el funcionamiento de un area que recortara la imagen
+function configurarCropper() {
+    //evento 'change' para detectar cuando se selecciona un archivo
+    document.getElementById('imagen').addEventListener('change', function (e) {
+        //imagenPreview es donde se cargara la imagen
+        const imagenPreview = document.getElementById('imagenPreview');
+        if (e.target.files.length === 0) {//Si no hay archivos seleccionados
+            if (cropper) cropper.destroy();//Si esxiste un cropper lo destruyo
+            imagenPreview.classList.add("d-none");//Oculto la vista previa de la imagen
+            return;
+        }
+        //en caso de que un archivo este seleccionado:
+        imagenPreview.classList.remove("d-none");//Muestro la vista previa
+        const file = e.target.files[0];//Guardo la imagen
+        //FileReader para leer el contenido del archivo
+        const reader = new FileReader();
+
+        //Si el archivo se ha podido leer
+        reader.onload = function (event) {
+            //Establece la imagen leída como la vista previa para el cropper
+            imagenPreview.src = event.target.result;
+            if (cropper) cropper.destroy();
+            //Crea un nuevo croper con la imagen leida
+            cropper = new Cropper(imagenPreview, {
+                aspectRatio: 4 / 3, //Siempre se recortara la imagen con esta escala
+                viewMode: 1, //Le dice al area que se puede mover libre, pero no se puede salir de la imagen
+                dragMode: 'move' //Se puede arrastrar el area
+            });
+        };
+        //Esto es una opcion de FileReader que permite mostrar la imagen sin cargarla desde el servidor
+        //se usa para que la imagen seleccionada se pueda ver en el navegador
+        reader.readAsDataURL(file);
+    });
+}
+
+//Obtengo la imagen que ha recortado el cropper
+function obtenerImagenRecortada() {
+    //La funcion getCropperCanvas es una funcion asincrona de cropper
+    //Y quiero que esta funcion devuelva la imagen antes de que el receptor siga con el codigo
+    //Por eso utilizo una promesa para que el codigo no siga hasta obtener una respuesta
+    return new Promise((resolve, reject) => {
+        if (cropper) {
+            cropper.getCroppedCanvas().toBlob((blob) => {
+                blob ? resolve(blob) : reject('No se pudo generar el blob');
+            });
+        } else {
+            reject('No hay cropper');
+        }
+    });
+}
+
+//Guardo un nuevo producto en la base de datos
+async function nuevoProducto() {
+    //Obtengo los input
+    const nombre = document.getElementById("nuevoNombre");
+    const descripcion = document.getElementById("nuevoDescripcion");
+    const seccion = document.getElementById("nuevoSeccion");
+    const precio = document.getElementById("nuevoPrecio");
+    const stock = document.getElementById("nuevoStock");
+    const descuento = document.getElementById("nuevoDescuento");
+    const borrado = document.getElementById("nuevoBorrado").checked ? 1 : 0;
+
+
+    //Filtros de los input
+    let comp = true;
+    [nombre, descripcion, seccion].forEach(input => {
+        input.style.borderColor = input.value ? "green" : (comp = false, "red");
+    });
+
+    const validarNumero = (input, type, maxValue = null) => {
+        const valor = parseFloat(input.value);
+        if (isNaN(valor) || valor < 0 || (maxValue !== null && valor > maxValue) ||( /[^\d]/.test(input.value) && type === "integer")) {
+            input.style.borderColor = "red";
+            comp = false
+        } else {
+            input.style.borderColor = "green";
+        }
+    };
+    validarNumero(precio, "double");
+    validarNumero(stock,  "integer");
+    validarNumero(descuento, "integer", 100);
+
+    let imageFile;
+    //Llamo a la promesa y espero su respuesta para que el codigo no siga adelante sin la informacion necesaria
+    try { imageFile = await obtenerImagenRecortada(); } 
+    catch (error) { console.error("Error al obtener la imagen recortada:", error); }
+
+    //Si no hay imagen o los input no cumplen el filtro, cancelo la peticion
+    if (!imageFile || !comp) return;
+
+    //Creo un FormData para enviar los datos al controlador, pues tengo que mandar una imagen y en json esto no seria posible
+    const formData = new FormData();
+    formData.append("nombre", nombre.value);
+    formData.append("descripcion", descripcion.value);
+    formData.append("idSeccion", seccion.value);
+    formData.append("precio", parseFloat(precio.value));
+    formData.append("stock", parseFloat(stock.value));
+    formData.append("descuento", parseFloat(descuento.value));
+    formData.append("deleted", borrado);
+    formData.append("imagen", imageFile, 'imagen_recortada.jpg');
+
+    //Hago la llamada al controlador
+    try {
+        //Como le voy a mandar un formData, no es necesario especificar el tipo de encabezado
+        const response = await fetch("/Retrobits/controller/registrarProducto.php", {
+            method: 'POST',
+            body: formData
+        });
+        const datos = await response.json();
+        if (datos.status === 'OK') {
+            document.querySelector("#cerrarModal").click();
+            cargarContenidoNuevo('Productos')
+            Swal.fire({
+                position: "top",
+                title: `${nombre.value} ha sido añadido.`,
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        } else {
+            Swal.fire({ title: "Error", icon: "error", text: datos.message });
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+//Una confirmacion para eliminar el producto
+function eliminarProductoConfirm(id, producto){
+    Swal.fire({
+        position: "top",
+        title: "¿Estas seguro?",
+        html: `<h3>${producto}</h3>¡Este producto se <b class="text-danger">eliminara</b> de forma permanente!<br>Puedes cambiar el valor de <b>Borrado</b> para que no se vea en producción.`,
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonColor: "#0d6efd",
+        confirmButtonColor: "#dc3545",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Eliminar producto"
+      }).then((result) => {
+        if (result.isConfirmed) {
+            eliminarProducto(id);
+        }
       });
 }
 
-function cargarContenido(tab) {
-    tabulacion = tab;
-    // Crear una solicitud AJAX
-    var xhr = new XMLHttpRequest();
-
-    //configura una solicitud GET a la pagina panelAdmin---.php de forma asincrona
-    //GET = método
-    //panelAdmin${tab}.php = url a obtener
-    //true = usar un proceso asincrono para la solicitud
-    xhr.open("GET", `panelAdmin${tab}.php`, true);
-
-    // Cuando la solicitud se complete, la función onload se ejecutará
-    xhr.onload = function() {
-        //si la conexion ha sido correcta/OK
-        if (xhr.status === 200) {
-             nuevoContenido = xhr.responseText;
-
-             if (ultimoContenido == ""){
-                document.getElementById("contenido").innerHTML = nuevoContenido;
-                ultimoContenido = nuevoContenido; // Guardar el nuevo contenido
-                document.querySelector(".desactualizado").innerHTML = "";
-            } else if (nuevoContenido !== ultimoContenido) {
-                // Comparar el nuevo contenido con el último contenido almacenado
-                // Si hay cambios, actualizar el contenido y notificar
-                if(tab == "Productos"){
-                    notificarCambio(tab); // Llamada a la función de notificación
-                }
-            }
-            
-            // Actualizar las clases de pestañas
-            document.querySelectorAll(".nav-link").forEach(pestana => {
-                pestana.classList.remove("active");
-                pestana.classList.remove("text-dark");
+//Elimino un producto de la base de datos
+async function eliminarProducto(id){
+    //Mientras estoy eliminando el producto cancelo las comprobaciones a la base de datos
+    //Esto lo hago para que la comprobacion no actue mientra se elimina el producto del DOM
+    vaciarIntervalos();
+    try{
+        //Hago la llamada al controlador para eliminar el producto, con un header de tipo formulario
+        const response = await fetch("/Retrobits/controller/eliminarProducto.php", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'id=' + id
+        }); 
+        const datos = await response.json();
+        if (datos.status === 'OK') {
+            //Le añado una clase con transicion a la fila, y espero a que la transicion acabe para cargar de nuevo los productos
+            document.getElementById(id).classList.add('remove');
+            document.getElementById(id).addEventListener('transitionend', () => {
+                cargarContenidoNuevo("Productos");
             });
-            document.getElementById(tab).classList.add("active");
-            document.getElementById(tab).classList.add("text-dark");
-            
-            switch (tab) {
-                case "Productos":
-                    funcionesProductos();
-                    if (!intervaloProductos) {
-                        intervaloProductos = setInterval(() => cargarContenido("Productos"), 5000);
-                    }
-                    clearInterval(intervaloUsuarios);
-                    intervaloUsuarios = null;
-                    clearInterval(intervaloPedidos);
-                    intervaloPedidos = null;
-                    break;
-            
-                case "Usuarios":
-                    if (!intervaloUsuarios) {
-                        intervaloUsuarios = setInterval(() => cargarContenido("Usuarios"), 5000);
-                    }
-                    clearInterval(intervaloProductos);
-                    intervaloProductos = null;
-                    clearInterval(intervaloPedidos);
-                    intervaloPedidos = null;
-                    break;
-            
-                case "Pedidos":
-                    if (!intervaloPedidos) {
-                        intervaloPedidos = setInterval(() => cargarContenido("Pedidos"), 5000);
-                    }
-                    clearInterval(intervaloProductos);
-                    intervaloProductos = null;
-                    clearInterval(intervaloUsuarios);
-                    intervaloUsuarios = null;
-                    break;
-            
-                    default:
-                        console.warn("Pestaña desconocida:", tab);
-                        break;
+            const Toast = Swal.mixin({
+                icon: "success",
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 8000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.onmouseenter = Swal.stopTimer;
+                  toast.onmouseleave = Swal.resumeTimer;
                 }
-                setClickDerecho();
-                
-            } else if (xhr.status === 404) {
-                document.getElementById("contenido").innerHTML = "<h1 class='text-center'>404</h1><p class='text-center'>Página no encontrada</p>"
-                document.querySelectorAll(".nav-link").forEach(pestana => {
-                    pestana.classList.remove("active");
-                    pestana.classList.remove("text-dark");
-                });
-                clearInterval(intervaloProductos);
-                intervaloProductos = null;
-                clearInterval(intervaloUsuarios);
-                intervaloUsuarios = null;
-                clearInterval(intervaloPedidos);
-                intervaloPedidos = null;
-            }
-        };
-        
-        xhr.onerror = function() {
-            alert("Error en la solicitud. No se pudo conectar con el servidor.");
-        };
-    //Manda la solicitud
-    xhr.send();
-
-    //En este caso send() manda la solicitud que hemos configurado en el open()
-    //si la solicitud llega a la página y esta devuelve OK (código 200), entrará en el if
-    //Dentro del if, nos guardará en el elemento con el código "contenido" él .responseText
-    //.responseText devuelve texto plano, en este caso nos devolverá la parte de html de la página solicitada
-    //ya que el código php de la misma no es texto plano
-    //y para finalizar actualizo el contenido de las clases de la pestaña para que se queden como "activas" y de la sensación de que se ha cambiado de tabulación
+              });
+              Toast.fire({
+                title: `Producto eliminado de forma definitiva de la base de datos`
+              });
+        } else {
+            console.log("ERROR");
+            cargarContenidoNuevo("Productos");
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
 }
 
+function editarFila(btn) {
+    const fila = btn.closest('tr');
+    fila.classList.add('editando');
 
-    function notificarCambio(tab) {
-        clearInterval(intervaloProductos);
-        Swal.fire({
-            position: "top",
-            title: "Se han detectado cambios en la base de datos",
-            text: "Se han realizado cambios en los productos de la base de datos, ¿desea ver los nuevos datos?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Cargar nuevos datos",
-            cancelButtonText: "Mantener datos actuales",
-            allowOutsideClick: false
-          }).then((result) => {
-            if (result.isConfirmed) {
-                document.querySelector("#cerrarModal").click();
-                ultimoContenido = ""; // Guardar el nuevo contenido
-                cargarContenido("Productos");
-                intervaloProductos = null;
-                intervaloUsuarios = null;
-                intervaloPedidos = null;
-              Swal.fire({
-                position: "top",
-                title: "Cambios cargados",
-                icon: "success",
-                showConfirmButton: false,
-                timer: 1500
-              });
-            }else{
-                intervaloProductos = null;
-                intervaloUsuarios = null;
-                intervaloPedidos = null;
-                let fecha = new Date();
-                let horas = String(fecha.getHours()).padStart(2, '0');
-                let minutos = String(fecha.getMinutes()).padStart(2, '0');
-                document.querySelector(".desactualizado").innerHTML = `Los datos de la página están desactualizados desde las ${horas}:${minutos} - <button class="cargarDesactualizado" onclick="cargarContenidoNuevoDes('${tab}')">actualizar</button>`;
-
-                Swal.fire({
-                    position: "top",
-                    html: "Los cambios que puedas hacer a partir de ahora podrían llegar a reescribir los cambios de los nuevos datos actuales de la base de datos o devolver errores.<br><br><i>(Cualquier acción (editar, eliminar y añadir) después de ejecutarse actualizara la información de la tabla)</i>",
-                    icon: "info",
-                    confirmButtonColor: "#3085d6",
-                    confirmButtonText: "Vale",
-                    allowOutsideClick: false
-                  });
-            }
-          });
-    }
-    function funcionesProductos() {
-        const buscador = document.getElementById("buscador");
-        const selector = document.getElementById("selector");
-        const filas = document.querySelectorAll("table tbody tr");
-        buscador.addEventListener("input", () => {
-            const filtro = eliminarTildes(buscador.value.toLowerCase()); // Texto del filtro sin tildes
-            const criterio = selector.value;
-            filas.forEach(fila => {
-                // Obtener el texto de la celda según el criterio seleccionado
-                // Es decir id es el hijo 1, con lo cual si id esta seleccionado buscara por el contenido del primer hijo de cada fila
-                const celda = fila.querySelector(`td:nth-child(${criterio})`);
-                const textoCelda = celda ? eliminarTildes(celda.textContent.toLowerCase()) : "";
-                fila.style.display = textoCelda.includes(filtro) ? "" : "none";
-            });
-        });
-            // Función para eliminar tildes y normalizar el texto
-        function eliminarTildes(texto) {
-            return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        }
-
-        const botonPrincipal = document.getElementById("agregar");
-        const botonScroll = document.getElementById("agregarScroll");
-
-        // Configura el IntersectionObserver
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                // Si el primer botón sale completamente de la pantalla (no es visible)
-                if (!entry.isIntersecting) {
-                    botonScroll.style.display = "inline-block"; // Muestra el segundo botón
-                } else {
-                    botonScroll.style.display = "none"; // Oculta el segundo botón cuando el primero es visible
-                }
-            });
-        }, { threshold: 0 });
-
-        // Inicia el observador para el primer botón
-        observer.observe(botonPrincipal);
-
-
-    //LIBRERIA CROPPER
-    document.getElementById('imagen').addEventListener('change', function (e) {
-        const imagenPreview = document.getElementById('imagenPreview');
-        
-        // Si no se ha seleccionado ningún archivo, ocultar imagenPreview
-        if (e.target.files.length === 0) {
-            if (cropper) {
-                cropper.destroy();
-            }
-            imagenPreview.classList.add("d-none");
-            return; // Si no hay archivo seleccionado, no hacer nada más
-        }
-
-        // Mostrar la vista previa de la imagen
-        imagenPreview.classList.remove("d-none");
-
-        //aqui obtengo la imagen y la guardo en una variable
-        const file = e.target.files[0];
-
-        //Inicializo un reader, esto es una ojeto de js que me permite leer un archivo
-        const reader = new FileReader();
-
-        reader.onload = function (event) {
-        // Establecer la imagen seleccionada en el preview
-            imagenPreview.src = event.target.result;
-
-            // Si ya existe un cropper anterior, destruirlo
-            if (cropper) {
-                cropper.destroy();
-            }
-
-            // Inicializar el cropper con la nueva imagen
-            cropper = new Cropper(imagenPreview, {
-                aspectRatio: 4 / 3, // Puedes cambiar la relación de aspecto si es necesario
-                viewMode: 1, // Configura el modo de visualización
-                dragMode: 'move', // Modo de arrastre
-            });
-         };
-
-        reader.readAsDataURL(file);
+    // Convertir las celdas editables a inputs con su valor actual
+    fila.querySelectorAll('.editable').forEach(celda => {
+        const valorActual = celda.innerText;
+        celda.innerHTML = `<input type="text" class="form-control" value="${valorActual}">`;
     });
-    }
-    
-    async function eliminarProductoConfirm(id, producto){
-        Swal.fire({
-            position: "top",
-            title: "¿Estas seguro?",
-            html: `<h3>${producto}</h3>¡Este producto se <b class="text-danger">eliminara</b> de forma permanente!<br>Puedes cambiar el valor de <b>Borrado</b> para que no se vea en producción.`,
-            icon: "warning",
-            showCancelButton: true,
-            cancelButtonColor: "#0dcaf0",
-            confirmButtonColor: "#dc3545",
-            cancelButtonText: "Cancelar",
-            confirmButtonText: "Eliminar producto"
-          }).then((result) => {
-            if (result.isConfirmed) {
-                eliminarProducto(id);
-            }
-          });
-    }
-    async function eliminarProducto(id){
-        clearInterval(intervaloProductos);
-        intervaloProductos = null;
-        try{
-            const response = await fetch("/Retrobits/controller/eliminarProducto.php", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'id=' + id
-            }); 
-            const datos = await response.json();
-            if (datos.status === 'OK') {
-                //eliminarProducto(id);
-                document.getElementById(id).classList.add('remove');
-                // Escucha el final de la transición para eliminar el elemento
-                document.getElementById(id).addEventListener('transitionend', () => {
-                    cargarContenidoNuevo("Productos");
-                });
-                const Toast = Swal.mixin({
-                    icon: "success",
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 10000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                      toast.onmouseenter = Swal.stopTimer;
-                      toast.onmouseleave = Swal.resumeTimer;
-                    }
-                  });
-                  Toast.fire({
-                    title: `Producto eliminado de forma definitiva de la base de datos`
-                  });
-            } else {
-                console.log("ERROR");
-            }
-        } catch (error) {
-            console.error("Error: ", error);
-        }
-    }
 
-    const obtenerImagenRecortada = () => {
-        // promise funciona como un await, es decir
-        // lo que ocurra dentro del promise se va a ejecutar de forma sistematica
-        // y aunque haga llamadas a funciones asincronas espera a seguir hasta que esta acabe de ejecutarse
-        // aqui lo necesito por que la funcion getCropperCanvas de la libreria cropper es una funcion asincrona
-        // pero como necesito confirmar si hay datos en el cropper tengo que esperar a que me devuelva informacion
-        // solo devolvera o resolve o reject, esto sirve para controlar la respuesta del promise
-        return new Promise((resolve, reject) => {
-            if (cropper) {
-                cropper.getCroppedCanvas().toBlob((blob) => {
-                    if (blob) {
-                        resolve(blob);
-                    } else {
-                        reject('No se pudo generar el blob');
-                    }
-                });
-            } else {
-                reject('No hay cropper');
-            }
-        });
-    };
+    // Cambiar el texto y la acción del botón
+    const btnEditar = fila.querySelector(`#btn${fila.id}`);
+    btnEditar.innerHTML = ' Guardar';
+    btnEditar.setAttribute('onclick', 'guardarEdiciones(this)');
+    btnEditar.classList.replace('bi-pencil-fill', 'bi-floppy-fill');
+}
 
-    async function nuevoProducto() {
-        const nombre = document.getElementById("nuevoNombre");
-        const descripcion = document.getElementById("nuevoDescripcion");
-        const seccion = document.getElementById("nuevoSeccion");
-        const precio = document.getElementById("nuevoPrecio");
-        const stock = document.getElementById("nuevoStock");
-        const descuento = document.getElementById("nuevoDescuento");
-        const borrado = document.getElementById("nuevoBorrado").checked ? 1 : 0;
-        const imagen = document.getElementById("imagen");
-        
-        let comp = true;
+function guardarEdiciones(btn) {
+    const fila = btn.closest('tr');
+    const celdas = fila.querySelectorAll('.editable');
 
-        if (nombre.value === "") {
-            nombre.style.borderColor = "red";
-            comp = false;
-        } else nombre.style.borderColor = "green";
+    // Actualizar el contenido de las celdas con los nuevos valores
+    celdas.forEach(celda => {
+        const input = celda.querySelector('input');
+        celda.innerHTML = input.value;
+    });
 
-        if (descripcion.value === "") {
-            descripcion.style.borderColor = "red";
-            comp = false;
-        } else descripcion.style.borderColor = "green";
+    fila.classList.replace('editando', 'editado');
 
-        if (seccion.value === "") {
-            seccion.style.borderColor = "red";
-            comp = false;
-        } else seccion.style.borderColor = "green";
+    // Al finalizar la transición, recargar el contenido
+    fila.addEventListener('transitionend', () => {
+        fila.classList.remove('editado');
+        cargarContenido("Productos");
+    });
 
-        // validacion de los campos numericos
-        const validarNumero = (input, type, maxValue = null) => {
-            console.log(input.value);
-            const valor = parseFloat(input.value);
-            if (isNaN(valor) || valor < 0 || (maxValue !== null && valor > maxValue) ||( /[^\d]/.test(input.value) && type === "integer")) {
-                input.style.borderColor = "red";
-                return false;
-            } else {
-                input.style.borderColor = "green";
-                return true;
-            }
-        };
+    // Restaurar el botón a su estado inicial
+    const btnEditar = fila.querySelector(`#btn${fila.id}`);
+    btnEditar.innerHTML = ' Editar';
+    btnEditar.classList.replace('bi-floppy-fill', 'bi-pencil-fill');
+}
 
-        if (!validarNumero(precio, "double")) comp = false;
-        if (!validarNumero(stock, "integer")) comp = false;
-        if (!validarNumero(descuento, "integer", 100)) comp = false;
-
-        // Aquí validamos que la imagen esté recortada
-        let imageFile = null;
-        try {
-            //la funcion de cropped para obtener la foto recortada (getCroppedCanvas())
-            //es una funcion asincrona, con lo cual me interesa esperar a su respuesta antes de seguir
-            //si no el codigo se adelanta a la respuesta y este no tendra la imagen guardada en la variable
-            imageFile = await obtenerImagenRecortada();
-        } catch (error) {
-            console.error("Error al obtener la imagen recortada:", error);
-        }
-
-        //compruebo si hay datos en imagefile
-        if (!imageFile) {
-            imagen.style.borderColor = "red";
-            comp = false;
-        } else {
-            imagen.style.borderColor = "green";
-        }
-
-        //con que una le da validaciones falle acaba la funcion
-        if(!comp) return;
-
-        // Crear y enviar el FormData si todo es válido
-        // Se mandara en formData en ved de JSON por que JSON no acepta archivos
-        const formData = new FormData();
-        formData.append("nombre", nombre.value);
-        formData.append("descripcion", descripcion.value);
-        formData.append("idSeccion", seccion.value);
-        formData.append("precio", parseFloat(precio.value));
-        formData.append("stock", parseFloat(stock.value));
-        formData.append("descuento", parseFloat(descuento.value));
-        formData.append("deleted", borrado);
-        formData.append("imagen", imageFile, 'imagen_recortada.jpg');
-
-        console.log(FormData);
-        
-        try{
-            const response = await fetch("/Retrobits/controller/registrarProducto.php", {
-                method: 'POST',
-                body: formData
-            }); 
-    
-            const datos = await response.json();
-    
-            if (datos.status === 'OK') {
-                document.querySelector("#cerrarModal").click();
-                cargarContenidoNuevo("Productos");
-                Swal.fire({
-                    position: "top",
-                    title: `${nombre.value} ha sido añadido.`,
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 2000
-                  });
-            } else if (datos.status === 'ERROR-I') {
-                Swal.fire({
-                    position: "top",
-                    title: `${nombre.value} ha sido añadido pero...`,
-                    text: datos.message,
-                    icon: "warning"
-                  });
-            }else if(datos.status === 'ERROR'){
-                Swal.fire({
-                    position: "top",
-                    title: `ERROR`,
-                    text: datos.message,
-                    icon: "error"
-                  });
-            }
-    
-        } catch (error) {
-            console.error("Error: ", error);
-        }
-    }
-
-    function editarFila(btn) {
-        // Encontrar la fila asociada al botón de "Editar"
-        var fila = btn.closest('tr'); // El "closest" busca el elemento más cercano con la etiqueta <tr>
-        fila.classList.add('editando');
-        // Seleccionar todas las celdas de la fila (excepto la última, que tiene el botón)
-        var celdas = fila.querySelectorAll('.editable');
-        // Convertir cada celda en un input con el valor actual
-        celdas.forEach(function(celda) {
-            var valorActual = celda.innerText;
-            celda.innerHTML = `<input type="text" class="form-control" value="${valorActual}">`;
-        });
-        // Cambiar el texto del botón de "Editar" a "Guardar"
-        const btnEditar = fila.querySelector(`#btn${fila.id}`);
-        btnEditar.innerHTML = ' Guardar';
-        btnEditar.setAttribute('onclick', 'guardarEdiciones(this)');
-        btnEditar.classList.remove('bi-pencil-fill');
-        btnEditar.classList.add('bi-floppy-fill');
-    }
-    function guardarEdiciones(btn) {
-        // Encontrar la fila asociada al botón de "Guardar"
-        var fila = btn.closest('tr');
-        var celdas = fila.querySelectorAll('.editable');
-        // Recoger los valores de los inputs y actualizarlos en las celdas
-        celdas.forEach(function(celda) {
-            celda.innerHTML = celda.querySelector('input').value;
-        });
-        fila.classList.remove('editando');
-        fila.classList.add('editado');
-        // Escucha el final de la transición para eliminar el elemento
-        fila.addEventListener('transitionend', () => {
-            fila.classList.remove('editado');
-            fila.addEventListener('transitionend', () => {
-                cargarContenido("Productos");
-            });
-        });
-        // Cambiar el texto del botón de "Guardar" de nuevo a "Editar"
-        const btnEditar = fila.querySelector(`#btn${fila.id}`);
-        btnEditar.innerHTML = ' Editar';
-        btnEditar.classList.remove('bi-floppy-fill');
-        btnEditar.classList.add('bi-pencil-fill');
-    }
-        // Cargar la pestaña predeterminada al iniciar la página
-    let elementoClicDerecho;
-    function setClickDerecho(){
-        // Variable para almacenar el elemento donde se hizo clic derecho
-        // Obtener el menú
-        const tabla = document.getElementById('cuerpoTabla');
-        const menu = document.getElementById('menuDesplegable');
-        // Función para mostrar el menú en la posición del clic derecho
-        tabla.addEventListener('contextmenu', (event) => {
-            event.preventDefault(); // Evitar el menú contextual predeterminado
-            // Almacenar el elemento sobre el que se hizo clic derecho
-            elementoClicDerecho = event.target;
-            const md1 = document.getElementById('md1')
-            if(elementoClicDerecho.closest('tr').classList.contains('editando')){
-                md1.innerHTML = " Guardar";
-                md1.classList.remove('bi-pencil-fill');
-                md1.classList.add('bi-floppy-fill');
-            }else{
-                md1.innerHTML = " Editar";
-                md1.classList.add('bi-pencil-fill');
-                md1.classList.remove('bi-floppy-fill');
-            }
-            // Mostrar el menú en la posición del cursor
-            menu.style.display = 'block';
-            menu.style.left = `${event.pageX}px`;
-            menu.style.top = `${event.pageY}px`;
-        });
-        // Función para ocultar el menú al hacer clic fuera de él
-        document.addEventListener('click', () => {
-            menu.style.display = 'none';
-        });
-        // Opcional: Ocultar el menú al hacer scroll
-        window.addEventListener('scroll', () => {
-            menu.style.display = 'none';
-        });
-    }
-    // Función para mostrar en consola el elemento clicado
-    function accion1() {
-        if(document.getElementById('md1').innerText == " Editar"){
-            editarFila(elementoClicDerecho);
-        }else if(document.getElementById('md1').innerText == " Guardar"){
-            guardarEdiciones(elementoClicDerecho); //
-        }
-    }
-    // Funciones de ejemplo para otras acciones
-    function accion2() {
-        let tr = elementoClicDerecho.closest('tr')
-        eliminarProductoConfirm(tr.id, tr.children[1].innerText);
-    }
-window.onload = () =>{
+//* ONLOAD ============================================================
+window.onload = () => {
     cargarContenido("Productos");
 };
