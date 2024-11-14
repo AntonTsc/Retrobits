@@ -82,6 +82,10 @@ tbody td input{
     background-color: transparent;
 }
 
+#menuDesplegable{
+    width: 150px;
+}
+
 .remove {
     transform: translateX(-100%);
     background: #dc3545;
@@ -91,10 +95,10 @@ tbody td input{
     background: #198754;
 }
 .editando{
-    background: #0d6efd;
+    background: #a0b0f9;
 }
 .editando:hover{
-    background: #0a5fdf !important;
+    background: #91a0e2 !important;
 }
 
 

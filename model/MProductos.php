@@ -27,7 +27,9 @@ class MProductos extends Conexion{
 
     public function insertProducto($data){
         $query = $this->getCon()->prepare("INSERT INTO `productos`(`nombre`, `descripcion`, `precio`, `stock`, `descuento`, `idSeccion`, `deleted`) VALUES (?,?,?,?,?,?,?)");
-        $query->bind_param("ssiiiii", $data["nombre"], $data["descripcion"], $data["precio"], $data["stock"], $data["descuento"], $data["idSeccion"], $data["deleted"]);
+
+        $query->bind_param("ssdiiii", $data["nombre"], $data["descripcion"], $data["precio"], $data["stock"], $data["descuento"], $data["idSeccion"], $data["deleted"]);
+
         $comp = $query->execute() ? true : false;
         $query->close();
 

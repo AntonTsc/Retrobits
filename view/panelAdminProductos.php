@@ -22,14 +22,14 @@ $categorias = json_decode($response, true);
 <div class="w-100 d-flex justify-content-between">
   <div class="buscador input-group my-1 d-flex flex-nowrap">
       <select id="selector" class="border rounded-start-1 p-1">
-          <option value="nombre" selected>Nombre</option>
-          <option value="id">ID</option>
-          <option value="descripcion">Descripción</option>
-          <option value="precio">Precio</option>
-          <option value="stock">Stock</option>
-          <option value="descuento">Descuento</option>
-          <option value="idSeccion">ID Sección</option>
-          <option value="deleted">Borrado</option>
+          <option value="2" selected>Nombre</option>
+          <option value="1">ID</option>
+          <option value="3">Descripción</option>
+          <option value="4">Precio</option>
+          <option value="5">Stock</option>
+          <option value="6">Descuento</option>
+          <option value="7">ID Sección</option>
+          <option value="8">Borrado</option>
       </select>
     <input id="buscador" type="text" class="border rounded-end-1 p-1 flex-grow-1" placeholder="Buscar...">
   </div>

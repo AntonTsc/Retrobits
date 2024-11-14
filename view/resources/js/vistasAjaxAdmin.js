@@ -185,11 +185,15 @@ function cargarContenido(tab) {
             filas.forEach(fila => {
                 // Obtener el texto de la celda según el criterio seleccionado
                 // Es decir id es el hijo 1, con lo cual si id esta seleccionado buscara por el contenido del primer hijo de cada fila
-                const celda = fila.querySelector(`td:nth-child(${getColumnIndex(criterio)})`);
+                const celda = fila.querySelector(`td:nth-child(${criterio})`);
                 const textoCelda = celda ? eliminarTildes(celda.textContent.toLowerCase()) : "";
                 fila.style.display = textoCelda.includes(filtro) ? "" : "none";
             });
         });
+            // Función para eliminar tildes y normalizar el texto
+        function eliminarTildes(texto) {
+            return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        }
 
         const botonPrincipal = document.getElementById("agregar");
         const botonScroll = document.getElementById("agregarScroll");
@@ -252,24 +256,7 @@ function cargarContenido(tab) {
         reader.readAsDataURL(file);
     });
     }
-    // Función auxiliar para obtener el índice de la columna según el criterio
-    function getColumnIndex(criterio) {
-        switch(criterio) {
-            case "id": return 1;
-            case "nombre": return 2;
-            case "descripcion": return 3;
-            case "precio": return 4;
-            case "stock": return 5;
-            case "descuento": return 6;
-            case "idSeccion": return 7;
-            case "deleted": return 8;
-            default: return 1;
-        }
-    }
-    // Función para eliminar tildes y normalizar el texto
-    function eliminarTildes(texto) {
-        return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
+    
     async function eliminarProductoConfirm(id, producto){
         Swal.fire({
             position: "top",
@@ -330,6 +317,12 @@ function cargarContenido(tab) {
     }
 
     const obtenerImagenRecortada = () => {
+        // promise funciona como un await, es decir
+        // lo que ocurra dentro del promise se va a ejecutar de forma sistematica
+        // y aunque haga llamadas a funciones asincronas espera a seguir hasta que esta acabe de ejecutarse
+        // aqui lo necesito por que la funcion getCropperCanvas de la libreria cropper es una funcion asincrona
+        // pero como necesito confirmar si hay datos en el cropper tengo que esperar a que me devuelva informacion
+        // solo devolvera o resolve o reject, esto sirve para controlar la respuesta del promise
         return new Promise((resolve, reject) => {
             if (cropper) {
                 cropper.getCroppedCanvas().toBlob((blob) => {
@@ -373,9 +366,10 @@ function cargarContenido(tab) {
         } else seccion.style.borderColor = "green";
 
         // validacion de los campos numericos
-        const validarNumero = (input, maxValue = null) => {
+        const validarNumero = (input, type, maxValue = null) => {
+            console.log(input.value);
             const valor = parseFloat(input.value);
-            if (isNaN(valor) || valor < 0 || (maxValue !== null && valor > maxValue) || /[^\d]/.test(input.value)) {
+            if (isNaN(valor) || valor < 0 || (maxValue !== null && valor > maxValue) ||( /[^\d]/.test(input.value) && type === "integer")) {
                 input.style.borderColor = "red";
                 return false;
             } else {
@@ -384,9 +378,9 @@ function cargarContenido(tab) {
             }
         };
 
-        if (!validarNumero(precio)) comp = false;
-        if (!validarNumero(stock)) comp = false;
-        if (!validarNumero(descuento, 100)) comp = false;
+        if (!validarNumero(precio, "double")) comp = false;
+        if (!validarNumero(stock, "integer")) comp = false;
+        if (!validarNumero(descuento, "integer", 100)) comp = false;
 
         // Aquí validamos que la imagen esté recortada
         let imageFile = null;
@@ -395,7 +389,6 @@ function cargarContenido(tab) {
             //es una funcion asincrona, con lo cual me interesa esperar a su respuesta antes de seguir
             //si no el codigo se adelanta a la respuesta y este no tendra la imagen guardada en la variable
             imageFile = await obtenerImagenRecortada();
-            console.log("Imagen recortada:", imageFile);
         } catch (error) {
             console.error("Error al obtener la imagen recortada:", error);
         }
@@ -417,11 +410,13 @@ function cargarContenido(tab) {
         formData.append("nombre", nombre.value);
         formData.append("descripcion", descripcion.value);
         formData.append("idSeccion", seccion.value);
-        formData.append("precio", precio.value);
-        formData.append("stock", stock.value);
-        formData.append("descuento", descuento.value);
+        formData.append("precio", parseFloat(precio.value));
+        formData.append("stock", parseFloat(stock.value));
+        formData.append("descuento", parseFloat(descuento.value));
         formData.append("deleted", borrado);
         formData.append("imagen", imageFile, 'imagen_recortada.jpg');
+
+        console.log(FormData);
         
         try{
             const response = await fetch("/Retrobits/controller/registrarProducto.php", {
@@ -474,9 +469,11 @@ function cargarContenido(tab) {
             celda.innerHTML = `<input type="text" class="form-control" value="${valorActual}">`;
         });
         // Cambiar el texto del botón de "Editar" a "Guardar"
-        console.log(fila.id);
-        fila.querySelector(`#btn${fila.id}`).innerHTML = ' Guardar';
-        fila.querySelector(`#btn${fila.id}`).setAttribute('onclick', 'guardarEdiciones(this)');
+        const btnEditar = fila.querySelector(`#btn${fila.id}`);
+        btnEditar.innerHTML = ' Guardar';
+        btnEditar.setAttribute('onclick', 'guardarEdiciones(this)');
+        btnEditar.classList.remove('bi-pencil-fill');
+        btnEditar.classList.add('bi-floppy-fill');
     }
     function guardarEdiciones(btn) {
         // Encontrar la fila asociada al botón de "Guardar"
@@ -496,7 +493,10 @@ function cargarContenido(tab) {
             });
         });
         // Cambiar el texto del botón de "Guardar" de nuevo a "Editar"
-        fila.querySelector(`#btn${fila.id}`).innerHTML = 'Editar';
+        const btnEditar = fila.querySelector(`#btn${fila.id}`);
+        btnEditar.innerHTML = ' Editar';
+        btnEditar.classList.remove('bi-floppy-fill');
+        btnEditar.classList.add('bi-pencil-fill');
     }
         // Cargar la pestaña predeterminada al iniciar la página
     let elementoClicDerecho;
@@ -510,10 +510,15 @@ function cargarContenido(tab) {
             event.preventDefault(); // Evitar el menú contextual predeterminado
             // Almacenar el elemento sobre el que se hizo clic derecho
             elementoClicDerecho = event.target;
+            const md1 = document.getElementById('md1')
             if(elementoClicDerecho.closest('tr').classList.contains('editando')){
-                document.getElementById('md1').innerHTML = " Guardar";
+                md1.innerHTML = " Guardar";
+                md1.classList.remove('bi-pencil-fill');
+                md1.classList.add('bi-floppy-fill');
             }else{
-                document.getElementById('md1').innerHTML = " Editar";
+                md1.innerHTML = " Editar";
+                md1.classList.add('bi-pencil-fill');
+                md1.classList.remove('bi-floppy-fill');
             }
             // Mostrar el menú en la posición del cursor
             menu.style.display = 'block';
