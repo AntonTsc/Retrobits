@@ -1,9 +1,11 @@
 <?php
 
-// require(__DIR__ . '/../model/MCarrito.php');
+require(__DIR__ . '/../model/MCarrito.php');
 
-//     VCarrito::inithtml();
-//     VCarrito::tablaCarrito($productosCarrito);
-//     VCArrito::endhtml();
+$con = new MCarrito();
+$productosCarrito = $con->enviarPedidoCarrito($productosCarrito);
 
-?>
+header('Content-Type: application/json');
+
+echo json_encode($productos);
+

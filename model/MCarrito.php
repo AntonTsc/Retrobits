@@ -44,6 +44,16 @@ class MCarrito extends Conexion{
 
     }
 
+    //Función para enviar el pedido del carrito
+    public function enviarPedidoCarrito($productosCarrito){
+        
+        $sentencia = $this->getCon()->prepare("INSERT INTO pedidos ('direccion','idUsuario VALUES (?, ?)");
+        $sentencia->bind_param("si", $productosCarrito["direccion"], $productosCarrito["idUsuario"]);
+        
+        return $sentencia->execute();
+
+    }
+
 }
 
 ?>

@@ -165,6 +165,18 @@ async function comprarProductos(){
     }
 }
 
+// REVISAR PRIMERO
+
+// async function enviarProductos(){
+//     try{
+//         const response = await fetch("/Retrobits/controller/productos.php");
+//       const productos = await response.json();
+//     }
+// }
+
+
+
+
 window.onload = function(){
     verProductos();
     comprarProductos();
