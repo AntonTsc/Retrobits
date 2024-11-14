@@ -305,7 +305,6 @@ function botonesAnon(){
   despleglable.insertBefore(li2, despleglable.firstChild);
   despleglable.insertBefore(li1, despleglable.firstChild);
 }
-  //Genera cartas con los descuentos mas altos
   function generadorProducto(producto) {
     const div1 = document.createElement("div");
     div1.classList = "col mb-2";
@@ -320,7 +319,10 @@ function botonesAnon(){
     div3.classList = "position-relative";
 
     const imagen = document.createElement("img");
-    imagen.src = "resources/images/img/Game Gear.jpg";
+    imagen.src = `resources/images/productos/${producto.id}.jpg`;
+    imagen.onerror = function() {
+      imagen.src = "resources/images/productos/default.jpg"; // Ruta a la imagen predeterminada
+    };
     imagen.classList = "card-img-top";
     imagen.alt = "...";
 

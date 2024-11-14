@@ -163,8 +163,10 @@ function generador(producto, seccion) {
   button.classList = "card-item bg-light swiper-slide border-0 btn rounded-1 shadow";
   
   const img = document.createElement("img");
-  //img.src = `view/resources/images/img/${producto.nombre}.jpg`;
-  img.src = `view/resources/images/img/Game Gear.jpg`;
+  img.src = `view/resources/images/productos/${producto.id}.jpg`;
+  img.onerror = function() {
+    img.src = "view/resources/images/productos/default.jpg"; // Ruta a la imagen predeterminada
+    };
   img.alt = "...";
   img.classList = "rounded-top-1";
   

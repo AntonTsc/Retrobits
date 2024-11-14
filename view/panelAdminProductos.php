@@ -123,6 +123,7 @@ $categorias = json_decode($response, true);
           <div class="mb-4">
             <label for="imagen" class="form-label">Imagen:</label>
             <input type="file" class="form-control" accept="image/*" id="imagen">
+            <img class="d-none" id="imagenPreview" src="#" alt="Imagen para recortar" style="max-width: 100%;">
           </div>
   
           <div class="d-flex">

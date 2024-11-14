@@ -6,6 +6,13 @@
     $datos = [];
 
     if($mProductos->eliminarProducto($_POST['id'])){
+        // Elimina la imagen asociada al producto
+        $rutaImagen = __dir__ . "/../view/resources/images/productos/" . $_POST['id'] . ".jpg";
+
+        if (file_exists($rutaImagen)) {
+            // Si la imagen existe, la borramos
+            unlink($rutaImagen);
+        }
         $datos = [
             'status' => 'OK',
             'message' => 'Producto Borrado.'

@@ -4,6 +4,7 @@ let tabulacion = "";
 let intervaloProductos = null;
 let intervaloUsuarios = null;
 let intervaloPedidos = null;
+let cropper;
 
 function cargarContenidoNuevo(tab){
     ultimoContenido = ""
@@ -60,8 +61,7 @@ function cargarContenido(tab) {
             
             switch (tab) {
                 case "Productos":
-                    filtrardores();
-                    observadorBotonAgregar();
+                    funcionesProductos();
                     if (!intervaloProductos) {
                         intervaloProductos = setInterval(() => cargarContenido("Productos"), 5000);
                     }
@@ -175,7 +175,7 @@ function cargarContenido(tab) {
             }
           });
     }
-    function filtrardores() {
+    function funcionesProductos() {
         const buscador = document.getElementById("buscador");
         const selector = document.getElementById("selector");
         const filas = document.querySelectorAll("table tbody tr");
@@ -190,6 +190,67 @@ function cargarContenido(tab) {
                 fila.style.display = textoCelda.includes(filtro) ? "" : "none";
             });
         });
+
+        const botonPrincipal = document.getElementById("agregar");
+        const botonScroll = document.getElementById("agregarScroll");
+
+        // Configura el IntersectionObserver
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                // Si el primer botón sale completamente de la pantalla (no es visible)
+                if (!entry.isIntersecting) {
+                    botonScroll.style.display = "inline-block"; // Muestra el segundo botón
+                } else {
+                    botonScroll.style.display = "none"; // Oculta el segundo botón cuando el primero es visible
+                }
+            });
+        }, { threshold: 0 });
+
+        // Inicia el observador para el primer botón
+        observer.observe(botonPrincipal);
+
+
+    //LIBRERIA CROPPER
+    document.getElementById('imagen').addEventListener('change', function (e) {
+        const imagenPreview = document.getElementById('imagenPreview');
+        
+        // Si no se ha seleccionado ningún archivo, ocultar imagenPreview
+        if (e.target.files.length === 0) {
+            if (cropper) {
+                cropper.destroy();
+            }
+            imagenPreview.classList.add("d-none");
+            return; // Si no hay archivo seleccionado, no hacer nada más
+        }
+
+        // Mostrar la vista previa de la imagen
+        imagenPreview.classList.remove("d-none");
+
+        //aqui obtengo la imagen y la guardo en una variable
+        const file = e.target.files[0];
+
+        //Inicializo un reader, esto es una ojeto de js que me permite leer un archivo
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+        // Establecer la imagen seleccionada en el preview
+            imagenPreview.src = event.target.result;
+
+            // Si ya existe un cropper anterior, destruirlo
+            if (cropper) {
+                cropper.destroy();
+            }
+
+            // Inicializar el cropper con la nueva imagen
+            cropper = new Cropper(imagenPreview, {
+                aspectRatio: 4 / 3, // Puedes cambiar la relación de aspecto si es necesario
+                viewMode: 1, // Configura el modo de visualización
+                dragMode: 'move', // Modo de arrastre
+            });
+         };
+
+        reader.readAsDataURL(file);
+    });
     }
     // Función auxiliar para obtener el índice de la columna según el criterio
     function getColumnIndex(criterio) {
@@ -268,6 +329,22 @@ function cargarContenido(tab) {
         }
     }
 
+    const obtenerImagenRecortada = () => {
+        return new Promise((resolve, reject) => {
+            if (cropper) {
+                cropper.getCroppedCanvas().toBlob((blob) => {
+                    if (blob) {
+                        resolve(blob);
+                    } else {
+                        reject('No se pudo generar el blob');
+                    }
+                });
+            } else {
+                reject('No hay cropper');
+            }
+        });
+    };
+
     async function nuevoProducto() {
         const nombre = document.getElementById("nuevoNombre");
         const descripcion = document.getElementById("nuevoDescripcion");
@@ -310,11 +387,28 @@ function cargarContenido(tab) {
         if (!validarNumero(precio)) comp = false;
         if (!validarNumero(stock)) comp = false;
         if (!validarNumero(descuento, 100)) comp = false;
-        if (imagen.files.length === 0) {
+
+        // Aquí validamos que la imagen esté recortada
+        let imageFile = null;
+        try {
+            //la funcion de cropped para obtener la foto recortada (getCroppedCanvas())
+            //es una funcion asincrona, con lo cual me interesa esperar a su respuesta antes de seguir
+            //si no el codigo se adelanta a la respuesta y este no tendra la imagen guardada en la variable
+            imageFile = await obtenerImagenRecortada();
+            console.log("Imagen recortada:", imageFile);
+        } catch (error) {
+            console.error("Error al obtener la imagen recortada:", error);
+        }
+
+        //compruebo si hay datos en imagefile
+        if (!imageFile) {
             imagen.style.borderColor = "red";
             comp = false;
-        } else imagen.style.borderColor = "green";
+        } else {
+            imagen.style.borderColor = "green";
+        }
 
+        //con que una le da validaciones falle acaba la funcion
         if(!comp) return;
 
         // Crear y enviar el FormData si todo es válido
@@ -327,7 +421,7 @@ function cargarContenido(tab) {
         formData.append("stock", stock.value);
         formData.append("descuento", descuento.value);
         formData.append("deleted", borrado);
-        formData.append("imagen", imagen.files[0]);
+        formData.append("imagen", imageFile, 'imagen_recortada.jpg');
         
         try{
             const response = await fetch("/Retrobits/controller/registrarProducto.php", {
@@ -346,6 +440,20 @@ function cargarContenido(tab) {
                     icon: "success",
                     showConfirmButton: false,
                     timer: 2000
+                  });
+            } else if (datos.status === 'ERROR-I') {
+                Swal.fire({
+                    position: "top",
+                    title: `${nombre.value} ha sido añadido pero...`,
+                    text: datos.message,
+                    icon: "warning"
+                  });
+            }else if(datos.status === 'ERROR'){
+                Swal.fire({
+                    position: "top",
+                    title: `ERROR`,
+                    text: datos.message,
+                    icon: "error"
                   });
             }
     
@@ -391,26 +499,6 @@ function cargarContenido(tab) {
         fila.querySelector(`#btn${fila.id}`).innerHTML = 'Editar';
     }
         // Cargar la pestaña predeterminada al iniciar la página
-    function observadorBotonAgregar(){
-
-        const botonPrincipal = document.getElementById("agregar");
-        const botonScroll = document.getElementById("agregarScroll");
-
-        // Configura el IntersectionObserver
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                // Si el primer botón sale completamente de la pantalla (no es visible)
-                if (!entry.isIntersecting) {
-                    botonScroll.style.display = "inline-block"; // Muestra el segundo botón
-                } else {
-                    botonScroll.style.display = "none"; // Oculta el segundo botón cuando el primero es visible
-                }
-            });
-        }, { threshold: 0 });
-
-        // Inicia el observador para el primer botón
-        observer.observe(botonPrincipal);
-    }
     let elementoClicDerecho;
     function setClickDerecho(){
         // Variable para almacenar el elemento donde se hizo clic derecho

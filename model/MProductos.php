@@ -34,4 +34,12 @@ class MProductos extends Conexion{
         return $comp;
     }
 
+    public function getLastProductoID(){
+        $sentencia = $this->getCon()->query('SELECT id FROM productos ORDER BY id DESC LIMIT 1;');
+
+        $productos = $sentencia->fetch_assoc();
+
+        return $productos["id"];
+    }
+
 }
