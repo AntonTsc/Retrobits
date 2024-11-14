@@ -143,22 +143,35 @@ async function comprarProductos(){
         
         const botonComprar = document.getElementById('botonComprar');
         
-        botonComprar.onclick = function () {
+        botonComprar.onclick = async function () {
             const direccion = document.getElementById('direccionEnvio').value;
-            const fechaActual = new Date();
-            const fechaEntrega = new Date(fechaActual);
-                fechaEntrega.setDate(fechaActual.getDate() + 3);
+            // const fechaActual = new Date();
+            // const fechaEntrega = new Date(fechaActual);
+            //     fechaEntrega.setDate(fechaActual.getDate() + 3);
             const usuario = JSON.parse(localStorage.getItem("usuario"));
             const idUsuario = usuario.id;
             
             const pedido = {
                 direccion: direccion,
-                fecha: fechaActual.toISOString().split('T')[0], 
-                fechaEntrega: fechaEntrega.toISOString().split('T')[0], 
                 idUsuario: idUsuario,
-            };
+                productos: Object.values(productos).map(producto => ({
+                    id: producto.id,
+                    cantidad: producto.cantidad
+                }))
 
-        };        
+        };  
+        
+        const response = await fetch("/path/to/carritoEdit.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(pedido)
+        });
+
+        const result = await response.json();
+           
+        };
 
     } catch (error) {
         console.error('Error al realizar la compra', error);

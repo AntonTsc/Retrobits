@@ -45,12 +45,23 @@ class MCarrito extends Conexion{
     }
 
     //Función para enviar el pedido del carrito
-    public function enviarPedidoCarrito($productosCarrito){
+    public function enviarPedidoCarrito($direccion, $idUsuario, $productos){
         
-        $sentencia = $this->getCon()->prepare("INSERT INTO pedidos ('direccion','idUsuario VALUES (?, ?)");
-        $sentencia->bind_param("si", $productosCarrito["direccion"], $productosCarrito["idUsuario"]);
+        $sentenciaPedidos = $this->getCon()->prepare("INSERT INTO pedidos (direccion, idUsuario) VALUES (?, ?)");
+        $sentenciaPedidos->bind_param("si", $direccion, $idUsuario);
         
-        return $sentencia->execute();
+        $sentenciaPedidos->execute();
+
+        $idPedido = $this->getCon()->insert_id;
+
+        $sentenciaProductosPedidos = $this->getCon()->prepare("INSERT INTO productos_pedidos (idPedido, idProducto, cantidad) VALUES (?, ?, ?)");
+    
+        foreach ($productos as $producto) {
+            $sentenciaProductosPedidos->bind_param("iiid", $idPedido, $producto["id"], $producto["cantidad"]);
+            $sentenciaProductosPedidos->execute();
+        }
+
+    return true;
 
     }
 
