@@ -7,6 +7,7 @@ let intervaloUsuarios = null;
 let intervaloPedidos = null;
 let elementoClickDerecho;
 let cropper;
+let valoresOriginales = {};
 
 
 //* FUNCIONES =========================================================
@@ -98,7 +99,6 @@ function gestionarIntervalos(tab) {
 //Desactiva todos los intervalos menos el de la pestaña recibida, puede no recibir una pestaña, con lo cual, desactivara todos los intervalos.
 function vaciarIntervalos(gestor = "") {
     if (gestor !== "Productos" && intervaloProductos) {
-        console.log("hola");
         clearInterval(intervaloProductos);
         intervaloProductos = null;
     }
@@ -128,7 +128,7 @@ function notificarCambio(tab) {
     Swal.fire({
         position: "top",
         title: "Se han detectado cambios en la base de datos",
-        text: `Se han realizado cambios en '${tab}' de la base de datos, ¿desea ver los nuevos datos?`,
+        text: `Se han realizado cambios de '${tab}' de la base de datos, ¿Desea ver los datos actualizados?`,
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -183,25 +183,32 @@ function eliminarTildes(texto) {
     return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 //* MANIPULACIONES DE DOM =============================================
-
 //Muestra un menú en la posición del clic derecho si es en la tabla. Este menú permite editar o guardar una fila dependiendo de su estado ademas de permitir eliminar la misma.
 //Está configurado para que el menú no se muestre fuera de la pantalla
 function setClickDerecho() {
     const tabla = document.getElementById('cuerpoTabla');
     const menu = document.getElementById('menuDesplegable');
-    const md1 = document.getElementById('md1');
+    const mdEditar = document.getElementById('mdEditar');
 
     // Mostrar menú en la posición del clic derecho
     tabla.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         elementoClickDerecho = event.target;
 
+        const filaEditando = document.querySelector('tr.editando');
+        const btnCancelar = document.getElementById('mdCancelar');
+        if (filaEditando === elementoClickDerecho.closest('tr')) {
+            btnCancelar.classList.remove('d-none');  // Muestra el botón
+        }else{
+            btnCancelar.classList.add('d-none');  // Oculta el botón
+        }
+
         //Cambiar opciones según el estado de la fila
         // Esto -> ?. se utiliza para que en caso de no encontrar un elemento tr cercano no falle y devuelva undefined, de esta forma el codigo continua sin interrumpirse
         const enEdicion = elementoClickDerecho.closest('tr').classList.contains('editando');
-        md1.innerHTML = enEdicion ? " Guardar" : " Editar";
-        md1.classList.toggle('bi-pencil-fill', !enEdicion);
-        md1.classList.toggle('bi-floppy-fill', enEdicion);
+        mdEditar.innerHTML = enEdicion ? " Guardar" : " Editar";
+        mdEditar.classList.toggle('bi-pencil-fill', !enEdicion);
+        mdEditar.classList.toggle('bi-floppy-fill', enEdicion);
 
         //Muestra el menu
         menu.style.display = 'block';
@@ -241,23 +248,31 @@ function setClickDerecho() {
     window.addEventListener('scroll', () => menu.style.display = 'none');
 }
 
+function clickDerechoAccionImagen(){
+    verFotoProducto(elementoClickDerecho);
+}
 // Ejecutar acción de edición o guardado según el estado del menú
-function clickDerechoAccion1() {
-    if (document.getElementById('md1').innerText.trim() === "Editar") {
+function clickDerechoAccionEditar() {
+    if (document.getElementById('mdEditar').innerText.trim() === "Editar") {
         editarFila(elementoClickDerecho);
     } else {
         guardarEdiciones(elementoClickDerecho);
     }
 }
 
+function clickDerechoAccionCancelar(){
+    cargarContenidoNuevo(tabulacion);
+}
 // Ejecutar acción para eliminar producto
-function clickDerechoAccion2() {
+function clickDerechoAccionEliminar() {
     const tr = elementoClickDerecho.closest('tr');
     eliminarProductoConfirm(tr.id, tr.children[1].innerText);
 }
 
 //Funciones dedicadar para la pestaña de productos
 function funcionesProductos() {
+    document.getElementById("mdImagen").classList.remove("d-none");
+    document.getElementById("mdEditar").classList.replace("rounded-bottom-0", "rounded-0");
     const buscador = document.getElementById("buscador");
     const selector = document.getElementById("selector");
     const filas = document.querySelectorAll("table tbody tr");
@@ -409,7 +424,18 @@ async function nuevoProducto() {
 }
 
 //Una confirmacion para eliminar el producto
-function eliminarProductoConfirm(id, producto){
+function eliminarProductoConfirm(id, producto,){
+    const fila = document.querySelector("#id");
+    const filaEditando = document.querySelector('tr.editando');
+    if (filaEditando && filaEditando !== fila) {
+        // Si ya hay una fila editando, podemos cancelar la edición de la fila actual
+        Swal.fire({
+            text: "Actualmente estás editando una fila. Por favor, finaliza la edición antes de proceder con la eliminación del producto.",
+            confirmButtonText: "Vale",
+            confirmButtonColor: "#0d6efd"
+          });
+        return; // Salir sin hacer nada si otra fila ya está siendo editada
+    }
     Swal.fire({
         position: "top",
         title: "¿Estas seguro?",
@@ -472,45 +498,196 @@ async function eliminarProducto(id){
     }
 }
 
+
 function editarFila(btn) {
     const fila = btn.closest('tr');
+
+
+    // Verificar si ya hay una fila editando
+    const filaEditando = document.querySelector('tr.editando');
+
+    // Si ya hay una fila editando y no es la fila actual
+    if (filaEditando && filaEditando !== fila) {
+        Swal.fire({
+            text: "Estás editando una fila. Por favor, completa la edición actual antes de comenzar con otra.",
+            confirmButtonText: "Vale",
+            confirmButtonColor: "#0d6efd"
+        });
+        return; // Salir sin hacer nada si otra fila ya está siendo editada
+    }
+
+    // Añadir la clase 'editando' para indicar que estamos editando esta fila
     fila.classList.add('editando');
 
     // Convertir las celdas editables a inputs con su valor actual
-    fila.querySelectorAll('.editable').forEach(celda => {
-        const valorActual = celda.innerText;
-        celda.innerHTML = `<input type="text" class="form-control" value="${valorActual}">`;
+    fila.querySelectorAll('.editable').forEach((celda, index) => {
+        const valorActual = celda.innerText.trim();
+        valoresOriginales[index] = valorActual;  // Guardar valor original de cada celda
+        let inputHTML = '';
+        
+        // Verificar el tipo de dato según la clase de la celda
+        if (celda.classList.contains('text')) {
+            inputHTML = `<input type="text" class="form-control" value="${valorActual}">`;
+        } else if (celda.classList.contains('number')) {
+            inputHTML = `<input type="number" class="form-control text-end" value="${valorActual}">`;
+        } else if (celda.classList.contains('boolean')) {
+            inputHTML = `<div class="form-check form-switch d-flex justify-content-center align-items-center">
+                            <input class="form-check-input" type="checkbox" role="switch" ${valorActual === 'Si' ? 'checked' : ''}>
+                        </div>`;
+        } else if (celda.classList.contains('select')) {
+            inputHTML = `<select id="nuevoSeccion" class="form-select" aria-label="Large select example">
+                            <option ${valorActual === 'consolas' && 'selected'} value="1">consolas</option>
+                            <option ${valorActual === 'computadoras' && 'selected'} value="2">computadoras</option>
+                            <option ${valorActual === 'camaras' && 'selected'} value="3">camaras</option>
+                            <option ${valorActual === 'radios' && 'selected'} value="4">radios</option>
+                            <option ${valorActual === 'telefonos' && 'selected'} value="5">telefonos</option>
+                            <option ${valorActual === 'electrodomesticos' && 'selected'} value="6">electrodomesticos</option>
+                        </select>`;
+        }
+
+        // Reemplazar la celda con el input correspondiente
+        celda.innerHTML = inputHTML;
     });
 
-    // Cambiar el texto y la acción del botón
+    // Cambiar el texto y la acción del botón editar por guardar
     const btnEditar = fila.querySelector(`#btn${fila.id}`);
     btnEditar.innerHTML = ' Guardar';
     btnEditar.setAttribute('onclick', 'guardarEdiciones(this)');
     btnEditar.classList.replace('bi-pencil-fill', 'bi-floppy-fill');
+    const btnCancelar = fila.querySelector('.btnCancelar');
+    btnCancelar.classList.remove("d-none")
 }
 
-function guardarEdiciones(btn) {
+async function guardarEdiciones(btn) {
+    vaciarIntervalos();
+    
     const fila = btn.closest('tr');
-    const celdas = fila.querySelectorAll('.editable');
 
-    // Actualizar el contenido de las celdas con los nuevos valores
-    celdas.forEach(celda => {
-        const input = celda.querySelector('input');
-        celda.innerHTML = input.value;
+    // Comprobar si hubo cambios antes de proceder
+    let cambios = false;
+    fila.querySelectorAll('.editable').forEach((celda, index) => {
+        const input = celda.querySelector('input, select, checkbox');
+        let valorActual;
+
+        if (input.type === 'checkbox') {
+            valorActual = input.checked ? 'Si' : 'No';
+        } else if (input.tagName.toLowerCase() === 'select') {
+            valorActual = input.options[input.selectedIndex].text;
+        } else {
+            valorActual = input.value;
+        }
+
+        if (valorActual !== valoresOriginales[index]) {
+            cambios = true;
+        }
     });
 
-    fila.classList.replace('editando', 'editado');
+    // Si no hay cambios salgo de la funcion
+    if (!cambios) {
+       cargarContenidoNuevo("Productos");
+        return;
+    }
 
-    // Al finalizar la transición, recargar el contenido
-    fila.addEventListener('transitionend', () => {
-        fila.classList.remove('editado');
-        cargarContenido("Productos");
+    const nombre = fila.querySelector('td:nth-child(2)').children[0];
+    const descripcion = fila.querySelector('td:nth-child(3)').children[0];
+    const seccion = fila.querySelector('td:nth-child(4)').children[0];
+    const precio = fila.querySelector('td:nth-child(5)').children[0];
+    const stock = fila.querySelector('td:nth-child(6)').children[0];
+    const descuento = fila.querySelector('td:nth-child(7)').children[0];
+    const borrado = fila.querySelector('td:nth-child(8)').children[0].children[0].checked ? 1 : 0;
+
+    let comp = true;
+    [nombre, descripcion, seccion].forEach(input => {
+        input.style.border = input.value ? "2px solid green" : (comp = false, "2px solid red");
     });
 
-    // Restaurar el botón a su estado inicial
-    const btnEditar = fila.querySelector(`#btn${fila.id}`);
-    btnEditar.innerHTML = ' Editar';
-    btnEditar.classList.replace('bi-floppy-fill', 'bi-pencil-fill');
+    const validarNumero = (input, type, maxValue = null) => {
+        const valor = parseFloat(input.value);
+        if (isNaN(valor) || valor < 0 || (maxValue !== null && valor > maxValue) ||( /[^\d]/.test(input.value) && type === "integer")) {
+            input.style.border = "2px solid red";
+            comp = false
+        } else {
+            input.style.border = "2px solid green";
+        }
+    };
+    validarNumero(precio, "double");
+    validarNumero(stock,  "integer");
+    validarNumero(descuento, "integer", 100);
+
+    //Si no hay imagen o los input no cumplen el filtro, cancelo la peticion
+    if (!comp) return;
+    try{
+        const response = await fetch("/Retrobits/controller/editarProducto.php", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            // Usamos encodeURIComponent para asegurar que los datos se codifiquen correctamente
+            // y evitar problemas con caracteres especiales como '&', '=', o espacios en blanco
+            body: 'id=' + encodeURIComponent(fila.id) + 
+                  '&nombre=' + encodeURIComponent(nombre.value) + 
+                  '&descripcion=' + encodeURIComponent(descripcion.value) + 
+                  '&precio=' + encodeURIComponent(precio.value) + 
+                  '&stock=' + encodeURIComponent(stock.value) + 
+                  '&descuento=' + encodeURIComponent(descuento.value) + 
+                  '&idSeccion=' + encodeURIComponent(seccion.value) + 
+                  '&deleted=' + encodeURIComponent(borrado)
+        }); 
+
+        const datos = await response.json();
+
+        if (datos.status === 'OK') {
+            cargarContenidoNuevo("Productos");
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true
+                });
+                Toast.fire({
+                icon: "success",
+                title: "La información del producto ha sido actualizada"
+            });
+        } else {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+                });
+                Toast.fire({
+                icon: "error",
+                title: "Error al editar el producto"
+            });
+        }
+    
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+//Muestro la foto que pertenece al producto de lo contrario aviso que no hay foto
+function verFotoProducto(btn){
+    const fila = btn.closest('tr');
+    if(fila.querySelector('td:nth-child(2)').innerText === ""){
+        console.log("Product")
+        document.getElementById("modalFotoNombre").innerText = fila.querySelector('td:nth-child(2)').children[0].value;
+    }else{
+        console.log("Product2")
+        document.getElementById("modalFotoNombre").innerText = fila.querySelector('td:nth-child(2)').innerText;
+    };
+    modalFoto = document.getElementById("modalFoto");
+    ModalNoFoto = document.getElementById("modalNoFoto");
+
+    modalFoto.src = `resources/images/productos/${fila.id}.jpg`;
+    ModalNoFoto.innerText = "";
+
+    modalFoto.onerror = () => {
+        modalFoto.src = ``;
+        ModalNoFoto.innerText = "Este Producto no tiene foto";
+    };
 }
 
 //* ONLOAD ============================================================

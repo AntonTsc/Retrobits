@@ -82,10 +82,21 @@ tbody td input{
     background-color: transparent;
 }
 
+.dropdown-menu{
+    background-color: #212529 !important;
+}
+
 #menuDesplegable{
     width: 150px;
 }
 
+.btnMenu:hover{
+    background-color: rgb(230, 230, 230) !important;
+    &#dElimiar, &#mdEliminar{
+        background-color: #bd2736 !important;
+    }
+    
+}
 .remove {
     transform: translateX(-100%);
     background: #dc3545;
@@ -101,22 +112,13 @@ tbody td input{
     background: #91a0e2 !important;
 }
 
-
-
-
-
-
-
-
-
-
 .menu-desplegable {
     position: absolute;
     display: none;
     background-color: #ffffff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    width: 130px;
+    width: 150px;
 }
 
 .menu-desplegable ul {
@@ -128,4 +130,12 @@ tbody td input{
 .menu-desplegable ul li {
     padding: 8px 12px;
     cursor: pointer;
+}
+
+.verFotoProducto{
+    position: absolute;
+    width: 800px;
+    height: auto !important;
+    top: 50%;
+    left: 50%;
 }

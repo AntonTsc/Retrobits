@@ -36,6 +36,17 @@ class MProductos extends Conexion{
         return $comp;
     }
 
+    public function updateProducto($data){
+        $query = $this->getCon()->prepare("UPDATE `productos` SET `nombre` = ?,`descripcion` = ?,`precio` = ?,`stock` = ?,`descuento` = ?,`idSeccion` = ?,`deleted` = ? WHERE id = ?");
+
+        $query->bind_param("ssdiiiii", $data["nombre"], $data["descripcion"], $data["precio"], $data["stock"], $data["descuento"], $data["idSeccion"], $data["deleted"], $data["id"]);
+
+        $comp = $query->execute() ? true : false;
+        $query->close();
+
+        return $comp;
+    }
+
     public function getLastProductoID(){
         $sentencia = $this->getCon()->query('SELECT id FROM productos ORDER BY id DESC LIMIT 1;');
 

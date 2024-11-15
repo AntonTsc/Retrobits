@@ -44,17 +44,19 @@ if ($_SESSION['admin'] != "1") {
         </ul>
     </header>
 
-    <div class="desactualizado"></div>
+    <div class="desactualizado bg-light"></div>
 
     <!-- Contenedor donde se cargará el contenido dinámico -->
     <div id="contenido" class="p-3"></div>
 
-    <div id="menuDesplegable" class="menu-desplegable rounded-2">
-    <ul>
-        <li id="md1" class="btn btn-white bi bi-pencil-fill rounded-bottom-0 w-100 text-start p-1" onclick="clickDerechoAccion1()"> Editar</li>
-        <li id="md2" class="btn btn-danger bi bi-trash-fill rounded-top-0 w-100 text-start p-1" onclick="clickDerechoAccion2()"> Eliminar</li>
-    </ul>
-</div>
+    <div id="menuDesplegable" class="menu-desplegable border border-1 rounded-2 bg-dark">
+        <ul>
+            <li id="mdImagen" class="btnMenu btn btn-white bi bi-image rounded-bottom-0 w-100 text-start py-1 ps-3 d-none bg-light" onclick="clickDerechoAccionImagen()" data-bs-toggle="modal" data-bs-target="#modalVerFotoProducto"> Ver imagen</li>
+            <li id="mdEditar" class="btnMenu btn btn-white bi bi-pencil-fill rounded-bottom-0 w-100 text-start py-1 ps-3 bg-light" onclick="clickDerechoAccionEditar()"> Editar</li>
+            <li id="mdCancelar" class="btnMenu btn btn-white bi bi-x-circle rounded-0 w-100 text-start py-1 ps-3 d-none bg-light" onclick="clickDerechoAccionCancelar()"> Cancelar</li>
+            <li id="mdEliminar" class="btnMenu btn btn-danger bi bi-trash-fill rounded-top-0 w-100 text-start py-1 ps-3 mt-1 " onclick="clickDerechoAccionEliminar()"> Eliminar</li>
+        </ul>
+    </div>
 </div>
 
 </body>
