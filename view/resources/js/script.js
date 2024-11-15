@@ -161,7 +161,7 @@ async function comprarProductos(){
 
         };  
         
-        const response = await fetch("/path/to/carritoEdit.php", {
+        const response = await fetch("/Retrobits/controller/carritoEdit.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
