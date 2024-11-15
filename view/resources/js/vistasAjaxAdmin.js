@@ -222,17 +222,18 @@ function setClickDerecho() {
         const windowHeight = window.innerHeight;
 
         //Obtengo las posiciones del raton cuando hizo el click
-        let posicionDesdeIzquierda = event.pageX;//Devuelve los pixeles desde el lateral izquierdo de la pantalla hasta el raton
-        let posicionDesdeArriba = event.pageY;//Devuelve los pixeles desde el lateral superior de la pantalla hasta el raton
-
+        let posicionDesdeIzquierda = event.pageX;//Devuelve los pixeles desde el lateral izquierdo de la pagina hasta el raton
+        let posicionDesdeArriba = event.pageY;//Devuelve los pixeles desde el lateral superior de la pagina hasta el raton
         
-        if (event.pageX + menuWidth > windowWidth) {//Si la posicionX del click + el ancho del menu son mas grandes que el ancho de la ventana
+        //La comparacion se hace con clientX ya que necesito comparar el tamaño de la pantalla y no la de la pagina
+        if (event.clientX + menuWidth > windowWidth) {//Si la posicionX del click + el ancho del menu son mas grandes que el ancho de la ventana
 
             //Le doy a la posicionX el valor normal menos el ancho del menu
             posicionDesdeIzquierda = event.pageX - menuWidth;
         }
 
-        if (event.pageY + menuHeight > windowHeight) {//Si la posicionY del click + la altura del menu son mas grandes que la altura de la ventana
+        
+        if (event.clientY + menuHeight > windowHeight) {//Si la posicionY del click + la altura del menu son mas grandes que la altura de la ventana
 
             //Le doy a la posicionY el valor normal menos el alto del menu
             posicionDesdeArriba = event.pageY - menuHeight;
