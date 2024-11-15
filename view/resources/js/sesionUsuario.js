@@ -1,6 +1,6 @@
 // Ojo del input contraseña para visualizarla
-const togglePassword = document.querySelector('#togglePassword');
-const password = document.querySelector('#floatingPassword');
+const togglePasswords = document.querySelectorAll('.bi-eye-slash');
+const passwords = document.querySelectorAll('input[type="password"]');
 const fl = document.getElementById('FL');
 const fr = document.getElementById('FR');
 const fm = document.getElementById('FM');
@@ -244,14 +244,14 @@ async function modificarUsuario(){
     }
 }
 
-togglePassword.addEventListener('click', () => {
-    const type = password
-        .getAttribute('type') === 'password' ?
-        'text' : 'password';
-    password.setAttribute('type', type);
-    togglePassword.classList.toggle('bi-eye');
-});
-
+togglePasswords.forEach((togglePassword, index) => {
+    togglePassword.addEventListener('click', () => {
+        const passwordInput = passwords[index];
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        togglePassword.classList.toggle('bi-eye');
+    })
+})
 
 if (fl){
     fl.addEventListener('submit', (e) => {
