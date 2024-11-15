@@ -49,7 +49,7 @@ if ($_SESSION['admin'] != "1") {
     <!-- Contenedor donde se cargará el contenido dinámico -->
     <div id="contenido" class="p-3"></div>
 
-    <div id="menuDesplegable" class="menu-desplegable border border-1 rounded-2 bg-dark">
+    <div id="menuDesplegable" class="menu-desplegable border border-1 rounded-2">
         <ul>
             <li id="mdImagen" class="btnMenu btn btn-white bi bi-image rounded-bottom-0 w-100 text-start py-1 ps-3 d-none bg-light" onclick="clickDerechoAccionImagen()" data-bs-toggle="modal" data-bs-target="#modalVerFotoProducto"> Ver imagen</li>
             <li id="mdEditar" class="btnMenu btn btn-white bi bi-pencil-fill rounded-bottom-0 w-100 text-start py-1 ps-3 bg-light" onclick="clickDerechoAccionEditar()"> Editar</li>

@@ -528,15 +528,15 @@ function editarFila(btn) {
         
         // Verificar el tipo de dato según la clase de la celda
         if (celda.classList.contains('text')) {
-            inputHTML = `<input type="text" class="form-control" value="${valorActual}">`;
+            inputHTML = `<input type="text" class="form-control" style="height: 35px;" value="${valorActual}">`;
         } else if (celda.classList.contains('number')) {
-            inputHTML = `<input type="number" class="form-control text-end" value="${valorActual}">`;
+            inputHTML = `<input type="number" class="form-control text-end" style="height: 35px;" value="${valorActual}">`;
         } else if (celda.classList.contains('boolean')) {
             inputHTML = `<div class="form-check form-switch d-flex justify-content-center align-items-center">
-                            <input class="form-check-input" type="checkbox" role="switch" ${valorActual === 'Si' ? 'checked' : ''}>
+                            <input class="form-check-input" type="checkbox" role="switch" style="height: 30px; width: 50px;" ${valorActual === 'Si' ? 'checked' : ''}>
                         </div>`;
         } else if (celda.classList.contains('select')) {
-            inputHTML = `<select id="nuevoSeccion" class="form-select" aria-label="Large select example">
+            inputHTML = `<select id="nuevoSeccion" class="form-select" aria-label="Large select example" style="height: 35px;">
                             <option ${valorActual === 'consolas' && 'selected'} value="1">consolas</option>
                             <option ${valorActual === 'computadoras' && 'selected'} value="2">computadoras</option>
                             <option ${valorActual === 'camaras' && 'selected'} value="3">camaras</option>
@@ -673,10 +673,8 @@ async function guardarEdiciones(btn) {
 function verFotoProducto(btn){
     const fila = btn.closest('tr');
     if(fila.querySelector('td:nth-child(2)').innerText === ""){
-        console.log("Product")
         document.getElementById("modalFotoNombre").innerText = fila.querySelector('td:nth-child(2)').children[0].value;
     }else{
-        console.log("Product2")
         document.getElementById("modalFotoNombre").innerText = fila.querySelector('td:nth-child(2)').innerText;
     };
     modalFoto = document.getElementById("modalFoto");

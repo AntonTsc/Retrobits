@@ -83,12 +83,13 @@ tbody td input{
 }
 
 .dropdown-menu{
-    background-color: #212529 !important;
+    background-color: #e1e1e1 !important;
 }
-
 #menuDesplegable{
-    width: 150px;
-}
+        background-color: #e1e1e1 !important;
+        width: 150px;
+    }
+
 
 .btnMenu:hover{
     background-color: rgb(230, 230, 230) !important;
