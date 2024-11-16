@@ -15,17 +15,32 @@ function guiaDeUsuario(){
                 steps: [
                     { 
                         popover: {
-                            title: 'Bienvenido a la Guía de Usuario de Productos',
-                            description: '<p>A lo largo de esta guía, se proporcionará una explicación detallada sobre el funcionamiento del <strong>panel administrativo de productos</strong>. Si decides continuar, irás descubriendo las distintas funcionalidades disponibles.</p><p><i>En cualquier momento, puedes cancelar la guía haciendo clic fuera del área o seleccionando la "X" ubicada en la esquina superior derecha.</i></p>',
-                            side: "left", align: 'start',
+                            title: 'Cosas que Debes Saber Antes de Comenzar',
+                            description: `<p>Esta aplicación web está optimizada para su uso en ordenadores. Si bien es posible realizar acciones desde otros dispositivos, algunas notificaciones pueden no mostrarse correctamente y ciertos elementos de diseño pueden no funcionar como se espera.</p>
+                            <p>La página mantiene una <strong>conexión constante con la base de datos</strong> y puede ser manejada desde varios dispositivos al mismo tiempo. Por motivos de seguridad, cuando se detecten cambios en la base de datos que no coincidan con los datos cargados en esta página, <strong>recibirás una notificación</strong> para decidir entre actualizar los datos o mantener los actuales.</p>
+                            <p><strong>Nota:</strong> Si estás editando una fila y no deseas perder los cambios, puedes optar por no actualizar. Sin embargo, se <strong>recomienda actualizar siempre que sea posible</strong> para evitar conflictos inesperados.</p>`,
+                            side: "top", align: 'center',
                             popoverClass: "guiaAncho"
                         }
                     },
                     { 
                         popover: {
-                            title: 'Cosas que Debes Saber Antes de Comenzar',
-                            description: '<p>Esta página mantiene una <strong>conexión constante con la base de datos</strong> y puede ser manejada desde distintos dispositivos. Por motivos de seguridad, cuando se detecten cambios en la base de datos que no coincidan con los datos cargados en esta página, <strong>recibirás una notificación</strong> para decidir entre actualizar los datos o mantener los actuales.</p><p><strong>Nota:</strong> Si estás editando una fila y no deseas perder los cambios, puedes optar por no actualizar. Sin embargo, se <strong>recomienda actualizar siempre que sea posible</strong> para evitar conflictos inesperados.</p>',
+                            title: 'Acceso Seguro al Panel Administrativo',
+                            description: `<p>El acceso al <strong>panel administrativo</strong> está diseñado para garantizar la <strong>seguridad de la información</strong> y la privacidad de los datos gestionados. Solo los usuarios con permisos de administrador tienen acceso autorizado.</p><p>En caso de que un administrador cierre sesión desde otra pestaña dentro del mismo navegador, el sistema detectará automáticamente este cambio y cerrará el acceso al panel administrativo de manera inmediata.</p>
+                            <div style="padding: 10px; border: 2px solid #cc0000; background-color: #ffe5e5; margin-top: 15px; border-radius: 20px;">
+                            <p style="font-size: 1.2em; color: #cc0000;"><strong>⚠ Importante:</strong></p>
+                            <p> En caso de rechazar los cambios detectados, la página <strong>no volverá a contactar con la base de datos</strong> hasta que lo hagas manualmente.</p>
+                            <p>Esto implica que el <strong>sistema de seguridad</strong> que cierra sesiones automáticamente no funcionará en la pestaña actual.</p>
+                            </div>`,
                             side: "top", align: 'center',
+                            popoverClass: "guiaAncho"
+                        }
+                    },
+                    { 
+                        popover: {
+                            title: 'Bienvenido a la Guía de Usuario de Productos',
+                            description: '<p>A lo largo de esta guía, se proporcionará una explicación detallada sobre el funcionamiento del <strong>panel administrativo de productos</strong>. Si decides continuar, irás descubriendo las distintas funcionalidades disponibles.</p><p><i>En cualquier momento, puedes cancelar la guía haciendo clic fuera del área o seleccionando la "X" ubicada en la esquina superior derecha.</i></p>',
+                            side: "left", align: 'start',
                             popoverClass: "guiaAncho"
                         }
                     },
@@ -197,17 +212,32 @@ function guiaDeUsuario(){
                 steps: [
                     { 
                         popover: {
-                            title: 'Bienvenido a la Guía de Usuario de Usuarios',
-                            description: '<p>A lo largo de esta guía, se proporcionará una explicación detallada sobre el funcionamiento del <strong>panel administrativo de usuarios</strong>. Si decides continuar, irás descubriendo las distintas funcionalidades disponibles.</p><p><i>En cualquier momento, puedes cancelar la guía haciendo clic fuera del área o seleccionando la "X" ubicada en la esquina superior derecha.</i></p>',
-                            side: "left", align: 'start',
+                            title: 'Cosas que Debes Saber Antes de Comenzar',
+                            description: `<p>Esta aplicación web está optimizada para su uso en ordenadores. Si bien es posible realizar acciones desde otros dispositivos, algunas notificaciones pueden no mostrarse correctamente y ciertos elementos de diseño pueden no funcionar como se espera.</p>
+                            <p>La página mantiene una <strong>conexión constante con la base de datos</strong> y puede ser manejada desde varios dispositivos al mismo tiempo. Por motivos de seguridad, cuando se detecten cambios en la base de datos que no coincidan con los datos cargados en esta página, <strong>recibirás una notificación</strong> para decidir entre actualizar los datos o mantener los actuales.</p>
+                            <p><strong>Nota:</strong> Si estás editando una fila y no deseas perder los cambios, puedes optar por no actualizar. Sin embargo, se <strong>recomienda actualizar siempre que sea posible</strong> para evitar conflictos inesperados.</p>`,
+                            side: "top", align: 'center',
                             popoverClass: "guiaAncho"
                         }
                     },
                     { 
                         popover: {
-                            title: 'Cosas que Debes Saber Antes de Comenzar',
-                            description: '<p>Esta página mantiene una <strong>conexión constante con la base de datos</strong> y puede ser manejada desde distintos dispositivos. Por motivos de seguridad, cuando se detecten cambios en la base de datos que no coincidan con los datos cargados en esta página, <strong>recibirás una notificación</strong> para decidir entre actualizar los datos o mantener los actuales.</p><p><strong>Nota:</strong> Si estás editando una fila y no deseas perder los cambios, puedes optar por no actualizar. Sin embargo, se <strong>recomienda actualizar siempre que sea posible</strong> para evitar conflictos inesperados.</p>',
+                            title: 'Acceso Seguro al Panel Administrativo',
+                            description: `<p>El acceso al <strong>panel administrativo</strong> está diseñado para garantizar la <strong>seguridad de la información</strong> y la privacidad de los datos gestionados. Solo los usuarios con permisos de administrador tienen acceso autorizado.</p><p>En caso de que un administrador cierre sesión desde otra pestaña dentro del mismo navegador, el sistema detectará automáticamente este cambio y cerrará el acceso al panel administrativo de manera inmediata.</p>
+                            <div style="padding: 10px; border: 2px solid #cc0000; background-color: #ffe5e5; margin-top: 15px; border-radius: 20px;">
+                            <p style="font-size: 1.2em; color: #cc0000;"><strong>⚠ Importante:</strong></p>
+                            <p> En caso de rechazar los cambios detectados, la página <strong>no volverá a contactar con la base de datos</strong> hasta que lo hagas manualmente.</p>
+                            <p>Esto implica que el <strong>sistema de seguridad</strong> que cierra sesiones automáticamente no funcionará en la pestaña actual.</p>
+                            </div>`,
                             side: "top", align: 'center',
+                            popoverClass: "guiaAncho"
+                        }
+                    },
+                    { 
+                        popover: {
+                            title: 'Bienvenido a la Guía de Usuario de Usuarios',
+                            description: '<p>A lo largo de esta guía, se proporcionará una explicación detallada sobre el funcionamiento del <strong>panel administrativo de usuarios</strong>. Si decides continuar, irás descubriendo las distintas funcionalidades disponibles.</p><p><i>En cualquier momento, puedes cancelar la guía haciendo clic fuera del área o seleccionando la "X" ubicada en la esquina superior derecha.</i></p>',
+                            side: "left", align: 'start',
                             popoverClass: "guiaAncho"
                         }
                     },
@@ -257,17 +287,32 @@ function guiaDeUsuario(){
                 steps: [
                     { 
                         popover: {
-                            title: 'Bienvenido a la Guía de Usuario de Pedidos',
-                            description: '<p>A lo largo de esta guía, se proporcionará una explicación detallada sobre el funcionamiento del <strong>panel administrativo de pedidos</strong>. Si decides continuar, irás descubriendo las distintas funcionalidades disponibles.</p><p><i>En cualquier momento, puedes cancelar la guía haciendo clic fuera del área o seleccionando la "X" ubicada en la esquina superior derecha.</i></p>',
-                            side: "left", align: 'start',
+                            title: 'Cosas que Debes Saber Antes de Comenzar',
+                            description: `<p>Esta aplicación web está optimizada para su uso en ordenadores. Si bien es posible realizar acciones desde otros dispositivos, algunas notificaciones pueden no mostrarse correctamente y ciertos elementos de diseño pueden no funcionar como se espera.</p>
+                            <p>La página mantiene una <strong>conexión constante con la base de datos</strong> y puede ser manejada desde varios dispositivos al mismo tiempo. Por motivos de seguridad, cuando se detecten cambios en la base de datos que no coincidan con los datos cargados en esta página, <strong>recibirás una notificación</strong> para decidir entre actualizar los datos o mantener los actuales.</p>
+                            <p><strong>Nota:</strong> Si estás editando una fila y no deseas perder los cambios, puedes optar por no actualizar. Sin embargo, se <strong>recomienda actualizar siempre que sea posible</strong> para evitar conflictos inesperados.</p>`,
+                            side: "top", align: 'center',
                             popoverClass: "guiaAncho"
                         }
                     },
                     { 
                         popover: {
-                            title: 'Cosas que Debes Saber Antes de Comenzar',
-                            description: '<p>Esta página mantiene una <strong>conexión constante con la base de datos</strong> y puede ser manejada desde distintos dispositivos. Por motivos de seguridad, cuando se detecten cambios en la base de datos que no coincidan con los datos cargados en esta página, <strong>recibirás una notificación</strong> para decidir entre actualizar los datos o mantener los actuales.</p><p><strong>Nota:</strong> Si estás editando una fila y no deseas perder los cambios, puedes optar por no actualizar. Sin embargo, se <strong>recomienda actualizar siempre que sea posible</strong> para evitar conflictos inesperados.</p>',
+                            title: 'Acceso Seguro al Panel Administrativo',
+                            description: `<p>El acceso al <strong>panel administrativo</strong> está diseñado para garantizar la <strong>seguridad de la información</strong> y la privacidad de los datos gestionados. Solo los usuarios con permisos de administrador tienen acceso autorizado.</p><p>En caso de que un administrador cierre sesión desde otra pestaña dentro del mismo navegador, el sistema detectará automáticamente este cambio y cerrará el acceso al panel administrativo de manera inmediata.</p>
+                            <div style="padding: 10px; border: 2px solid #cc0000; background-color: #ffe5e5; margin-top: 15px; border-radius: 20px;">
+                            <p style="font-size: 1.2em; color: #cc0000;"><strong>⚠ Importante:</strong></p>
+                            <p> En caso de rechazar los cambios detectados, la página <strong>no volverá a contactar con la base de datos</strong> hasta que lo hagas manualmente.</p>
+                            <p>Esto implica que el <strong>sistema de seguridad</strong> que cierra sesiones automáticamente no funcionará en la pestaña actual.</p>
+                            </div>`,
                             side: "top", align: 'center',
+                            popoverClass: "guiaAncho"
+                        }
+                    },
+                    { 
+                        popover: {
+                            title: 'Bienvenido a la Guía de Usuario de Pedidos',
+                            description: '<p>A lo largo de esta guía, se proporcionará una explicación detallada sobre el funcionamiento del <strong>panel administrativo de pedidos</strong>. Si decides continuar, irás descubriendo las distintas funcionalidades disponibles.</p><p><i>En cualquier momento, puedes cancelar la guía haciendo clic fuera del área o seleccionando la "X" ubicada en la esquina superior derecha.</i></p>',
+                            side: "left", align: 'start',
                             popoverClass: "guiaAncho"
                         }
                     },

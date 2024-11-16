@@ -1,9 +1,12 @@
 <?php
 session_start();
-if ($_SESSION['admin'] != "1") {
-    header("Location: ../");
-    exit();
+if (!isset($_SESSION['admin']) || $_SESSION['admin'] != "1") {
+     // Enviar un mensaje de permiso denegado con un código 403
+     header("HTTP/1.1 403 Forbidden");
+     echo json_encode(['error' => 'Acceso denegado']);
+     exit();
 }
+
 ob_start(); // Iniciar el almacenamiento en búfer de salida
 include(__DIR__ . '/../controller/usuarios.php');
 $response = ob_get_clean(); // Capturar la salida
@@ -14,7 +17,7 @@ $usuarios = json_decode($response, true);
 <div class="w-100 d-flex justify-content-between gap-1">
     <div class="buscador input-group my-1 d-flex flex-nowrap">
       <select id="selector" class="border rounded-start-1 p-1">
-          <option value="2" selected>Username</option>
+          <option value="2" selected>Usuario</option>
           <option value="1">ID</option>
           <option value="3">Email</option>
           <option value="4">Admin</option>

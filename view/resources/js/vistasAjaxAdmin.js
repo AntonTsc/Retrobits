@@ -45,16 +45,45 @@ function cargarContenido(tab) {
     //true = usar un proceso asincrono para la solicitud
     xhr.open("POST", `panelAdmin${tab}.php`, true);//configura una solicitud
     // Cuando la solicitud se complete, la función onload se ejecutará
-    xhr.onload = function () {
+    xhr.onload = () => {
         if (xhr.status === 200) {//si la conexion ha sido correcta/OK
-            nuevoContenido = xhr.responseText;
+            nuevoContenido = xhr.responseText
             analizarContenido(tab);
         } else if (xhr.status === 404) {//si la conexion ha sido erronea o no encontrada
-            mostrarError404();
+            alert("404 Página no encontrada")
+        } else if (xhr.status === 403) {// Si el permiso fue denegado
+            //Esto se activara cuando se detecte que el usuario administrador a cerrado sesion en otra pestaña mientras el panel de administracion estaba abierto
+            vaciarIntervalos();
+            Swal.fire({
+                grow: "fullscreen",
+                icon: "error",
+                title: "ACCESO DENEGADO",
+                html: "No tienes permisos para ver esta página.<br>Serás redirigido automaticamente en:<br><br><b>15</b>.",
+                allowOutsideClick: false,
+                confirmButtonText: "Salir",
+                confirmButtonColor: "#dc3545",
+                timer: 15000,
+                timerProgressBar: true, // Opcional: agrega una barra de progreso
+                didOpen: () => {
+                    const timerElement = Swal.getHtmlContainer().querySelector("b");
+                    setInterval(() => {
+                        if (timerElement) {
+                            timerElement.textContent = `${Math.ceil(Swal.getTimerLeft() / 1000)}s`;
+                        }
+                    }, 1000);
+                },
+                willClose: () => {
+                    window.location.href = "../";
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "../";
+                }
+            });
         }
     };
 
-    xhr.onerror = function () {
+    xhr.onerror = () => {
         alert("Error en la solicitud. No se pudo conectar con el servidor.");
     };
     xhr.send(); //Manda la solicitud
@@ -122,14 +151,6 @@ function vaciarIntervalos(gestor = "") {
     }
 }
 
-//La pagina del Request no se ha encontrado, nos muestra un mensaje en su lugar
-function mostrarError404() {
-    document.getElementById("contenido").innerHTML = "<h1 class='text-center'>404</h1><p class='text-center'>Página no encontrada</p>";
-    document.querySelectorAll(".nav-link").forEach(pestana => {
-        pestana.classList.remove("active", "text-dark");
-    });
-    vaciarIntervalos();
-}
 
 //SweetAlert2 es una libreria para mostrar alertas dinamicas
 //Muestra un mensaje que nos permitira mantener la pagina actual o refescar los datos por Ajax
@@ -162,7 +183,7 @@ function mostrarMensajeDatosDesactualizados(tab) {
     const fecha = new Date();
     const horas = String(fecha.getHours()).padStart(2, '0');
     const minutos = String(fecha.getMinutes()).padStart(2, '0');
-    document.querySelector(".desactualizado").innerHTML = `Los datos de la página están desactualizados desde las ${horas}:${minutos} - <button class="cargarDesactualizado" onclick="cargarContenidoNuevo('${tab}', true)">actualizar</button>`;
+    document.querySelector(".desactualizado").innerHTML = `Los datos de la página están desactualizados desde las ${horas}:${minutos} - <button class="cargarDesactualizado" onclick="cargarContenidoNuevo('${tab}', true)">actualizar</button><br>⚠ Seguridad de detección automática de cierre de sesión inactiva.`;
 
     console.log(document.querySelector(".desactualizado").innerHTML);
 

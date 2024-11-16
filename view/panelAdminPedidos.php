@@ -1,8 +1,10 @@
 <?php
 session_start();
 if ($_SESSION['admin'] != "1") {
-    header("Location: ../");
-    exit();
+     // Enviar un mensaje de permiso denegado con un código 403
+     header("HTTP/1.1 403 Forbidden");
+     echo json_encode(['error' => 'Acceso denegado']);
+     exit();
 }
 ?>
 

@@ -1,6 +1,6 @@
 <?php
 session_start();
-if ($_SESSION['admin'] != "1") {
+if (!isset($_SESSION['admin']) || $_SESSION['admin'] != "1") {
     header("Location: ../");
     exit();
 }
@@ -13,7 +13,7 @@ if ($_SESSION['admin'] != "1") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RB - Panel Admin</title>
     <link rel="icon" href="resources/images/img/retro-bits-logo.ico" type="image/x-icon">
-    <script src="resources/js/vistasAjaxAdmin.js" defer></script>
+
     <!-- LIBRERIAS -->
     <!--Bootstrap-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"/>
@@ -29,8 +29,18 @@ if ($_SESSION['admin'] != "1") {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js" defer></script>
     <script src="resources/js/guiaUsuarioAdmin.js" defer></script>
+    <!-- FIN LIBRERIAS  -->
     
+    <!-- Personalizados -->
     <link rel="stylesheet" href="resources/css/panelAdmin.css">
+    <script src="resources/js/vistasAjaxAdmin.js" defer></script>
+    <!-- Fin Personalizados -->
+
+    <!-- Meta tags -->
+    <meta http-equiv="content-language" content="es" />
+    <meta http-equiv="content-script-type" content="text/javascript">
+    <meta httpcenter !important;quiv="content-style-type" content="text/css">
+    <!-- Fin Meta tags -->
 </head>
 
 <body>

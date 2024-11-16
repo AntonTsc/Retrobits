@@ -9,10 +9,12 @@ html{
 }
 
 body{
-    background-image: url(../images/img/fondo.jpg);
-    background-size: 800px;
-    backdrop-filter: blur(7px);
+    background-image: url(../images/img/fondoDesenfocado.jpg);
+    background-size: cover;
     background-attachment: fixed;
+    background-position: center;
+    margin: 0;
+    min-height: 100vh;
   }
 
 nav{
@@ -138,6 +140,9 @@ nav button[aria-expanded="true"] img.arrow {
     z-index: 999; /* Asegura que quede sobre otros elementos */
   }
 
+    .guiaAncho{
+        max-width: 600px !important;
+    }
 
 @media (max-width: 992px){
     .suggestions {
