@@ -14,6 +14,11 @@ let alternarStock = false;
 //* FUNCIONES =========================================================
 //Se encarga de cargar el contenido por completo reiniciando los comparadores
 function cargarContenidoNuevo(tab, desactualizado = false) {
+    document.getElementById("mdImagen").classList.add("d-none");
+    document.getElementById("mdCodigosDescuento").classList.add("d-none");
+    document.getElementById("mdContrasena").classList.add("d-none");
+    document.getElementById("mdEditar").classList.replace("rounded-0", "rounded-bottom-0");
+
     vaciarIntervalos();
     //Vacia el contenido que deveriamos ver para poder cargar nuevo contenido
     ultimoContenido = "";
@@ -64,7 +69,7 @@ function analizarContenido(tab) {
         actualizarClasesTab(tab);
         configurarBotonAgregar();
         gestionarIntervalos(tab);
-        setClickDerecho();
+        setClickDerecho(tab);
 
     } else if (nuevoContenido !== ultimoContenido) {
         vaciarIntervalos();
@@ -89,6 +94,7 @@ function gestionarIntervalos(tab) {
             if (!intervaloProductos) intervaloProductos = setInterval(() => cargarContenido("Productos"), 5000)
             break;
         case "Usuarios":
+            funcionesUsuarios();
             if (!intervaloUsuarios) intervaloUsuarios = setInterval(() => cargarContenido("Usuarios"), 5000);
             break;
         case "Pedidos":
@@ -191,64 +197,66 @@ function eliminarTildes(texto) {
 //* MANIPULACIONES DE DOM =============================================
 //Muestra un menú en la posición del clic derecho si es en la tabla. Este menú permite editar o guardar una fila dependiendo de su estado ademas de permitir eliminar la misma.
 //Está configurado para que el menú no se muestre fuera de la pantalla
-function setClickDerecho() {
-    const tabla = document.getElementById('cuerpoTabla');
+function setClickDerecho(tab) {
+    const tablas = document.querySelectorAll('.cuerpoTabla');
     const menu = document.getElementById('menuDesplegable');
     const mdEditar = document.getElementById('mdEditar');
 
     // Mostrar menú en la posición del clic derecho
-    tabla.addEventListener('contextmenu', (event) => {
-        event.preventDefault();
-        elementoClickDerecho = event.target;
-
-        const filaEditando = document.querySelector('tr.editando');
-        const btnCancelar = document.getElementById('mdCancelar');
-        if (filaEditando === elementoClickDerecho.closest('tr')) {
-            btnCancelar.classList.remove('d-none');  // Muestra el botón
-        }else{
-            btnCancelar.classList.add('d-none');  // Oculta el botón
-        }
-
-        //Cambiar opciones según el estado de la fila
-        // Esto -> ?. se utiliza para que en caso de no encontrar un elemento tr cercano no falle y devuelva undefined, de esta forma el codigo continua sin interrumpirse
-        const enEdicion = elementoClickDerecho.closest('tr').classList.contains('editando');
-        mdEditar.innerHTML = enEdicion ? " Guardar" : " Editar";
-        mdEditar.classList.toggle('bi-pencil-fill', !enEdicion);
-        mdEditar.classList.toggle('bi-floppy-fill', enEdicion);
-
-        //Muestra el menu
-        menu.style.display = 'block';
-
-        //Obtengo el ancho y alto del menu
-        const menuWidth = menu.offsetWidth;
-        const menuHeight = menu.offsetHeight;
-
-        //Obtengo el ancho y alto de la ventana
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-
-        //Obtengo las posiciones del raton cuando hizo el click
-        let posicionDesdeIzquierda = event.pageX;//Devuelve los pixeles desde el lateral izquierdo de la pagina hasta el raton
-        let posicionDesdeArriba = event.pageY;//Devuelve los pixeles desde el lateral superior de la pagina hasta el raton
-        
-        //La comparacion se hace con clientX ya que necesito comparar el tamaño de la pantalla y no la de la pagina
-        if (event.clientX + menuWidth > windowWidth) {//Si la posicionX del click + el ancho del menu son mas grandes que el ancho de la ventana
-
-            //Le doy a la posicionX el valor normal menos el ancho del menu
-            posicionDesdeIzquierda = event.pageX - menuWidth;
-        }
-
-        
-        if (event.clientY + menuHeight > windowHeight) {//Si la posicionY del click + la altura del menu son mas grandes que la altura de la ventana
-
-            //Le doy a la posicionY el valor normal menos el alto del menu
-            posicionDesdeArriba = event.pageY - menuHeight;
-        }
-
-        //muestro el menu en las posiciones guardadas
-        menu.style.left = `${posicionDesdeIzquierda}px`;
-        menu.style.top = `${posicionDesdeArriba}px`;
-    });
+    tablas.forEach((tabla) =>{
+        tabla.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            elementoClickDerecho = event.target;
+    
+            const filaEditando = document.querySelector('tr.editando');
+            const btnCancelar = document.getElementById('mdCancelar');
+            if (filaEditando === elementoClickDerecho.closest('tr')) {
+                btnCancelar.classList.remove('d-none');  // Muestra el botón
+            }else{
+                btnCancelar.classList.add('d-none');  // Oculta el botón
+            }
+    
+            //Cambiar opciones según el estado de la fila
+            // Esto -> ?. se utiliza para que en caso de no encontrar un elemento tr cercano no falle y devuelva undefined, de esta forma el codigo continua sin interrumpirse
+            const enEdicion = elementoClickDerecho.closest('tr').classList.contains('editando');
+            mdEditar.innerHTML = enEdicion ? " Guardar" : " Editar";
+            mdEditar.classList.toggle('bi-pencil-fill', !enEdicion);
+            mdEditar.classList.toggle('bi-floppy-fill', enEdicion);
+    
+            //Muestra el menu
+            menu.style.display = 'block';
+    
+            //Obtengo el ancho y alto del menu
+            const menuWidth = menu.offsetWidth;
+            const menuHeight = menu.offsetHeight;
+    
+            //Obtengo el ancho y alto de la ventana
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+    
+            //Obtengo las posiciones del raton cuando hizo el click
+            let posicionDesdeIzquierda = event.pageX;//Devuelve los pixeles desde el lateral izquierdo de la pagina hasta el raton
+            let posicionDesdeArriba = event.pageY;//Devuelve los pixeles desde el lateral superior de la pagina hasta el raton
+            
+            //La comparacion se hace con clientX ya que necesito comparar el tamaño de la pantalla y no la de la pagina
+            if (event.clientX + menuWidth > windowWidth) {//Si la posicionX del click + el ancho del menu son mas grandes que el ancho de la ventana
+    
+                //Le doy a la posicionX el valor normal menos el ancho del menu
+                posicionDesdeIzquierda = event.pageX - menuWidth;
+            }
+    
+            
+            if (event.clientY + menuHeight > windowHeight) {//Si la posicionY del click + la altura del menu son mas grandes que la altura de la ventana
+    
+                //Le doy a la posicionY el valor normal menos el alto del menu
+                posicionDesdeArriba = event.pageY - menuHeight;
+            }
+    
+            //muestro el menu en las posiciones guardadas
+            menu.style.left = `${posicionDesdeIzquierda}px`;
+            menu.style.top = `${posicionDesdeArriba}px`;
+        });
+    })
 
     // Ocultar menú al hacer clic fuera de él o al hacer scroll
     document.addEventListener('click', () => menu.style.display = 'none');
@@ -278,8 +286,8 @@ function clickDerechoAccionEliminar() {
 
 //Funciones dedicadar para la pestaña de productos
 function funcionesProductos() {
-    document.getElementById("mdImagen").classList.remove("d-none");
     document.getElementById("mdEditar").classList.replace("rounded-bottom-0", "rounded-0");
+    document.getElementById("mdImagen").classList.remove("d-none");
     const buscador = document.getElementById("buscador");
     const selector = document.getElementById("selector");
     const filas = document.querySelectorAll("table tbody tr");
@@ -337,6 +345,32 @@ function funcionesProductos() {
     });
 
     configurarCropper();
+}
+
+//Funciones dedicadar para la pestaña de usuarios
+function funcionesUsuarios() {
+    document.getElementById("mdEditar").classList.replace("rounded-bottom-0", "rounded-0");
+    document.getElementById("mdCodigosDescuento").classList.remove("d-none");
+    document.getElementById("mdContrasena").classList.remove("d-none");
+    const buscador = document.getElementById("buscador");
+    const selector = document.getElementById("selector");
+    const filas = document.querySelectorAll("table tbody tr");
+
+    //Escucha el input del buscador
+    buscador.addEventListener("input", () => {
+        const filtro = eliminarTildes(buscador.value.toLowerCase());
+        const indice = selector.value;
+
+        filas.forEach(fila => {
+            const celda = fila.querySelector(`td:nth-child(${indice})`);
+            const textoCelda = celda ? eliminarTildes(celda.textContent.toLowerCase()) : "";
+            let mostrarFila = textoCelda.includes(filtro);
+        
+            // Muestra u oculta la fila según el resultado
+            fila.style.display = mostrarFila ? "" : "none";
+        });
+         
+    });
 }
 
 function comprobarStock(btn) {

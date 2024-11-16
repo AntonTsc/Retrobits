@@ -15,8 +15,8 @@ function guiaDeUsuario(){
                 steps: [
                     { 
                         popover: {
-                            title: 'Bienvenido a la Guía de Usuario de Pedidos',
-                            description: '<p>A lo largo de esta guía, se proporcionará una explicación detallada sobre el funcionamiento del <strong>panel administrativo de pedidos</strong>. Si decides continuar, irás descubriendo las distintas funcionalidades disponibles.</p><p><i>En cualquier momento, puedes cancelar la guía haciendo clic fuera del área o seleccionando la "X" ubicada en la esquina superior derecha.</i></p>',
+                            title: 'Bienvenido a la Guía de Usuario de Productos',
+                            description: '<p>A lo largo de esta guía, se proporcionará una explicación detallada sobre el funcionamiento del <strong>panel administrativo de productos</strong>. Si decides continuar, irás descubriendo las distintas funcionalidades disponibles.</p><p><i>En cualquier momento, puedes cancelar la guía haciendo clic fuera del área o seleccionando la "X" ubicada en la esquina superior derecha.</i></p>',
                             side: "left", align: 'start',
                             popoverClass: "guiaAncho"
                         }
@@ -195,11 +195,46 @@ function guiaDeUsuario(){
                 prevBtnText: "◀",
                 doneBtnText: "VALE",
                 steps: [
-                    { popover: {
-                        title: 'Bienvenido a la Guía de Usuario de Usuarios',
-                        description: '<p>A lo largo de esta guía, se proporcionará una explicación detallada sobre el funcionamiento del panel administrativo de usuarios. Si decides continuar, irás descubriendo las distintas funcionalidades disponibles.<br><br>En cualquier momento puedes cancelar la guía haciendo clic fuera del área o seleccionando la "X" ubicada en la esquina superior izquierda.</p>',
-                        side: "left", align: 'start'
-                    }}
+                    { 
+                        popover: {
+                            title: 'Bienvenido a la Guía de Usuario de Usuarios',
+                            description: '<p>A lo largo de esta guía, se proporcionará una explicación detallada sobre el funcionamiento del <strong>panel administrativo de usuarios</strong>. Si decides continuar, irás descubriendo las distintas funcionalidades disponibles.</p><p><i>En cualquier momento, puedes cancelar la guía haciendo clic fuera del área o seleccionando la "X" ubicada en la esquina superior derecha.</i></p>',
+                            side: "left", align: 'start',
+                            popoverClass: "guiaAncho"
+                        }
+                    },
+                    { 
+                        popover: {
+                            title: 'Cosas que Debes Saber Antes de Comenzar',
+                            description: '<p>Esta página mantiene una <strong>conexión constante con la base de datos</strong> y puede ser manejada desde distintos dispositivos. Por motivos de seguridad, cuando se detecten cambios en la base de datos que no coincidan con los datos cargados en esta página, <strong>recibirás una notificación</strong> para decidir entre actualizar los datos o mantener los actuales.</p><p><strong>Nota:</strong> Si estás editando una fila y no deseas perder los cambios, puedes optar por no actualizar. Sin embargo, se <strong>recomienda actualizar siempre que sea posible</strong> para evitar conflictos inesperados.</p>',
+                            side: "top", align: 'center',
+                            popoverClass: "guiaAncho"
+                        }
+                    },
+                    { 
+                        element: '#headerLinks',
+                        popover: {
+                            title: 'Navegador',
+                            description: '<p>El navegador te permite <strong>volver al inicio</strong> de la tienda o <strong>cambiar entre las pestañas</strong> de gestión disponibles.</p>',
+                            side: "left", align: 'start'
+                        }
+                    },
+                    { 
+                        element: '#Usuarios',
+                        popover: {
+                            title: 'Gestión de Usuarios',
+                            description: '<p>En esta sección puedes explorar <strong>diversas opciones</strong> para interactuar con los datos de los usuarios, como editarlos, eliminarlos, añadir nuevos y mas...</p>',
+                            side: "top", align: 'start'
+                        }
+                    },
+                    { 
+                        element: '.buscador',
+                        popover: {
+                            title: 'Buscador',
+                            description: '<p>Esta herramienta permite realizar <strong>búsquedas específicas</strong> basadas en el texto ingresado y el criterio seleccionado.</p>',
+                            side: "left", align: 'start'
+                        }
+                    },
                 ],
 
                 onDestroyStarted: () => {
@@ -220,11 +255,22 @@ function guiaDeUsuario(){
                 prevBtnText: "◀",
                 doneBtnText: "VALE",
                 steps: [
-                    { popover: {
-                        title: 'Bienvenido a la Guía de Usuario de Pedidos',
-                        description: '<p>A lo largo de esta guía, se proporcionará una explicación detallada sobre el funcionamiento del panel administrativo de pedidos. Si decides continuar, irás descubriendo las distintas funcionalidades disponibles.<br><br>En cualquier momento puedes cancelar la guía haciendo clic fuera del área o seleccionando la "X" ubicada en la esquina superior izquierda.</p>',
-                        side: "left", align: 'start'
-                    }}
+                    { 
+                        popover: {
+                            title: 'Bienvenido a la Guía de Usuario de Pedidos',
+                            description: '<p>A lo largo de esta guía, se proporcionará una explicación detallada sobre el funcionamiento del <strong>panel administrativo de pedidos</strong>. Si decides continuar, irás descubriendo las distintas funcionalidades disponibles.</p><p><i>En cualquier momento, puedes cancelar la guía haciendo clic fuera del área o seleccionando la "X" ubicada en la esquina superior derecha.</i></p>',
+                            side: "left", align: 'start',
+                            popoverClass: "guiaAncho"
+                        }
+                    },
+                    { 
+                        popover: {
+                            title: 'Cosas que Debes Saber Antes de Comenzar',
+                            description: '<p>Esta página mantiene una <strong>conexión constante con la base de datos</strong> y puede ser manejada desde distintos dispositivos. Por motivos de seguridad, cuando se detecten cambios en la base de datos que no coincidan con los datos cargados en esta página, <strong>recibirás una notificación</strong> para decidir entre actualizar los datos o mantener los actuales.</p><p><strong>Nota:</strong> Si estás editando una fila y no deseas perder los cambios, puedes optar por no actualizar. Sin embargo, se <strong>recomienda actualizar siempre que sea posible</strong> para evitar conflictos inesperados.</p>',
+                            side: "top", align: 'center',
+                            popoverClass: "guiaAncho"
+                        }
+                    },
                 ],
 
                 onDestroyStarted: () => {

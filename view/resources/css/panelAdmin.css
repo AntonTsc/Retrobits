@@ -78,7 +78,7 @@ tbody tr{
     transition: background-color 0.5s ease;
 }
 tbody tr:hover{
-    background-color: rgb(230, 230, 230);
+    background-color: rgb(230, 230, 230) !important;
 }
 tbody td{
     font-size: 0.9rem;
@@ -100,7 +100,7 @@ tbody td input{
 }
 #menuDesplegable{
         background-color: #e1e1e1 !important;
-        width: 150px;
+        width: 220px;
     }
 
 
@@ -116,14 +116,8 @@ tbody td input{
     background: #dc3545;
     transition: transform 1s ease;
 }
-.editado{
-    background: #198754;
-}
 .editando{
-    background: #a0b0f9;
-}
-.editando:hover{
-    background: #91a0e2 !important;
+    background: #a0b0f9 !important;
 }
 
 .menu-desplegable {
@@ -132,7 +126,7 @@ tbody td input{
     background-color: #ffffff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    width: 150px;
+    min-width: 150px;
 }
 
 .menu-desplegable ul {
@@ -152,6 +146,20 @@ tbody td input{
     height: auto !important;
     top: 50%;
     left: 50%;
+}
+
+.accordion-button-admin {
+    background-color: #ffc10750 !important; /* Amarillo para administradores */
+    color: #000 !important; /* Texto negro */
+}
+.accordion-button-user {
+    background-color: #0d6efd50 !important; /* Azul para usuarios */
+    color: #000 !important; /* Texto blanco */
+}
+.accordion-button-admin.collapsed, 
+.accordion-button-user.collapsed {
+    background-color: #f8f9fa !important; /* Color cuando está colapsado */
+    color: #212529 !important; /* Texto más oscuro */
 }
 
 .guiaAncho{
