@@ -28,6 +28,19 @@
             return (count($usuarios) > 0) ? true : false;
         }
 
+        public function getUsuarioXid($id){
+            $query = $this->getCon()->prepare("SELECT * FROM usuarios WHERE id = ?");
+            $query->bind_param("i", $id);
+            $query->execute();
+
+            $result = $query->get_result();
+            $usuario = $result->fetch_assoc();
+
+            $query->close();
+
+            return $usuario;
+        }
+
         public function insertUsuario($data){
             if(!($this->getUsuario($data['username'], $data['email']))){
                 $query = $this->getCon()->prepare("INSERT INTO usuarios (`username`, `email`, `password`, `admin`, `deleted`) VALUES (?, ?, ?, 0, 0);");
@@ -74,16 +87,14 @@
         }
 
         public function editPassword($data){
-            $query = $this->getCon()->prepare("UPDATE usuarios SET password = ? WHERE id = ?");
-
             $encPass = password_hash($data['password'], PASSWORD_DEFAULT);
+
+            $query = $this->getCon()->prepare("UPDATE usuarios SET password = ? WHERE id = ?");
             $query->bind_param("si", $encPass, $data['id']);
-            
-            $comp = ($query->execute()) ? true : false;
-            
+            $query->execute();
             $query->close();
 
-            return $comp;
+            return true;
         }
     }
 ?>

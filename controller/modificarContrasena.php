@@ -12,6 +12,9 @@
     $datos = [];
 
     if($mUsuario->editPassword($data)){
+        $user = $mUsuario->getUsuarioXid($data['id']);
+        $_SESSION['password'] = $user['password'];
+
         $datos = [
             'status' => 'OK',
             'message' => 'Contraseña modificada.'
@@ -19,11 +22,11 @@
     } else {
         $datos = [
             'status' => 'ERROR',
-            'message' => 'No se ha podido modificar la contraseña'
+            'message' => 'No se ha podido modificar la contraseña.'
         ];
     }
 
-    header("Content-Type: apllication/json");
+    header("Content-Type: application/json");
     echo json_encode($datos);
     exit();
 ?>

@@ -4,6 +4,7 @@ const passwords = document.querySelectorAll('input[type="password"]');
 const fl = document.getElementById('FL');
 const fr = document.getElementById('FR');
 const fm = document.getElementById('FM');
+const fp = document.getElementById('FP');
 const path = window.location.pathname;
 const pagPerfil = path.split('/').pop();
 
@@ -114,14 +115,14 @@ async function insertUsuario(){
         } else {
             const Toast = Swal.mixin({
                 toast: true,
-                position: "top-end",
+                position: "top",
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true
               });
               Toast.fire({
                 icon: "error",
-                title: "Ya existe un usuario con ese nombre/email"
+                title: datos.message
               });
         }
 
@@ -161,7 +162,7 @@ async function loginUsuario(){
               });
               Toast.fire({
                 icon: "error",
-                title: "¡Datos de sesión incorrectos!"
+                title: datos.message
               });
         }
 
@@ -170,32 +171,67 @@ async function loginUsuario(){
     }
 }
 
-async function comprobarSesion(){
-    const userInput = document.getElementById("floatingUsername");
-    const emailInput = document.getElementById("floatingEmail");
-
-    try{
-        const response = await fetch("/Retrobits/controller/sesionComp.php");
-        const sesion = await response.json();
-        
-        if (sesion.status === 'OK') {
-            userInput.value = sesion.user.username;
-            emailInput.value = sesion.user.email;
-
-            return true;
-        } else {
-            window.location.href = "../index.html";
-        }
-    } catch (error) {
-        console.error("Error: ", error);
-    }
-}
-
 async function modificarUsuario(){
     const data = {
-        username: document.getElementById("floatingUsername").value,
-        email: document.getElementById("floatingEmail").value,
-        password: document.getElementById("floatingPassword").value
+        username: document.getElementById("floatingUsername"),
+        email: document.getElementById("floatingEmail"),
+        password: document.getElementById("floatingPassword")
+    }
+
+    // Validación de los campos utilizando expresiones regulares
+    // Username
+    const valUsername = (username) => {
+        return String(username).match(
+            /^[a-zA-Z0-9_]{4,20}$/
+        );
+    };
+
+    // Email
+    const valEmail = (email) => {
+        return String(email).toLocaleLowerCase().match(
+            /^[\w-\.]+@[\w-]+.[\w-]{2,}$/
+        );
+    };
+
+    // Validaciones
+    if(!valUsername(data.username.value)){
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top",
+            showConfirmButton: false,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "error",
+            title: "El nombre de usuario debe tener entre 4 y 20 caracteres y solo puede contener letras, números y guiones bajos"
+          });
+          data.username.style.borderColor = "red";
+
+        return; // Detiene la ejecución si el username es inválido
+    } else {
+        data.username.style.borderColor = "green";
+    }
+
+    if(!valEmail(data.email.value)){
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top",
+            showConfirmButton: false,
+            timerProgressBar: true
+          });
+          Toast.fire({
+            icon: "error",
+            title: "Por favor ingrese un correo electrónico válido"
+          });
+          data.email.style.borderColor = "red";
+
+        return; // Detiene la ejecución si el email es inválido
+    } else {
+        data.email.style.borderColor = "green";
     }
 
     try{
@@ -204,9 +240,9 @@ async function modificarUsuario(){
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: '&username=' + encodeURIComponent(data.username) + 
-                  '&email=' + encodeURIComponent(data.email) + 
-                  '&password=' + encodeURIComponent(data.password)
+            body: 'username=' + encodeURIComponent(data.username.value) + 
+                  '&email=' + encodeURIComponent(data.email.value) + 
+                  '&password=' + encodeURIComponent(data.password.value)
         }); 
 
         const datos = await response.json();
@@ -244,6 +280,100 @@ async function modificarUsuario(){
     }
 }
 
+async function modificarContrasena(){
+    const passOld = document.getElementById("floatingPasswordOld");
+    const passNew = document.getElementById("floatingPasswordNew");
+
+    if (passNew.value === passOld.value) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top",
+            showConfirmButton: false,
+            timerProgressBar: true
+          });
+          Toast.fire({
+            icon: "error",
+            title: "La nueva contraseña no puede ser igual a la actual."
+          });
+          passNew.style.borderColor = "red";
+
+        return;
+    }
+
+    // Password
+    const valPassword = (password) => {
+        return String(password).match(
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*()\.]).{8,40}$/
+        );
+    };
+
+    if(!valPassword(passNew.value)){
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top",
+            showConfirmButton: false,
+            timerProgressBar: true
+          });
+          Toast.fire({
+            icon: "error",
+            title: "La contraseña debe tener mínimo 8 caracteres, incluyendo una mayúscula, una minúscula, un número y un carácter especial."
+          });
+          passNew.style.borderColor = "red";
+
+        return; // Detiene la ejecución si la password es inválida
+    }
+
+    try{
+        const response = await fetch("/Retrobits/controller/modificarContrasena.php", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'password=' + encodeURIComponent(passNew.value)
+        }); 
+
+        const datos = await response.json();
+
+        if (datos.status === 'OK') {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+              });
+              Toast.fire({
+                icon: "success",
+                title: datos.message
+              });
+        } 
+
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+async function comprobarSesion(){
+    const userInput = document.getElementById("floatingUsername");
+    const emailInput = document.getElementById("floatingEmail");
+
+    try{
+        const response = await fetch("/Retrobits/controller/sesionComp.php");
+        const sesion = await response.json();
+        
+        if (sesion.status === 'OK') {
+            userInput.value = sesion.user.username;
+            emailInput.value = sesion.user.email;
+
+            return true;
+        } else {
+            window.location.href = "../index.html";
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
 togglePasswords.forEach((togglePassword, index) => {
     togglePassword.addEventListener('click', () => {
         const passwordInput = passwords[index];
@@ -273,7 +403,12 @@ if (fm){
         }
     });
 }
-
+if (fp){
+    fp.addEventListener('submit', (e) => {
+        e.preventDefault();
+        modificarContrasena();
+    })
+}
 if(pagPerfil == "perfil.html") {
     window.onload = () => {
         comprobarSesion();

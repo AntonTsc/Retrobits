@@ -19,7 +19,7 @@
     } else {
         $datos = [
             'status' => 'ERROR',
-            'message' => 'Usuario ya existente.'
+            'message' => 'Ya existe un usuario con ese nombre/email.'
         ];
     }
     
