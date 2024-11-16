@@ -47,10 +47,23 @@ html{
 }
 .buscador select{
  width: auto;
+ height: 100%;
 }
 .buscador select:hover{
  cursor: pointer;
  background: #f7f7f7;
+}
+
+#comprobarStock {
+    background-color: #ededed !important;
+    color: rgb(0, 0, 0) !important;
+    transition: background-color 0.3s;
+}
+
+/* Estilo cuando el botón está activo */
+#comprobarStock.activo {
+    background-color: #198754 !important; /* Cambia el color del botón a verde */
+    color: white !important;
 }
 
 #agregarScroll{
@@ -139,4 +152,8 @@ tbody td input{
     height: auto !important;
     top: 50%;
     left: 50%;
+}
+
+.guiaAncho{
+    max-width: 600px !important;
 }

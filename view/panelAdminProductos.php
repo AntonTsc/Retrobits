@@ -17,9 +17,13 @@ $response = ob_get_clean(); // Capturar la salida
 
 $categorias = json_decode($response, true);
 
+$stockBajo=0;
+foreach ($productos as $producto) {
+  $producto["stock"] <=25 ? $stockBajo++ : null;
+}
 ?>
 
-<div class="w-100 d-flex justify-content-between">
+<div class="w-100 d-flex justify-content-between gap-1">
   <div class="buscador input-group my-1 d-flex flex-nowrap">
       <select id="selector" class="border rounded-start-1 p-1">
           <option value="2" selected>Nombre</option>
@@ -32,13 +36,14 @@ $categorias = json_decode($response, true);
           <option value="8">Borrado</option>
       </select>
     <input id="buscador" type="text" class="border rounded-end-1 p-1 flex-grow-1" placeholder="Buscar...">
-  </div>
-  
-  <button id="agregar" class="btn btn-success bi bi-database-fill-add" data-bs-toggle="modal" data-bs-target="#modalAgregarProducto"> Añadir producto</button>
-  <button id="agregarScroll"  class="btn btn-success bi bi-database-fill-add fs-3" data-bs-toggle="modal" data-bs-target="#modalAgregarProducto"></button>
 </div>
+<button id="agregar" class="btn btn-success bi bi-database-fill-add" data-bs-toggle="modal" data-bs-target="#modalAgregarProducto"> Añadir producto</button>
+<button id="agregarScroll"  class="btn btn-success bi bi-database-fill-add fs-3" data-bs-toggle="modal" data-bs-target="#modalAgregarProducto"></button>
+</div>
+<?= $stockBajo > 0 ? "<button id='btnVerStockBajo' class='btn btn-warning text-dark p-0 px-2 rounded-pill' onclick='comprobarStock(this)'>$stockBajo " . ($stockBajo > 1 ? "productos" : "producto") . " con stock limitado <i class='bi bi-caret-up-fill'></i></button>" : "" ?>
 
-<table class="table mb-5 pb-5">
+
+<table class="table mt-1 mb-5 pb-5">
   <thead class="position-sticky top-0">
     <tr>
       <th scope="col">ID</th>
@@ -54,7 +59,7 @@ $categorias = json_decode($response, true);
   </thead>
   <tbody id="cuerpoTabla">
       <?php foreach ($productos as $producto) {?>
-        <tr id="<?= $producto["id"] ?>">
+        <tr id="<?= $producto["id"] ?>" class="<?= $producto["stock"] <=25 ? "bg-warning-subtle": null ?>">
           <td scope="row" class="fw-bold"><?= $producto["id"] ?></td>
           <td class="editable text"><?= $producto["nombre"] ?></td>
           <td class="editable text"><?= $producto["descripcion"] ?></td>
@@ -111,22 +116,22 @@ $categorias = json_decode($response, true);
             <?php }?>
           </select>
   
-          <div class="d-flex mb-3 justify-content-between gap-1">
-          <div>
-            <label for="exampleFormControlInput1" class="form-label">Precio:</label>
-            <input type="number" min="0" class="form-control text-end" id="nuevoPrecio">
-          </div>
-          <div>
-            <label for="exampleFormControlInput1" class="form-label">Stock:</label>
-            <input type="number" min="0" class="form-control" id="nuevoStock">
-          </div>
-          <div>
-            <label for="exampleFormControlInput1" class="form-label">Descuento:</label>
-            <input type="number" min="0" max="100" class="form-control" id="nuevoDescuento">
-          </div>
+          <div id="inputsNumberAdd" class="d-flex mb-3 justify-content-between gap-1">
+            <div  id="precioAddContainer">
+              <label for="exampleFormControlInput1" class="form-label">Precio:</label>
+              <input type="number" min="0" class="form-control text-end" id="nuevoPrecio">
+            </div>
+            <div>
+              <label for="exampleFormControlInput1" class="form-label">Stock:</label>
+              <input type="number" min="0" class="form-control" id="nuevoStock">
+            </div>
+            <div id="descuentoAddContainer">
+              <label for="exampleFormControlInput1" class="form-label">Descuento:</label>
+              <input type="number" min="0" max="100" class="form-control" id="nuevoDescuento">
+            </div>
           </div>
 
-          <div class="mb-4">
+          <div id="imagenAddContainer" class="mb-4">
             <label for="imagen" class="form-label">Imagen:</label>
             <input type="file" class="form-control" accept="image/*" id="imagen">
             <img class="d-none" id="imagenPreview" src="#" alt="Imagen para recortar" style="max-width: 100%;">

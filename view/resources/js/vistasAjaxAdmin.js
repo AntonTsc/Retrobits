@@ -8,13 +8,16 @@ let intervaloPedidos = null;
 let elementoClickDerecho;
 let cropper;
 let valoresOriginales = {};
+let alternarStock = false;
 
 
 //* FUNCIONES =========================================================
 //Se encarga de cargar el contenido por completo reiniciando los comparadores
 function cargarContenidoNuevo(tab, desactualizado = false) {
+    vaciarIntervalos();
     //Vacia el contenido que deveriamos ver para poder cargar nuevo contenido
     ultimoContenido = "";
+    alternarStock = false;
 
     cargarContenido(tab);
     if (desactualizado) {
@@ -62,6 +65,7 @@ function analizarContenido(tab) {
         configurarBotonAgregar();
         gestionarIntervalos(tab);
         setClickDerecho();
+
     } else if (nuevoContenido !== ultimoContenido) {
         vaciarIntervalos();
         notificarCambio(tab);
@@ -153,6 +157,8 @@ function mostrarMensajeDatosDesactualizados(tab) {
     const horas = String(fecha.getHours()).padStart(2, '0');
     const minutos = String(fecha.getMinutes()).padStart(2, '0');
     document.querySelector(".desactualizado").innerHTML = `Los datos de la página están desactualizados desde las ${horas}:${minutos} - <button class="cargarDesactualizado" onclick="cargarContenidoNuevo('${tab}', true)">actualizar</button>`;
+
+    console.log(document.querySelector(".desactualizado").innerHTML);
 
     Swal.fire({
         position: "top",
@@ -282,19 +288,74 @@ function funcionesProductos() {
     buscador.addEventListener("input", () => {
         const filtro = eliminarTildes(buscador.value.toLowerCase());
         const indice = selector.value;
+    
+        alternarStock = false;
+        const btnStock = document.querySelector("#btnVerStockBajo");
+        console.log(1);
+        if (btnStock) {
+            btnStock.querySelector("i").classList.replace("bi-caret-down-fill", "bi-caret-up-fill");
+        }
 
-        //Buscara el contenido dependiendo del indice seleccionado
         filas.forEach(fila => {
             const celda = fila.querySelector(`td:nth-child(${indice})`);
             const textoCelda = celda ? eliminarTildes(celda.textContent.toLowerCase()) : "";
-            //Si el contenido del indice no incluye el contenido del buscador se oculta
-            fila.style.display = textoCelda.includes(filtro) ? "" : "none";
+            let mostrarFila = false;
+        
+            // Comprueba si el índice está en las columnas numéricas
+            if (["4", "5", "6"].includes(indice)) {
+                // Convierte el texto de la celda y el filtro a números para comparar
+                const valorCelda = parseFloat(textoCelda);
+                const match = filtro.match(/^([<>=])(\d+.?\d{0,2}?)$/);
+        
+                if (match) { //Si ha encontrado un operador (< > =)
+                    const operador = match[1] || ""; // <, >, = o vacío
+                    const valorFiltro = match[2]; //El numero
+        
+                    // Aplica la lógica de comparación según el operador
+                    switch (operador) {
+                        case "<":
+                            mostrarFila = valorCelda <= valorFiltro ? true : false;
+                            break;
+                        case ">":
+                            mostrarFila = valorCelda >= valorFiltro ? true : false;
+                            break;
+                        case "=":
+                            mostrarFila = valorCelda == valorFiltro ? true : false;
+                            break;
+                    }
+                }else{
+                    // Comportamiento normal si no hay operador
+                    mostrarFila = textoCelda.includes(filtro);
+                }
+            } else {
+                // Comportamiento normal para otros índices (texto)
+                mostrarFila = textoCelda.includes(filtro);
+            }
+            // Muestra u oculta la fila según el resultado
+            fila.style.display = mostrarFila ? "" : "none";
         });
     });
 
-    
     configurarCropper();
 }
+
+function comprobarStock(btn) {
+    const filas = document.querySelectorAll("tbody tr");
+    filas.forEach(fila => {
+        const stock = parseInt(fila.querySelector("td:nth-child(6)").innerText, 10);
+
+        // Alternar visibilidad según el estado
+        fila.style.display = !alternarStock && stock > 25 ? "none" : "";
+        fila.style.display = !alternarStock && stock > 25 ? "none" : "";
+    });
+    btn.querySelector("i").classList.replace(
+        alternarStock ? "bi-caret-down-fill" : "bi-caret-up-fill",
+        alternarStock ? "bi-caret-up-fill" : "bi-caret-down-fill"
+      );
+    alternarStock = !alternarStock;
+}
+
+
 
 //Cropper.js es una libreria para poder recortar una imagen
 //Nos permite cargar una imagen y configurar el funcionamiento de un area que recortara la imagen
@@ -691,5 +752,5 @@ function verFotoProducto(btn){
 
 //* ONLOAD ============================================================
 window.onload = () => {
-    cargarContenido("Productos");
+    cargarContenidoNuevo("Productos");
 };
