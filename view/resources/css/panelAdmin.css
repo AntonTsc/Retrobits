@@ -149,7 +149,7 @@ tbody td input{
 }
 
 .accordion-button-admin {
-    background-color: #ffc10750 !important; /* Amarillo para administradores */
+    background-color: #8f07ff50 !important; /* Amarillo para administradores */
     color: #000 !important; /* Texto negro */
 }
 .accordion-button-user {

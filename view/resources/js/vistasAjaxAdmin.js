@@ -331,7 +331,7 @@ function funcionesProductos() {
             let mostrarFila = false;
         
             // Comprueba si el índice está en las columnas numéricas
-            if (["4", "5", "6"].includes(indice)) {
+            if (["5", "6", "7"].includes(indice)) {
                 // Convierte el texto de la celda y el filtro a números para comparar
                 const valorCelda = parseFloat(textoCelda);
                 const match = filtro.match(/^([<>=])(\d+.?\d{0,2}?)$/);
@@ -344,7 +344,7 @@ function funcionesProductos() {
                     switch (operador) {
                         case "<":
                             mostrarFila = valorCelda <= valorFiltro ? true : false;
-                            break;
+                            break;x
                         case ">":
                             mostrarFila = valorCelda >= valorFiltro ? true : false;
                             break;
