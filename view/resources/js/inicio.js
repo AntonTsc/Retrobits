@@ -81,7 +81,7 @@ async function comprobarSesion(){
       const sesion = await response.json();
 
       if (sesion.status === 'OK') {
-        userSesion = sesion.user.username;
+        userSesion = sesion.user.id;
         cestaComp();
         if (sesion.user.admin){
           botonesAdmin();
@@ -100,7 +100,6 @@ async function obtenerProductos() {
     try {
         const response = await fetch('/Retrobits/controller/productos.php');
         const productos = await response.json();
-        console.log(productos);
 
         let count1 = 0, count2 = 0, count3 = 0, count4 = 0, count5 = 0, count6 = 0;
         for (let i = 0; i < productos.length; i++) {
@@ -210,7 +209,6 @@ function generador(producto, seccion) {
   }
   
 function botonesAdmin(){
-  console.log("sesion Admin");
 
   document.getElementById("btnOprcionesPerfil").classList.add("bi-person-circle");
 
@@ -245,7 +243,6 @@ function botonesAdmin(){
 }
 
 function botonesUser(){
-  console.log("sesion iniciada");
 
   document.getElementById("btnOprcionesPerfil").classList.add("bi-person-circle");
 
@@ -272,7 +269,6 @@ function botonesUser(){
 }
 
 function botonesAnon(){
-  console.log("sesion anonima");
 
   document.getElementById("btnOprcionesPerfil").classList.add("bi-person");
 

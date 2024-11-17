@@ -185,8 +185,6 @@ function mostrarMensajeDatosDesactualizados(tab) {
     const minutos = String(fecha.getMinutes()).padStart(2, '0');
     document.querySelector(".desactualizado").innerHTML = `Los datos de la página están desactualizados desde las ${horas}:${minutos} - <button class="cargarDesactualizado" onclick="cargarContenidoNuevo('${tab}', true)">actualizar</button><br>⚠ Seguridad de detección automática de cierre de sesión inactiva.`;
 
-    console.log(document.querySelector(".desactualizado").innerHTML);
-
     Swal.fire({
         position: "top",
         html: "Los cambios que puedas hacer a partir de ahora podrían llegar a reescribir los cambios de los nuevos datos actuales de la base de datos o devolver errores.<br><br><i>(Cualquier acción (editar, eliminar y añadir) después de ejecutarse actualizara la información de la tabla)</i>",
@@ -320,7 +318,6 @@ function funcionesProductos() {
     
         alternarStock = false;
         const btnStock = document.querySelector("#btnVerStockBajo");
-        console.log(1);
         if (btnStock) {
             btnStock.querySelector("i").classList.replace("bi-caret-down-fill", "bi-caret-up-fill");
         }
@@ -842,8 +839,6 @@ async function ejecutarEdicionUsuario(fila){
         });
         return;
     }
-
-    console.log(admin);
 
     try{
         const response = await fetch("/Retrobits/controller/modificarUsuario.php", {

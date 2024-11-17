@@ -19,7 +19,7 @@ async function configurarSesion(){
         const sesion = await response.json();
   
         if (sesion.status === 'OK') {
-          userSesion = sesion.user.username;
+          userSesion = sesion.user.id;
           cestaComp();
           if (sesion.user.admin){
             botonesAdmin();

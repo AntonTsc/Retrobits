@@ -46,7 +46,7 @@
         const sesion = await response.json();
 
         if (sesion.status === 'OK') {
-          userSesion = sesion.user.username;
+          userSesion = sesion.user.id;
           cestaComp();
           if (sesion.user.admin){
             botonesAdmin();
@@ -225,7 +225,6 @@
 
 //* MANIPULACIONES DE DOM =============================================
 function botonesAdmin(){
-  console.log("sesion Admin");
 
   document.getElementById("btnOprcionesPerfil").classList.add("bi-person-circle");
 
@@ -260,7 +259,6 @@ function botonesAdmin(){
 }
 
 function botonesUser(){
-  console.log("sesion iniciada");
 
   document.getElementById("btnOprcionesPerfil").classList.add("bi-person-circle");
 
@@ -287,7 +285,6 @@ function botonesUser(){
 }
 
 function botonesAnon(){
-  console.log("sesion anonima");
 
   document.getElementById("btnOprcionesPerfil").classList.add("bi-person");
 
