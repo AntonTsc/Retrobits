@@ -297,10 +297,13 @@ function clickDerechoAccionEditar() {
 function clickDerechoAccionCancelar(){
     cargarContenidoNuevo(tabulacion);
 }
+
+function clickDerechoAccionContrasena(){
+    cambiarContrasena(elementoClickDerecho);
+}
 // Ejecutar acción para eliminar producto
 function clickDerechoAccionEliminar() {
-    const tr = elementoClickDerecho.closest('tr');
-    eliminarProductoConfirm(tr.id, tr.children[1].innerText);
+    eliminarConfirm(elementoClickDerecho);
 }
 
 //Funciones dedicadar para la pestaña de productos
@@ -406,8 +409,6 @@ function comprobarStock(btn) {
       );
     alternarStock = !alternarStock;
 }
-
-
 
 //Cropper.js es una libreria para poder recortar una imagen
 //Nos permite cargar una imagen y configurar el funcionamiento de un area que recortara la imagen
@@ -538,13 +539,13 @@ async function nuevoProducto() {
 }
 
 //Una confirmacion para eliminar el producto
-function eliminarProductoConfirm(id, producto,){
-    const fila = document.querySelector("#id");
+function eliminarConfirm(btn){
+    const fila = btn.closest('tr');
     const filaEditando = document.querySelector('tr.editando');
     if (filaEditando && filaEditando !== fila) {
         // Si ya hay una fila editando, podemos cancelar la edición de la fila actual
         Swal.fire({
-            text: "Actualmente estás editando una fila. Por favor, finaliza la edición antes de proceder con la eliminación del producto.",
+            text: "Actualmente estás editando una fila. Por favor, finaliza la edición antes de proceder con la eliminación.",
             confirmButtonText: "Vale",
             confirmButtonColor: "#0d6efd"
           });
@@ -553,16 +554,25 @@ function eliminarProductoConfirm(id, producto,){
     Swal.fire({
         position: "top",
         title: "¿Estas seguro?",
-        html: `<h3>${producto}</h3>¡Este producto se <b class="text-danger">eliminara</b> de forma permanente!<br>Puedes cambiar el valor de <b>Borrado</b> para que no se vea en producción.`,
+        html: `<b>${fila.querySelector('td:nth-child(2)').innerText}</b> se <b class="text-danger">eliminara</b> de forma permanente!`,
         icon: "warning",
         showCancelButton: true,
         cancelButtonColor: "#0d6efd",
         confirmButtonColor: "#dc3545",
         cancelButtonText: "Cancelar",
-        confirmButtonText: "Eliminar producto"
+        confirmButtonText: "Eliminar"
       }).then((result) => {
         if (result.isConfirmed) {
-            eliminarProducto(id);
+            switch (tabulacion) { 
+                case "Productos":
+                    eliminarProducto(fila.id);
+                    break;
+                case "Usuarios":
+                    eliminarUsuario(fila.id);
+                    break;
+                case "Pedidos":
+                    break;
+            }
         }
       });
 }
@@ -612,6 +622,47 @@ async function eliminarProducto(id){
     }
 }
 
+async function eliminarUsuario(id){
+    vaciarIntervalos();
+    try{
+        //Hago la llamada al controlador para eliminar el producto, con un header de tipo formulario
+        const response = await fetch("/Retrobits/controller/eliminarUsuario.php", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'id=' + id
+        }); 
+        const datos = await response.json();
+        if (datos.status === 'OK') {
+            //Le añado una clase con transicion a la fila, y espero a que la transicion acabe para cargar de nuevo los productos
+            document.getElementById(id).classList.add('remove');
+            document.getElementById(id).addEventListener('transitionend', () => {
+                cargarContenidoNuevo("Usuarios");
+            });
+            const Toast = Swal.mixin({
+                icon: "success",
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 8000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.onmouseenter = Swal.stopTimer;
+                  toast.onmouseleave = Swal.resumeTimer;
+                }
+              });
+              Toast.fire({
+                title: `Usuario eliminado de forma definitiva de la base de datos`
+              });
+        } else {
+            console.log("ERROR");
+            cargarContenidoNuevo("Usuarios");
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
 
 function editarFila(btn) {
     const fila = btn.closest('tr');
@@ -891,6 +942,67 @@ async function ejecutarEdicionUsuario(fila){
 
 }
 
+
+async function cambiarContrasena(btn) {
+    const fila = btn.closest('tr');
+
+    const { value: password} = await Swal.fire({
+        title: `Nueva contraseña para: ${fila.querySelector('td:nth-child(2)').innerText}`,
+        input: "password",
+        inputPlaceholder: "Contraseña...",
+        confirmButtonText: "Cambiar contraseña",
+        confirmButtonColor: "#0d6efd",
+        inputAttributes: {
+            autocapitalize: "off",
+            autocorrect: "off"
+        },
+        showCancelButton: true,
+        cancelButtonText: "Cancelar",
+        preConfirm: async (password) => {
+            if (!password) {
+                Swal.showValidationMessage("Ingresa una contraseña.");
+            }else if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*()\.]).{8,40}$/.test(password)) {
+                Swal.showValidationMessage("Contraseña no válida.");
+            }
+            let datos = await ejecutarCambioContrasena(fila.id, password);
+            if (datos.status !== 'OK'){
+                Swal.showValidationMessage(datos.message);
+            }
+        }
+    });
+    if (password) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true
+            });
+            Toast.fire({
+            icon: "success",
+            title: `La contraseña de ${fila.querySelector('td:nth-child(2)').innerText} ha sido actualizada.`
+        });
+    }
+}
+
+async function ejecutarCambioContrasena(userId, password){
+    try{
+        const response = await fetch("/Retrobits/controller/modificarContrasena.php", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'userId=' + encodeURIComponent(userId) +
+                  '&password=' + encodeURIComponent(password) +
+                  '&isAdmin=true'
+        }); 
+
+        return await response.json();
+
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
 
 //Muestro la foto que pertenece al producto de lo contrario aviso que no hay foto
 function verFotoProducto(btn){

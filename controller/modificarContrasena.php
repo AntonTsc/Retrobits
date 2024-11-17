@@ -2,21 +2,41 @@
     session_start();
     $datos = [];
 
-    if(password_verify($_POST['oldPassword'], $_SESSION["password"])){
+    $admin = isset($_POST['isAdmin']) ? $_POST['isAdmin'] : false;
+
+    if($admin || password_verify($_POST['oldPassword'], $_SESSION["password"])){
         require_once("../model/MUsuario.php");
-    
+
         $mUsuario = new MUsuario();
-    
-        $data = [
-            "id" => $_SESSION['id'],
-            "password" => $_POST['password']
-        ];
-    
-    
+
+        if($admin){
+            $data = [
+                "id" => $_POST['userId'],
+                "password" => $_POST['password']
+            ];
+            $usuario = $mUsuario->getUsuarioXid($data['id']);
+            if (password_verify($data["password"], $usuario["password"])) {
+                $datos = [
+                    'status' => 'SAME',
+                    'message' => 'La contraseña ingresada es la misma.'
+                ];
+                header("Content-Type: application/json");
+                echo json_encode($datos);
+                exit();
+            }
+        }else{
+            $data = [
+                "id" => $_SESSION['id'],
+                "password" => $_POST['password']
+            ];
+        }
+
         if($mUsuario->editPassword($data)){
-            $user = $mUsuario->getUsuarioXid($data['id']);
-            $_SESSION['password'] = $user['password'];
-    
+            if(!$admin){
+                $user = $mUsuario->getUsuarioXid($data['id']);
+                $_SESSION['password'] = $user['password'];
+            }
+
             $datos = [
                 'status' => 'OK',
                 'message' => 'Contraseña modificada.'
@@ -27,7 +47,7 @@
                 'message' => 'No se ha podido modificar la contraseña.'
             ];
         }
-    
+
     }else{
         $datos = [
             'status' => 'INCORRECT',

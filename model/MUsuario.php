@@ -137,5 +137,14 @@
 
             return true;
         }
+
+        public function eliminarUsuario($id){
+            $query = $this->getCon()->prepare("DELETE FROM `usuarios` WHERE id = ?;");
+            $query->bind_param("i", $id);
+            $comp = $query->execute() ? true : false;
+            $query->close();
+
+            return $comp;
+        }
     }
 ?>

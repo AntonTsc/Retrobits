@@ -84,7 +84,7 @@ foreach ($productos as $producto) {
                     <li><button class="btnMenu dropdown-item bi bi-image rounded-top-2 bg-light" onclick="verFotoProducto(this)" data-bs-toggle="modal" data-bs-target="#modalVerFotoProducto"> Ver imagen</button></li>
                     <li><button id="btn<?= $producto["id"] ?>" class="btnMenu dropdown-item bi bi-pencil-fill rounded-0 bg-light" onclick="editarFila(this)" href="#"> Editar</button></li>
                     <li><button class="btnMenu btnCancelar dropdown-item bi bi-x-circle-fill rounded-0 bg-light d-none" onclick="clickDerechoAccionCancelar()"> Cancelar</button></li>
-                    <li class="mt-1"><button id="dElimiar" class="btnMenu dropdown-item bi bi-trash-fill bg-danger text-light rounded-bottom-2" onclick="eliminarProductoConfirm(<?= $producto['id'] ?>, '<?= $producto['nombre'] ?>')" href="#"> Eliminar</button></li>
+                    <li class="mt-1"><button id="dElimiar" class="btnMenu dropdown-item bi bi-trash-fill bg-danger text-light rounded-bottom-2" onclick="eliminarProductoConfirm(this)" href="#"> Eliminar</button></li>
                 </ul>
             </div>
           </td>

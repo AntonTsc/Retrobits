@@ -68,10 +68,10 @@ $usuarios = json_decode($response, true);
                                 <i class="bi bi-three-dots-vertical"></i>
                             </button>
                             <ul class="dropdown-menu p-0 shadow">
-                            <li><button class="btnMenu dropdown-item bi bi-image rounded-top-2 bg-light" onclick="" data-bs-toggle="modal" data-bs-target="#"> Codigos de descuento</button></li>
+                            <li><button class="btnMenu dropdown-item bi bi-upc-scan rounded-top-2 bg-light" onclick="" data-bs-toggle="modal" data-bs-target="#"> Codigos de descuento</button></li>
                                 <li><button id="btn<?= $usuario["id"] ?>" class="btnMenu dropdown-item bi bi-pencil-fill rounded-0 bg-light" onclick="editarFila(this)" href="#"> Editar</button></li>
                                 <li><button class="btnMenu btnCancelar dropdown-item bi bi-x-circle-fill rounded-0 bg-light d-none" onclick="clickDerechoAccionCancelar()"> Cancelar</button></li>
-                                <li><button class="btnMenu dropdown-item bi bi-key-fill rounded-0 bg-light" onclick="">  Cambiar contraseña</button></li>
+                                <li><button class="btnMenu dropdown-item bi bi-key-fill rounded-0 bg-light" onclick="cambiarContrasena(this)">  Cambiar contraseña</button></li>
                                 <li class="mt-1"><button id="dElimiar" class="btnMenu dropdown-item bi bi-trash-fill bg-danger text-light rounded-bottom-2" onclick="eliminarProductoConfirm(<?= $producto['id'] ?>, '<?= $producto['nombre'] ?>')" href="#"> Eliminar</button></li>
                             </ul>
                         </div>
@@ -119,10 +119,10 @@ $usuarios = json_decode($response, true);
                                 <i class="bi bi-three-dots-vertical"></i>
                             </button>
                             <ul class="dropdown-menu p-0 shadow">
-                                <li><button class="btnMenu dropdown-item bi bi-image rounded-top-2 bg-light" onclick="" data-bs-toggle="modal" data-bs-target="#"> Codigos de descuento</button></li>
+                                <li><button class="btnMenu dropdown-item bi bi-upc-scan rounded-top-2 bg-light" onclick="" data-bs-toggle="modal" data-bs-target="#"> Codigos de descuento</button></li>
                                 <li><button id="btn<?= $usuario["id"] ?>" class="btnMenu dropdown-item bi bi-pencil-fill rounded-0 bg-light" onclick="editarFila(this)" href="#"> Editar</button></li>
                                 <li><button class="btnMenu btnCancelar dropdown-item bi bi-x-circle-fill rounded-0 bg-light d-none" onclick="clickDerechoAccionCancelar()"> Cancelar</button></li>
-                                <li><button class="btnMenu dropdown-item bi bi-key-fill rounded-0 bg-light" onclick="">  Cambiar contraseña</button></li>
+                                <li><button class="btnMenu dropdown-item bi bi-key-fill rounded-0 bg-light" onclick="cambiarContrasena(this)">  Cambiar contraseña</button></li>
                                 <li class="mt-1"><button id="dElimiar" class="btnMenu dropdown-item bi bi-trash-fill bg-danger text-light rounded-bottom-2" onclick="eliminarProductoConfirm(<?= $producto['id'] ?>, '<?= $producto['nombre'] ?>')" href="#"> Eliminar</button></li>
                             </ul>
                         </div>
