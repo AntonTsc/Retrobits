@@ -73,11 +73,11 @@
 
         public function insertUsuario($data){
             if(!($this->getUsuario($data['username'], $data['email']))){
-                $query = $this->getCon()->prepare("INSERT INTO usuarios (`username`, `email`, `password`, `admin`, `deleted`) VALUES (?, ?, ?, 0, 0);");
+                $query = $this->getCon()->prepare("INSERT INTO usuarios (`username`, `email`, `password`, `admin`, `deleted`) VALUES (?, ?, ?, ?, ?);");
                 
                 // Contraseña encriptada    
                 $encPass = password_hash($data['password'], PASSWORD_DEFAULT);
-                $query->bind_param("sss", $data['username'], $data['email'], $encPass);
+                $query->bind_param("sssii", $data['username'], $data['email'], $encPass, $data["admin"], $data["deleted"]);
                 $query->execute();
                 $query->close();
 

@@ -538,6 +538,66 @@ async function nuevoProducto() {
     }
 }
 
+async function nuevoUsuario() {
+    //Obtengo los input
+    const username = document.getElementById("nuevoUsername");
+    const email = document.getElementById("nuevoEmail");
+    const password = document.getElementById("nuevoContrasena");
+    const admin = document.getElementById("nuevoAdmin").checked ? 1 : 0;
+    const borrado = document.getElementById("nuevoBorrado").checked ? 1 : 0;
+
+    let comp = true;
+
+     if(!/^[a-zA-Z0-9_]{4,20}$/.test(username.value)){
+        comp = false;
+        username.style.borderColor = "red";
+     }else username.style.borderColor = "green";
+
+     if(!/^[\w.-]+@[\w-]+\.[\w-]{2,}$/.test(email.value)){
+        comp = false;
+        email.style.borderColor = "red";
+     }else email.style.borderColor = "green";
+
+     if(!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*()\.]).{8,40}$/.test(password.value)){
+        comp = false;
+        password.style.borderColor = "red";
+     }else password.style.borderColor = "green";
+
+    if(!comp) return;
+
+    //Hago la llamada al controlador
+    try {
+        //Como le voy a mandar un formData, no es necesario especificar el tipo de encabezado
+        const response = await fetch("/Retrobits/controller/registrarUsuario.php", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'username=' + encodeURIComponent(username.value) + 
+                  '&email=' + encodeURIComponent(email.value) + 
+                  '&password=' + encodeURIComponent(password.value) +
+                  '&admin=' + encodeURIComponent(admin) + 
+                  '&deleted=' + encodeURIComponent(borrado)
+        });
+        const datos = await response.json();
+        if (datos.status === 'OK') {
+            document.querySelector("#cerrarModal").click();
+            cargarContenidoNuevo('Usuarios')
+            Swal.fire({
+                position: "top",
+                title: `${username.value} ha sido añadido.`,
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        } else {
+            Swal.fire({icon: "error", text: datos.message });
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
 //Una confirmacion para eliminar el producto
 function eliminarConfirm(btn){
     const fila = btn.closest('tr');

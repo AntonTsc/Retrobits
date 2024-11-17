@@ -65,7 +65,7 @@ async function insertUsuario(){
     // Email
     const valEmail = (email) => {
         return String(email).toLocaleLowerCase().match(
-            /^[\w-\.]+@[\w-]+.[\w-]{2,}$/
+            /^[\w.-]+@[\w-]+\.[\w-]{2,}$/
         );
     };
 
@@ -227,7 +227,7 @@ async function modificarUsuario(){
     // Email
     const valEmail = (email) => {
         return String(email).toLocaleLowerCase().match(
-            /^[\w-\.]+@[\w-]+.[\w-]{2,}$/
+            /^[\w.-]+@[\w-]+\.[\w-]{2,}$/
         );
     };
 
@@ -386,7 +386,7 @@ async function modificarContrasena(){
         const datos = await response.json();
 
         if (datos.status === 'OK') {
-            data.password.click();
+            document.getElementById("cerrarModal").click();
             passOld.value="";
             passNew.value="";
             const Toast = Swal.mixin({

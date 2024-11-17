@@ -161,10 +161,6 @@ $usuarios = json_decode($response, true);
             <label for="nuevoDescripcion" class="form-label">Contraseña:</label>
             <input type="password" class="form-control" id="nuevoContrasena">
           </div>
-          <div class="mb-3">
-            <label for="nuevoDescripcion" class="form-label">Confirma la contraseña:</label>
-            <input type="password" class="form-control" id="confirmNuevoContrasena">
-          </div>
           <div class="d-flex">
               <div class="form-check form-switch d-flex justify-content-between p-0 me-auto">
                   <div class="form-check form-switch">
@@ -177,7 +173,7 @@ $usuarios = json_decode($response, true);
                   </div>
             </div>
             <button id="cerrarModal" type="button" class="btn btn-danger me-2" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-success" onclick="nuevoProducto()">Añadir</button>
+            <button type="button" class="btn btn-success" onclick="nuevoUsuario()">Añadir</button>
           </div>
   
         </div>

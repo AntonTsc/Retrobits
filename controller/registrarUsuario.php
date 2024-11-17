@@ -6,7 +6,9 @@
     $data = [
         "username" => $_POST['username'],
         "email" => $_POST['email'],
-        "password" => $_POST['password']
+        "password" => $_POST['password'],
+        "admin" => isset($_POST['admin']) ? $_POST['admin'] : 0,
+        "deleted" => isset($_POST['deleted']) ? $_POST['deleted'] : 0
     ];
 
     $datos = [];
@@ -19,7 +21,7 @@
     } else {
         $datos = [
             'status' => 'ERROR',
-            'message' => 'Ya existe un usuario con ese nombre/email.'
+            'message' => 'El nombre de usuario/email ya esta en uso.'
         ];
     }
     
