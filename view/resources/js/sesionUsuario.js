@@ -287,7 +287,6 @@ async function modificarUsuario(){
 
         if (datos.status === 'OK') {
             comprobarSesion();
-            document.getElementById("floatingPassword").value="";
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top",
@@ -299,7 +298,7 @@ async function modificarUsuario(){
                 icon: "success",
                 title: datos.message
               });
-        } else {
+        } else if(datos.status === 'ERROR'){
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top",
@@ -311,7 +310,20 @@ async function modificarUsuario(){
                 icon: "warning",
                 title: datos.message
               });
+        } else{
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+              });
+              Toast.fire({
+                icon: "info",
+                title: datos.message
+              });
         }
+        document.getElementById("floatingPassword").value="";
 
     } catch (error) {
         console.error("Error: ", error);
@@ -539,9 +551,10 @@ if (fr){
 if (fm){
     fm.addEventListener('submit', (e) => {
         e.preventDefault();
-        if(comprobarSesion()){
-            modificarUsuario();
-        }
+        modificarUsuario();
+        // if(comprobarSesion()){
+        //     modificarUsuario();
+        // }
     });
 }
 if (fp){
@@ -550,10 +563,10 @@ if (fp){
         modificarContrasena();
     })
 }
-if(pagPerfil == "perfil.html") {
-        comprobarSesion();
-}
 window.onload = function () {
     configurarSesion();
     cestaComp();
+    if(pagPerfil == "perfil.html") {
+            comprobarSesion();
+    }
   };

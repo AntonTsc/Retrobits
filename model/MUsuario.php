@@ -41,6 +41,36 @@
             return $usuario;
         }
 
+        public function getUsuarioXusername($user){
+            $query = $this->getCon()->prepare("SELECT * FROM usuarios WHERE username = ?");
+            $query->bind_param("s", $user);
+            $query->execute();
+
+            $result = $query->get_result();
+            $usuarios = [];
+
+            while($fila = $result->fetch_assoc()){
+                $usuarios[] = $fila;
+            }
+
+            return (count($usuarios) > 0) ? true : false;
+        }
+
+        public function getUsuarioXemail($email){
+            $query = $this->getCon()->prepare("SELECT * FROM usuarios WHERE email = ?");
+            $query->bind_param("s", $email);
+            $query->execute();
+
+            $result = $query->get_result();
+            $usuarios = [];
+
+            while($fila = $result->fetch_assoc()){
+                $usuarios[] = $fila;
+            }
+
+            return (count($usuarios) > 0) ? true : false;
+        }
+
         public function insertUsuario($data){
             if(!($this->getUsuario($data['username'], $data['email']))){
                 $query = $this->getCon()->prepare("INSERT INTO usuarios (`username`, `email`, `password`, `admin`, `deleted`) VALUES (?, ?, ?, 0, 0);");
