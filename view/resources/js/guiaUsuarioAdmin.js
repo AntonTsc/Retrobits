@@ -226,7 +226,7 @@ function guiaDeUsuario(){
                         }
                     },
                     { 
-                        element: '#Auto',
+                        element: '#auto',
                         popover: {
                             title: 'Modo de Actualización',
                             description: `<p>Configura cómo deseas que se gestionen las actualizaciones de datos:</p>
