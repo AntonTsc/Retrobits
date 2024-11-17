@@ -1086,5 +1086,5 @@ function verFotoProducto(btn){
 
 //* ONLOAD ============================================================
 window.onload = () => {
-    cargarContenidoNuevo("Usuarios");
+    cargarContenidoNuevo("Productos");
 };
