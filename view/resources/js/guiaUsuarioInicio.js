@@ -78,7 +78,7 @@ function guiaDeUsuario(){
                 element: "#perfil",
                 popover: {
                     title: 'Perfil',
-                    description: `Al hacer clic en esta opción, se desplegarán opciones como <strong>ver tu perfil</strong> o <strong>cerrar sesión</strong>. Si no has iniciado sesión, este desplegable te ofrecerá las opciones de <strong>iniciar sesión</strong> o <strong>registrarte</strong>.</p>`,
+                    description: `Si este botón está iluminado y lo rodea un círculo significa que hay una sesión activa.<br><br>Al hacer clic en esta opción, se desplegarán opciones como <strong>ver tu perfil</strong> o <strong>cerrar sesión</strong>. Si no has iniciado sesión, este desplegable te ofrecerá las opciones de <strong>iniciar sesión</strong> o <strong>registrarte</strong>.</p>`,
                     side: "left", align: 'start'
                 }
             },

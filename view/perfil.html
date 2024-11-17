@@ -14,77 +14,144 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
-    <link rel="stylesheet" href="resources/css/nav.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma/bulma.css">
-    <link rel="stylesheet" href="resources/css/perfil.css">
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
       defer
     ></script>
+    <script src="resources/js/barraBuscar.js" defer></script>
+    <link rel="stylesheet" href="resources/css/nav.css">
+    <link rel="stylesheet" href="resources/css/perfil.css">
 </head>
 <body>
-    <div class="container col-12 col-md-7 col-xl-5 align-self-center" style="max-width: 400px">
-        <!-- Cambiar usuario y/o email -->
-        <div class="titulo mt-4">
-            <h1 class="display-3 fw-bold text-center">MODIFICAR DATOS</h1>
+  <div class="sticky-top">
+    <nav class="navbar navbar-expand-lg px-5 py-1">
+        <div class="container">
+            <div class="flex-grow-1">
+                <button id="nav-toggle" class="border-0 bg-transparent text-light fs-4 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#enlaces" aria-expanded="false" aria-controls="enlaces">
+                    RetroBits <img class="arrow" src="resources/images/svg/flecha.svg" alt="">
+                </button>
+            </div>
+    
+            <!-- Buscador Unificado -->
+            <div id="nav" class="d-flex flex-grow-1 position-relative">
+                <a href="../" class="btn btn-light rounded-0 rounded-end-0 border border-start-1 rounded-start-1">
+                    <i class="bi bi-house-door"></i>
+                </a>
+                <input id="buscador" type="text" class="flex-grow-1 bg-light p-1 rounded-0 border border-end-0 pl-1" placeholder="Apple II, Game Boy, Tamagotchi...">
+                <button class="btn btn-light rounded-0 rounded-end-1 border border-start-0">
+                    <i class="bi bi-search"></i>
+                </button>
+                <div id="suggestionsContainer" class="suggestions"></div>
+            </div>
+    
+            <!-- Elementos de perfil y bolsa -->
+            <div class="d-flex justify-content-end flex-grow-1 gap-4">
+                <!--BOTON PERFIL-->
+                <div id="perfil" class="dropdown dropstart">
+                    <button id="btnOprcionesPerfil" class="btn border-0 text-light bi fs-2 mt-1 fw-bold" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="-5,10"></button>
+                    <ul id="botonesUsuario" class="dropdown-menu rounded-2 shadow pb-0">
+                        <button class="dropdown-item rounded-bottom-2 mt-2 bg-light text-secondary" onclick="guiaDeUsuario()">Guía de usuario</button>
+                    </ul>
+                </div>
+    
+                <!--BOTON BOLSA-->
+                <a  id="bolsa" href="#" class="text-light position-relative p-0 mr-5 mt-2">
+                    <i class="bi bi-bag-fill fs-2"></i>
+                    <span id="cestaNumero" class="position-absolute top-50 start-50 translate-middle text-dark fw-bold fs-5"></span>
+                </a>
+            </div>
         </div>
-        <form id="FM" class="mt-4">
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control form-control-lg" id="floatingUsername" placeholder="Usuario">
-                <label for="floatingUser">Usuario</label>
-            </div>
-            <div class="form-floating mb-3">
-                <input type="email" class="form-control form-control-lg" id="floatingEmail" placeholder="Correo electronico">
-                <label for="floatingEmail">Correo electronico</label>
-            </div>
-            <div>
-                <p>Introduce tu contraseña para aplicar los cambios:</p>
-                <div class="form-floating mb-3">
-                    <input type="password" class="form-control form-control-lg" id="floatingPassword" placeholder="Contraseña">
-                    <i type="button" class="bi bi-eye-slash fs-3" id="togglePassword"></i>
-                    <label for="floatingPassword">Contraseña</label>
-                </div>
-            </div>
-            <div class="d-grid gap-2 col-6 mx-auto mt-4 btnLog">
-                <button class="btn btn-dark text-light fw-bold" type="submit" id="btnModify">Aplicar cambios</button>
-            </div>
-        </form>
-        <!-- Cambiar contraseña -->
-        <div class="d-grid gap-2 col-6 mx-auto mt-4 btnLog">
-            <button type="button" class="btn btn-dark text-light fw-bold" data-bs-toggle="modal" data-bs-target="#passModal" id="btnModify">Cambiar contraseña</button>
+    </nav>
+    <div class="collapse text-center" id="enlaces">
+        <div class="row">
+            <a class="enlaceArea col-4 col-xl-2 e1" href="view/productos.html?1">
+                <img src="resources/images/svg/consola.svg" alt="" srcset=""><br>Consolas
+            </a>
+            <a class="enlaceArea col-4 col-xl-2 e2" href="view/productos.html?2">
+                <img src="resources/images/svg/computadora.svg" alt="" srcset=""><br>Computadoras
+            </a>
+            <a class="enlaceArea col-4 col-xl-2 e3" href="view/productos.html?3">
+                <img src="resources/images/svg/camara.svg" alt="" srcset=""><br>Cámaras
+            </a>
+            <a class="enlaceArea col-4 col-xl-2 e4" href="view/productos.html?4">
+                <img src="resources/images/svg/radio.svg" alt="" srcset=""><br>Radios
+            </a>
+            <a class="enlaceArea col-4 col-xl-2 e5" href="view/productos.html?5">
+                <img src="resources/images/svg/telefono.svg" alt="" srcset=""><br>Teléfonos
+            </a>
+            <a class="enlaceArea col-4 col-xl-2 e6" href="view/productos.html?6">
+                <img src="resources/images/svg/electrodomestico.svg" alt="" srcset=""><br>Electrodomésticos
+            </a>
         </div>
-        <div class="modal fade" id="passModal" tabindex="-1" aria-labelledby="passModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="passModalLabel">Cambiar contraseña</h1>
-                  <button id="cerrarModal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="FP" class="mt-4">
-                        <div class="form-floating mb-3">
-                            <input type="password" class="form-control form-control-lg" id="floatingPasswordOld" placeholder="Contraseña antigua">
-                            <i type="button" class="bi bi-eye-slash fs-3" id="togglePassword"></i>
-                            <label for="floatingPassword">Contraseña actual</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="password" class="form-control form-control-lg" id="floatingPasswordNew" placeholder="Contraseña nueva">
-                            <i type="button" class="bi bi-eye-slash fs-3" id="togglePassword"></i>
-                            <label for="floatingPassword">Nueva contraseña</label>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="submit" id="btnModifyPass" class="btn btn-dark text-light fw-bold">Cambiar</button>
-                        </div>
-                    </form>
-                </div>
+    </div>
+</div>
+
+<div id="overlay" class="overlay"></div>
+
+<main>
+  <div class="container col-12 col-md-7 col-xl-5 align-self-center bg-light" style="max-width: 400px">
+      <!-- Cambiar usuario y/o email -->
+      <div class="titulo mt-4">
+          <h1 class="display-3 fw-bold text-center">MODIFICAR DATOS</h1>
+      </div>
+      <form id="FM" class="mt-4">
+          <div class="form-floating mb-3">
+              <input type="text" class="form-control form-control-lg" id="floatingUsername" placeholder="Usuario">
+              <label for="floatingUser">Usuario</label>
+          </div>
+          <div class="form-floating mb-3">
+              <input type="email" class="form-control form-control-lg" id="floatingEmail" placeholder="Correo electronico">
+              <label for="floatingEmail">Correo electronico</label>
+          </div>
+          <div>
+              <p>Introduce tu contraseña para aplicar los cambios:</p>
+              <div class="form-floating mb-3">
+                  <input type="password" class="form-control form-control-lg" id="floatingPassword" placeholder="Contraseña">
+                  <i type="button" class="bi bi-eye-slash fs-3" id="togglePassword"></i>
+                  <label for="floatingPassword">Contraseña</label>
+              </div>
+          </div>
+          <div class="d-grid gap-2 col-6 mx-auto mt-4 btnLog">
+              <button class="btn btn-dark text-light fw-bold" type="submit" id="btnModify">Aplicar cambios</button>
+          </div>
+      </form>
+      <!-- Cambiar contraseña -->
+      <div class="d-grid gap-2 col-6 mx-auto mt-4 btnLog">
+          <button type="button" class="btn btn-dark text-light fw-bold" data-bs-toggle="modal" data-bs-target="#passModal" id="btnModify">Cambiar contraseña</button>
+      </div>
+      <div class="modal fade" id="passModal" tabindex="-1" aria-labelledby="passModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="passModalLabel">Cambiar contraseña</h1>
+                <button id="cerrarModal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form id="FP" class="mt-4">
+                      <div class="form-floating mb-3">
+                          <input type="password" class="form-control form-control-lg" id="floatingPasswordOld" placeholder="Contraseña antigua">
+                          <i type="button" class="bi bi-eye-slash fs-3" id="togglePassword"></i>
+                          <label for="floatingPassword">Contraseña actual</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                          <input type="password" class="form-control form-control-lg" id="floatingPasswordNew" placeholder="Contraseña nueva">
+                          <i type="button" class="bi bi-eye-slash fs-3" id="togglePassword"></i>
+                          <label for="floatingPassword">Nueva contraseña</label>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="submit" id="btnModifyPass" class="btn btn-dark text-light fw-bold">Cambiar</button>
+                      </div>
+                  </form>
               </div>
             </div>
           </div>
-        <!-- Hacer que al darle click al botón que habra un modal con dos inputs, uno para que ponga la contraseña anterior, y luego otro con la contraseña nueva (que verifique que la contraseña no sea la misma, y salgan avisos de que contraseña actualizada correctamente o contraseña invalida) -->
-        <!-- Dejar esta página más bonita -->
-    </div>
+        </div>
+      <!-- Dejar esta página más bonita -->
+  </div>
+</main>
     <script src="resources/js/sesionUsuario.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2/dist/sweetalert2.min.js"></script>
 </body>

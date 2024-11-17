@@ -227,6 +227,8 @@
 function botonesAdmin(){
   console.log("sesion Admin");
 
+  document.getElementById("btnOprcionesPerfil").classList.add("bi-person-circle");
+
   const separador = document.createElement("div");
   separador.classList = "border"
 
@@ -260,6 +262,8 @@ function botonesAdmin(){
 function botonesUser(){
   console.log("sesion iniciada");
 
+  document.getElementById("btnOprcionesPerfil").classList.add("bi-person-circle");
+
   const separador = document.createElement("div");
   separador.classList = "border"
 
@@ -284,6 +288,8 @@ function botonesUser(){
 
 function botonesAnon(){
   console.log("sesion anonima");
+
+  document.getElementById("btnOprcionesPerfil").classList.add("bi-person");
 
   const separador = document.createElement("div");
   separador.classList = "border"

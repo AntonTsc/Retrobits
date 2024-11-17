@@ -7,6 +7,44 @@ const fm = document.getElementById('FM');
 const fp = document.getElementById('FP');
 const path = window.location.pathname;
 const pagPerfil = path.split('/').pop();
+const despleglable = document.getElementById("botonesUsuario");
+let userSesion = "anonymous";
+let cestaSesion = {};
+
+
+
+async function configurarSesion(){
+    try{
+        const response = await fetch("/Retrobits/controller/sesionComp.php");
+        const sesion = await response.json();
+  
+        if (sesion.status === 'OK') {
+          userSesion = sesion.user.username;
+          cestaComp();
+          if (sesion.user.admin){
+            botonesAdmin();
+          }else{
+            botonesUser();
+          }
+        } else {
+            botonesAnon();
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+  }
+  function obtenerCesta() {
+    localStorage.getItem("cesta") != null &&
+      (cestaSesion = JSON.parse(localStorage.getItem("cesta")));
+    return cestaSesion;
+  }
+  function cestaComp(){
+    if (obtenerCesta()[userSesion] == null) {
+      cestaNumero.innerHTML = 0;
+    } else {
+      cestaNumero.innerHTML = obtenerCesta()[userSesion].length;
+    }
+  }
 
 //Register
 async function insertUsuario(){
@@ -399,6 +437,93 @@ togglePasswords.forEach((togglePassword, index) => {
     })
 })
 
+function botonesAdmin(){
+    console.log("sesion Admin");
+
+    document.getElementById("btnOprcionesPerfil").classList.add("bi-person-circle");
+  
+    const separador = document.createElement("div");
+    separador.classList = "border"
+  
+    const li1 = document.createElement("li");
+    const btnLogin = document.createElement("a");
+    btnLogin.classList = "dropdown-item mt-1 mb-2";
+    btnLogin.href = "perfil.html";
+    btnLogin.innerHTML = "Ver perfil";
+    li1.appendChild(btnLogin);
+    
+    const li2 = document.createElement("li");
+    const btnPanelAdmin = document.createElement("a");
+    btnPanelAdmin.classList = "d-flex justify-content-center btn btn-primary rounded-2 m-2";
+    btnPanelAdmin.href = "panelAdmin.php";
+    btnPanelAdmin.innerHTML = "Panel Admin";
+    li2.appendChild(btnPanelAdmin);
+  
+    const li3 = document.createElement("li");
+    const btnSignin = document.createElement("a");
+    btnSignin.classList = "d-flex justify-content-center btn btn-danger rounded-2 mx-2 mt-2";
+    btnSignin.href = "../controller/logout.php";
+    btnSignin.innerHTML = "Cerrar sesión";
+    li3.appendChild(btnSignin);
+  
+    despleglable.insertBefore(li3, despleglable.firstChild);
+    despleglable.insertBefore(separador, despleglable.firstChild);
+    despleglable.insertBefore(li2, despleglable.firstChild);
+    despleglable.insertBefore(li1, despleglable.firstChild);
+  }
+  
+  function botonesUser(){
+    console.log("sesion iniciada");
+
+    document.getElementById("btnOprcionesPerfil").classList.add("bi-person-circle");
+  
+    const separador = document.createElement("div");
+    separador.classList = "border"
+  
+    const li1 = document.createElement("li");
+    const btnLogin = document.createElement("a");
+    btnLogin.classList = "dropdown-item mt-1 mb-2";
+    btnLogin.href = "perfil.html";
+    btnLogin.innerHTML = "Ver perfil";
+    li1.appendChild(btnLogin);
+  
+    const li2 = document.createElement("li");
+    const btnSignin = document.createElement("a");
+    btnSignin.classList = "d-flex justify-content-center btn btn-danger rounded-2 mx-2 mt-2";
+    btnSignin.href = "../controller/logout.php";
+    btnSignin.innerHTML = "Cerrar sesión";
+    li2.appendChild(btnSignin);
+  
+    despleglable.insertBefore(li2, despleglable.firstChild);
+    despleglable.insertBefore(separador, despleglable.firstChild);
+    despleglable.insertBefore(li1, despleglable.firstChild);
+  }
+  function botonesAnon(){
+    console.log("sesion anonima");
+  
+    document.getElementById("btnOprcionesPerfil").classList.add("bi-person");
+
+    const separador = document.createElement("div");
+    separador.classList = "border"
+  
+    const li1 = document.createElement("li");
+    const btnLogin = document.createElement("a");
+    btnLogin.classList = "dropdown-item mt-1 mb-2";
+    btnLogin.href = "login.html";
+    btnLogin.innerHTML = "Iniciar sesión";
+    li1.appendChild(btnLogin);
+  
+    const li2 = document.createElement("li");
+    const btnSignin = document.createElement("a");
+    btnSignin.classList = "dropdown-item mt-1 mb-2";
+    btnSignin.href = "signin.html";
+    btnSignin.innerHTML = "Registrarse";
+    li2.appendChild(btnSignin);
+  
+    despleglable.insertBefore(li2, despleglable.firstChild);
+    despleglable.insertBefore(li1, despleglable.firstChild);
+  }
+
 if (fl){
     fl.addEventListener('submit', (e) => {
         e.preventDefault(); 
@@ -426,7 +551,9 @@ if (fp){
     })
 }
 if(pagPerfil == "perfil.html") {
-    window.onload = () => {
         comprobarSesion();
-    }
 }
+window.onload = function () {
+    configurarSesion();
+    cestaComp();
+  };
