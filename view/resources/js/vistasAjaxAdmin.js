@@ -9,6 +9,7 @@ let elementoClickDerecho;
 let cropper;
 let valoresOriginales = {};
 let alternarStock = false;
+let modoAuto = true;
 
 
 //* FUNCIONES =========================================================
@@ -151,11 +152,32 @@ function vaciarIntervalos(gestor = "") {
     }
 }
 
-
+function alternarModoAuto(btn){
+    modoAuto = !modoAuto;
+    if(modoAuto) {
+        btn.innerHTML = "Actualizaciones automáticas <img class='giro' src='resources/images/svg/automatico.svg'>";
+    } else {
+        btn.innerHTML = "Actualizaciones manuales <img src='resources/images/svg/manual.svg'>";
+    }
+}
 //SweetAlert2 es una libreria para mostrar alertas dinamicas
 //Muestra un mensaje que nos permitira mantener la pagina actual o refescar los datos por Ajax
 function notificarCambio(tab) {
-
+    if (modoAuto){
+        cargarContenidoNuevo(tab, false);
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+            });
+            Toast.fire({
+            icon: "success",
+            title: `Datos actualizados`
+        });
+        return;
+    } 
     Swal.fire({
         position: "top",
         title: "Se han detectado cambios en la base de datos",

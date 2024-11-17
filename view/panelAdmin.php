@@ -39,7 +39,7 @@ if (!isset($_SESSION['admin']) || $_SESSION['admin'] != "1") {
     <!-- Meta tags -->
     <meta http-equiv="content-language" content="es" />
     <meta http-equiv="content-script-type" content="text/javascript">
-    <meta httpcenter !important;quiv="content-style-type" content="text/css">
+    <meta http-quiv="content-style-type" content="text/css">
     <!-- Fin Meta tags -->
 </head>
 
@@ -59,7 +59,10 @@ if (!isset($_SESSION['admin']) || $_SESSION['admin'] != "1") {
             <li class="nav-item">
                 <button id="Pedidos" class="nav-link text-light" onclick="cargarContenidoNuevo('Pedidos')">PEDIDOS</button>
             </li>
-            <li class="nav-item ms-auto">
+            <li class="nav-item  ms-auto">
+                <button id="auto" class="nav-link text-light border-0" onclick="alternarModoAuto(this)">Actualizaciones automáticas <img class="giro" src="resources/images/svg/automatico.svg" alt=""></button>
+            </li>
+            <li class="nav-item">
                 <button id="guia" class="nav-link text-light bi bi-patch-question" onclick="guiaDeUsuario()"> AYUDA</button>
             </li>
         </ul>
