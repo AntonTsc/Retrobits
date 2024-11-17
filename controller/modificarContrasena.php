@@ -2,27 +2,30 @@
     require_once("../model/MUsuario.php");
 
     $mUsuario = new MUsuario();
+    session_start();
 
     $data = [
-        "username" => $_POST['username'],
-        "email" => $_POST['email'],
+        "id" => $_SESSION['id'],
         "password" => $_POST['password']
     ];
 
     $datos = [];
 
-    if($mUsuario->insertUsuario($data)){
+    if($mUsuario->editPassword($data)){
+        $user = $mUsuario->getUsuarioXid($data['id']);
+        $_SESSION['password'] = $user['password'];
+
         $datos = [
             'status' => 'OK',
-            'message' => 'Usuario creado.'
+            'message' => 'Contraseña modificada.'
         ];
     } else {
         $datos = [
             'status' => 'ERROR',
-            'message' => 'Ya existe un usuario con ese nombre/email.'
+            'message' => 'No se ha podido modificar la contraseña.'
         ];
     }
-    
+
     header("Content-Type: application/json");
     echo json_encode($datos);
     exit();

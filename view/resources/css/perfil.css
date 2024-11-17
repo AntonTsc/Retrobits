@@ -1,0 +1,24 @@
+.btn{
+    background-color: #9c2227;
+    font-size: 16px;
+}
+
+.btn:hover{
+    background-color: #891c20;
+}
+
+.form-control{
+    border-color: rgba(128, 128, 128, 0.781);
+}
+
+.form-control:focus {
+    border-color: #9c2227   ;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+#togglePassword{
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-45%)
+}
