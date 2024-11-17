@@ -249,7 +249,7 @@ async function modificarUsuario(){
 
         if (datos.status === 'OK') {
             comprobarSesion();
-
+            document.getElementById("floatingPassword").value="";
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top",
@@ -329,12 +329,16 @@ async function modificarContrasena(){
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: 'password=' + encodeURIComponent(passNew.value)
+            body: 'password=' + encodeURIComponent(passNew.value) +
+                  '&oldPassword=' + encodeURIComponent(passOld.value)
         }); 
 
         const datos = await response.json();
 
         if (datos.status === 'OK') {
+            data.password.click();
+            passOld.value="";
+            passNew.value="";
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top",
@@ -346,7 +350,19 @@ async function modificarContrasena(){
                 icon: "success",
                 title: datos.message
               });
-        } 
+        } else if (datos.status === 'INCORRECT'){
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+              });
+              Toast.fire({
+                icon: "error",
+                title: datos.message
+              });
+        }
 
     } catch (error) {
         console.error("Error: ", error);

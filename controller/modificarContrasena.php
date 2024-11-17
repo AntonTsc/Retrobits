@@ -1,31 +1,39 @@
 <?php
-    require_once("../model/MUsuario.php");
-
-    $mUsuario = new MUsuario();
     session_start();
-
-    $data = [
-        "id" => $_SESSION['id'],
-        "password" => $_POST['password']
-    ];
-
     $datos = [];
 
-    if($mUsuario->editPassword($data)){
-        $user = $mUsuario->getUsuarioXid($data['id']);
-        $_SESSION['password'] = $user['password'];
-
-        $datos = [
-            'status' => 'OK',
-            'message' => 'Contraseña modificada.'
+    if(password_verify($_POST['oldPassword'], $_SESSION["password"])){
+        require_once("../model/MUsuario.php");
+    
+        $mUsuario = new MUsuario();
+    
+        $data = [
+            "id" => $_SESSION['id'],
+            "password" => $_POST['password']
         ];
-    } else {
+    
+    
+        if($mUsuario->editPassword($data)){
+            $user = $mUsuario->getUsuarioXid($data['id']);
+            $_SESSION['password'] = $user['password'];
+    
+            $datos = [
+                'status' => 'OK',
+                'message' => 'Contraseña modificada.'
+            ];
+        } else {
+            $datos = [
+                'status' => 'ERROR',
+                'message' => 'No se ha podido modificar la contraseña.'
+            ];
+        }
+    
+    }else{
         $datos = [
-            'status' => 'ERROR',
-            'message' => 'No se ha podido modificar la contraseña.'
+            'status' => 'INCORRECT',
+            'message' => 'La contraseña actual no es correcta.'
         ];
     }
-
     header("Content-Type: application/json");
     echo json_encode($datos);
     exit();
