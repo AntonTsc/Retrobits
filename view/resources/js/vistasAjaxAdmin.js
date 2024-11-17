@@ -675,7 +675,7 @@ function editarFila(btn) {
     btnCancelar.classList.remove("d-none")
 }
 
-async function guardarEdiciones(btn) {
+function guardarEdiciones(btn) {
     vaciarIntervalos();
     
     const fila = btn.closest('tr');
@@ -701,10 +701,34 @@ async function guardarEdiciones(btn) {
 
     // Si no hay cambios salgo de la funcion
     if (!cambios) {
-       cargarContenidoNuevo("Productos");
+        switch (tabulacion) { 
+            case "Productos":
+                cargarContenidoNuevo("Productos");
+                break;
+            case "Usuarios":
+                cargarContenidoNuevo("Usuarios");
+                break;
+            case "Pedidos":
+                break;
+                cargarContenidoNuevo("Pedidos");
+        }
         return;
+    }else{
+        switch (tabulacion) { 
+            case "Productos":
+                ejecutarEdicionProducto(fila);
+                break;
+            case "Usuarios":
+                ejecutarEdicionUsuario(fila);
+                break;
+            case "Pedidos":
+                break;
+        }
     }
 
+}
+
+async function ejecutarEdicionProducto(fila){
     const nombre = fila.querySelector('td:nth-child(2)').children[0];
     const descripcion = fila.querySelector('td:nth-child(3)').children[0];
     const seccion = fila.querySelector('td:nth-child(4)').children[0];
@@ -785,6 +809,94 @@ async function guardarEdiciones(btn) {
     }
 }
 
+async function ejecutarEdicionUsuario(fila){
+    const username = fila.querySelector('td:nth-child(2)').children[0];
+    const email = fila.querySelector('td:nth-child(3)').children[0];
+    const admin = fila.querySelector('td:nth-child(4)').children[0].children[0].checked ? 1 : 0;
+    const borrado = fila.querySelector('td:nth-child(5)').children[0].children[0].checked ? 1 : 0;
+
+    let errores = [];
+    // Validar el nombre de usuario
+    if (!/^[a-zA-Z0-9_]{4,20}$/.test(username.value)) {
+        username.style.borderColor = "red";
+        errores.push("Nombre de usuario");
+    }else username.style.borderColor = "green";
+
+    // Validar el correo electrónico
+    if (!/^[\w-.]+@[\w-]+\.[\w-]{2,}$/.test(email.value)) {
+        email.style.borderColor = "red";
+        errores.push("Dirección de correo");
+    }else email.style.borderColor = "green";
+
+    // Si hay errores, mostrar alerta
+    if (errores.length > 0) {
+        Swal.fire({
+            icon: "error",
+            title: "Campos no válidos:",
+            html: errores.map(error => `<label class="ms-3">•${error}</label><br>`).join(""),
+            timer: 5000,
+            timerProgressBar: true,
+            position: "top-right",
+            showConfirmButton: false,
+            toast: true
+        });
+        return;
+    }
+
+    console.log(admin);
+
+    try{
+        const response = await fetch("/Retrobits/controller/modificarUsuario.php", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'userId=' + encodeURIComponent(fila.id) + 
+                  '&username=' + encodeURIComponent(username.value) +
+                  '&userOldName=' + encodeURIComponent(valoresOriginales[0]) +
+                  '&email=' + encodeURIComponent(email.value) + 
+                  '&userOldEmail=' + encodeURIComponent(valoresOriginales[1]) +
+                  '&admin=' + encodeURIComponent(admin) + 
+                  '&borrado=' + encodeURIComponent(borrado) + 
+                  '&isAdmin=true'
+        }); 
+
+        const datos = await response.json();
+
+        if (datos.status === 'OK') {
+            cargarContenidoNuevo("Usuarios");
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-right",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+              });
+              Toast.fire({
+                icon: "success",
+                title: datos.message
+              });
+        } else if(datos.status === 'ERROR'){
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-right",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+              });
+              Toast.fire({
+                icon: "warning",
+                title: datos.message
+              });
+        }
+
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+
+}
+
+
 //Muestro la foto que pertenece al producto de lo contrario aviso que no hay foto
 function verFotoProducto(btn){
     const fila = btn.closest('tr');
@@ -807,5 +919,5 @@ function verFotoProducto(btn){
 
 //* ONLOAD ============================================================
 window.onload = () => {
-    cargarContenidoNuevo("Productos");
+    cargarContenidoNuevo("Usuarios");
 };

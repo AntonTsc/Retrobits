@@ -116,6 +116,17 @@
             return $comp;
         }
 
+        public function editUsuarioEntero($data){
+            $query = $this->getCon()->prepare("UPDATE usuarios SET username = ?, email = ?, `admin` = ?, deleted = ? WHERE id = ?");
+            $query->bind_param("ssiii", $data['username'], $data['email'], $data['admin'], $data["borrado"], $data['userId']);
+
+            $comp = ($query->execute()) ? true : false;
+            
+            $query->close();
+
+            return $comp;
+        }
+
         public function editPassword($data){
             $encPass = password_hash($data['password'], PASSWORD_DEFAULT);
 

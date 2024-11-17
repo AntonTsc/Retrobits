@@ -73,7 +73,7 @@ if (!isset($_SESSION['admin']) || $_SESSION['admin'] != "1") {
     <div id="menuDesplegable" class="menu-desplegable border border-1 rounded-2">
         <ul>
             <li id="mdImagen" class="btnMenu btn btn-white bi bi-image rounded-bottom-0 w-100 text-start py-1 ps-3 bg-light d-none" onclick="clickDerechoAccionImagen()" data-bs-toggle="modal" data-bs-target="#modalVerFotoProducto"> Ver imagen</li>
-            <li id="mdCodigosDescuento" class="btnMenu btn btn-white bi bi-upc-scan rounded-bottom-0 w-100 text-start py-1 ps-3 bg-light d-none" onclick="clickDerechoAccionImagen()" data-bs-toggle="modal" data-bs-target="#-"> Codigos de descuento</li>
+            <li id="mdCodigosDescuento" class="btnMenu btn btn-white bi bi-upc-scan rounded-bottom-0 w-100 text-start py-1 ps-3 bg-light d-none" onclick="clickDerechoAccionCancelar()" data-bs-toggle="modal" data-bs-target="#-"> Codigos de descuento</li>
             <li id="mdEditar" class="btnMenu btn btn-white bi bi-pencil-fill rounded-bottom-0 w-100 text-start py-1 ps-3 bg-light" onclick="clickDerechoAccionEditar()"> Editar</li>
             <li id="mdCancelar" class="btnMenu btn btn-white bi bi-x-circle-fill rounded-0 w-100 text-start py-1 ps-3 bg-light d-none" onclick="clickDerechoAccionCancelar()"> Cancelar</li>
             <li id="mdContrasena" class="btnMenu btn btn-white bi bi-key-fill rounded-0 w-100 text-start py-1 ps-3 bg-light d-none" onclick="clickDerechoAccionCancelar()"> Cambiar contraseña</li>
