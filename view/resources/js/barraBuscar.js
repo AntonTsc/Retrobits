@@ -64,8 +64,36 @@ searchInput.addEventListener("keyup", (e) => {
             suggestionElement.style.height = "60px";
 
             const imagen = document.createElement("img");
-            imagen.src = "resources/images/img/Game Gear.jpg";
-            imagen.style.height = "100%"
+            let dir = "/retrobits/view/resources/images/productos/";
+            imagen.src = `${dir}${producto.id}.jpg` ;
+            imagen.onerror = function() {
+                
+                switch (producto.idSeccion) {
+                  case "1":
+                    imagen.src = `${dir}defaultConsolas.jpg`;
+                    break;
+                  case "2":
+                    imagen.src = `${dir}defaultComputadoras.jpg`;
+                    break;
+                  case "3":
+                    imagen.src = `${dir}defaultCamaras.jpg`;
+                    break;
+                  case "4":
+                    imagen.src = `${dir}defaultRadios.jpg`;
+                    break;
+                  case "5":
+                    imagen.src = `${dir}defaultTelefonos.jpg`;
+                    break;
+                  case "6":
+                    imagen.src = `${dir}defaultElectrodomesticos.jpg`;
+                    break;
+                  default:
+                    imagen.src = `${dir}default.jpg`;
+                    break;
+                }
+              };
+            //imagen.style.height = "100%"
+            imagen.classList = "h-100 rounded-1"
 
             const divInfo = document.createElement("div");
             const infoName = document.createElement("h6")

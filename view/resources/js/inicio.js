@@ -162,10 +162,33 @@ function generador(producto, seccion) {
   button.classList = "card-item bg-light swiper-slide border-0 btn rounded-1 shadow";
   
   const img = document.createElement("img");
-  img.src = `view/resources/images/productos/${producto.id}.jpg`;
+  let dir = "view/resources/images/productos/";
+  img.src = `${dir}${producto.id}.jpg` ;
   img.onerror = function() {
-    img.src = "view/resources/images/productos/default.jpg"; // Ruta a la imagen predeterminada
-    };
+    switch (producto.idSeccion) {
+      case "1":
+        img.src = `${dir}defaultConsolas.jpg`;
+        break;
+      case "2":
+        img.src = `${dir}defaultComputadoras.jpg`;
+        break;
+      case "3":
+        img.src = `${dir}defaultCamaras.jpg`;
+        break;
+      case "4":
+        img.src = `${dir}defaultRadios.jpg`;
+        break;
+      case "5":
+        img.src = `${dir}defaultTelefonos.jpg`;
+        break;
+      case "6":
+        img.src = `${dir}defaultElectrodomesticos.jpg`;
+        break;
+      default:
+        img.src = `${dir}default.jpg`;
+        break;
+    }
+  };
   img.alt = "...";
   img.classList = "rounded-top-1";
   

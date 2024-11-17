@@ -322,10 +322,34 @@ function botonesAnon(){
     div3.classList = "position-relative";
 
     const imagen = document.createElement("img");
-    imagen.src = `resources/images/productos/${producto.id}.jpg`;
+    let dir = "resources/images/productos/";
+    imagen.src = `${dir}${producto.id}.jpg` ;
     imagen.onerror = function() {
-      imagen.src = "resources/images/productos/default.jpg"; // Ruta a la imagen predeterminada
+      switch (producto.idSeccion) {
+        case "1":
+          imagen.src = `${dir}defaultConsolas.jpg`;
+          break;
+        case "2":
+          imagen.src = `${dir}defaultComputadoras.jpg`;
+          break;
+        case "3":
+          imagen.src = `${dir}defaultCamaras.jpg`;
+          break;
+        case "4":
+          imagen.src = `${dir}defaultRadios.jpg`;
+          break;
+        case "5":
+          imagen.src = `${dir}defaultTelefonos.jpg`;
+          break;
+        case "6":
+          imagen.src = `${dir}defaultElectrodomesticos.jpg`;
+          break;
+        default:
+          imagen.src = `${dir}default.jpg`;
+          break;
+      }
     };
+      
     imagen.classList = "card-img-top";
     imagen.alt = "...";
 
