@@ -2,10 +2,10 @@ const driver = window.driver.js.driver;
 
 function guiaDeUsuario(){
     const tab = document.querySelector('#headerLinks .nav-item .active').id;
-    const linea1 = document.querySelector('#cuerpoTabla tr');
-    console.log(linea1);
+    let linea1 = "";
     switch (tab) {
         case "Productos":
+            linea1 = document.querySelector('#cuerpoTabla tr');
             const driverObjProductos = driver({
                 showProgress: true,
                 progressText: "{{current}}/{{total}}",
@@ -203,6 +203,7 @@ function guiaDeUsuario(){
             break;
 
         case "Usuarios":
+            let linea1 = document.querySelector('#cuerpoTablaAdmins tr');
             const driverObjUsuarios = driver({
                 showProgress: true,
                 progressText: "{{current}}/{{total}}",
@@ -265,6 +266,99 @@ function guiaDeUsuario(){
                             side: "left", align: 'start'
                         }
                     },
+                    { 
+                        popover: {
+                            title: 'Cumple con las Normas',
+                            description: `<p>La información de los usuarios está regida por normas estrictas que deben cumplirse sin excepción:</p>
+                            <ul>
+                                <li><strong>Nombre de usuario:</strong> Debe contener entre <strong>4 y 20 caracteres</strong>, permitiéndose solo letras, números y guiones bajos.</li>
+                                <li><strong>Correo electrónico:</strong> Debe tener un formato válido, compuesto por <strong>nombre de usuario</strong>, seguido de <strong>@</strong> y un <strong>dominio</strong> de correo electrónico.</li>
+                                <li><strong>Contraseña:</strong> Debe tener al menos <strong>8 caracteres</strong>, incluyendo al menos: <strong>una letra minúscula</strong>, <strong>una letra mayúscula</strong>, <strong>un número</strong> y <strong>un carácter especial</strong>.</li>
+                            </ul>`,
+                            side: "left", align: 'start',
+                            popoverClass: "guiaAncho"
+                        }
+                    },
+                    { 
+                        element: '#agregar',
+                        popover: {
+                            title: 'Añadir Usuario',
+                            description: '<p>Este botón permite <strong>crear un nuevo usuario</strong> ingresando los datos necesarios en un formulario.</p>',
+                            side: "left", align: 'start',
+                            onNextClick: () => {
+                                document.getElementById('agregar').click();
+                                driverObjUsuarios.moveNext();
+                            }
+                        }
+                    },
+                    { 
+                        element: '.modal-content',
+                        popover: {
+                            title: 'Formulario para Añadir Usuario',
+                            description: '<p>Aquí encontrarás los campos necesarios para <strong>agregar un nuevo Usuario</strong>. Es obligatorio completar todos los campos para finalizar el proceso de manera correcta.<br><br><i>Debes seguir las reglas mencionadas anteriormente.</i></p>',
+                            side: "left", align: 'start',
+                            onPrevClick: () => {
+                                document.getElementById('cerrarModal').click();
+                                driverObjUsuarios.movePrevious();
+                            },
+                            onNextClick: () => {
+                                document.getElementById('cerrarModal').click();
+                                driverObjUsuarios.moveNext();
+                            }
+                        }
+                    },
+                    { 
+                        element: '.accordion',
+                        popover: {
+                            title: 'Tablas de Usuarios',
+                            description: `<p>Estas tablas, organizadas por tipo de usuario y separadas mediante un acordeón, muestran la información de todos los usuarios registrados en el sistema.</p>`,
+                            side: "top", align: 'center',
+                            popoverClass: "guiaAncho",
+                            onPrevClick: () => {
+                                document.getElementById('agregar').click();
+                                driverObjUsuarios.movePrevious();
+                            }
+                        }
+                    },
+                    { 
+                        element: ".accordion-button-admin",
+                        popover: {
+                            title: 'El Acordeón',
+                            description: `<p>Este acordeón te permite diferenciar fácilmente entre <strong>usuarios administradores</strong> y <strong>usuarios normales</strong>. Además, puedes utilizarlo para ocultar o mostrar las tablas según sea necesario.</p>`,
+                            side: "top", align: 'center',
+                            onNextClick: () => {
+                                if(!document.getElementById('panelsStayOpen-collapseOne').classList.contains('show')){
+                                    document.querySelector('.accordion-button-admin').click();
+                                }
+                                driverObjUsuarios.moveNext();
+                            }
+                        }
+                    },
+                    { 
+                        element: linea1,
+                        popover: {
+                            title: 'Un Usuario',
+                            description: `<p>Haz clic derecho sobre un usuario o utiliza el botón de opciones situado al final de la fila para interactuar con él. Las opciones incluyen:</p>
+                            <ul>
+                                <li><strong>Ver</strong> códigos de descuento.</li>
+                                <li><strong>Editar</strong> la información.</li>
+                                <ul style="padding-left: 20px;">
+                                    <li><strong>Guardar</strong> la información editada</li>
+                                    <li><strong>Cancelar</strong> la edición</li>
+                                </ul>
+                                <li><strong>Editar la contraseña</strong>.</li>
+                                <li><strong>Eliminarlo</strong> de manera permanente.</li>
+                            </ul>`,
+                            side: "top", align: 'center'
+                        }
+                    },
+                    { 
+                        popover: {
+                            title: 'Fin',
+                            description: '<p>Estas son todas las opciones disponibles en el <strong>panel de administración de Usuarios</strong>.</p><p><i>Si necesitas más información sobre las otras pestañas, simplemente cambia de pestaña y haz clic nuevamente en este botón de ayuda.</i></p>',
+                            side: "top", align: 'center'
+                        }
+                    }
                 ],
 
                 onDestroyStarted: () => {
