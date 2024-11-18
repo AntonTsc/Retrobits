@@ -45,21 +45,26 @@ class MCarrito extends Conexion{
     }
 
     //Función para enviar el pedido del carrito
-    public function enviarPedidoCarrito($direccion, $idUsuario, $productos){
+    public function enviarPedidoCarrito($pedido){
         
-        $sentenciaPedidos = $this->getCon()->prepare("INSERT INTO pedidos (direccion, idUsuario) VALUES (?, ?)");
-        $sentenciaPedidos->bind_param("si", $direccion, $idUsuario);
+        // $sentenciaPedidos = $this->getCon()->prepare("INSERT INTO pedidos (direccion, idUsuario) VALUES (?, ?)");
+        // $sentenciaPedidos->bind_param("si", $direccion, $idUsuario);
         
-        $sentenciaPedidos->execute();
+        // $sentenciaPedidos->execute();
 
-        $idPedido = $this->getCon()->insert_id;
+        // $idPedido = $this->getCon()->insert_id;
 
-        $sentenciaProductosPedidos = $this->getCon()->prepare("INSERT INTO productos_pedidos (idPedido, idProducto, cantidad) VALUES (?, ?, ?)");
+        $sentenciaProductosPedidos = $this->getCon()->prepare("INSERT INTO pedidos (direccion, fecha, fechaEntrega,idUsuario ) VALUES (?, ?, ?, ?)");
+        $sentenciaProductosPedidos->bind_param("sssi", $pedido['direccion'], $pedido['fecha'], $pedido['fechaEntrega'], $pedido['idUsuario']);
+        
+        $sentenciaProductosPedidos->execute();
+        $sentenciaProductosPedidos->close();
+
     
-        foreach ($productos as $producto) {
-            $sentenciaProductosPedidos->bind_param("iiid", $idPedido, $producto["id"], $producto["cantidad"]);
-            $sentenciaProductosPedidos->execute();
-        }
+        // foreach ($productos as $producto) {
+        //     $sentenciaProductosPedidos->bind_param("iiid", $idPedido, $producto["id"], $producto["cantidad"]);
+        //     $sentenciaProductosPedidos->execute();
+        // }
 
     return true;
 

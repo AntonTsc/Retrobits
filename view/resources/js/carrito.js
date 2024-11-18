@@ -1,35 +1,36 @@
-//GENERACIÓN DE UN JSON PROVISIONAL PARA LA LECTURA DE DATOS DEL CARRITO DIRECTAMENTE DEL MISMO
-let cesta = {
-    anonymous: {
-      0:{
-        idUsuario: 5,
-        cantidad: 2,
-        deleted: "0",
-        descripcion: "Laptop de alto rendimiento para profesionales",
-        descuento: "5",
-        id: "4",
-        idSeccion: "2",
-        nombre: "MacBook Pro",
-        precio: "2399.99",
-        stock: "30"
-      }
+let userSesion = "anonymous";
+const cesta = JSON.parse(localStorage.getItem("cesta"));
+
+async function configurarSesion(){
+    try{
+        const response = await fetch("/Retrobits/controller/sesionComp.php");
+        const sesion = await response.json();
+    
+        if (sesion.status === 'OK') {
+               userSesion = sesion.user.id;
+        //     cestaComp();
+        //     if (sesion.user.admin){
+        //     botonesAdmin();
+        //     }else{
+        //     botonesUser();
+        //     }
+        // } else {
+        //     botonesAnon();
+        }
+        verProductos();
+    } catch (error) {
+        console.error("Error: ", error);
     }
-  };
-          
-    localStorage.setItem("prod", JSON.stringify(cesta));
-    let productos = JSON.parse(localStorage.getItem("prod")).anonymous;
-    console.log(localStorage)
+}
 
 async function verProductos(){
     try{
-        
         let totalProductos = 0;
         const tbody = document.getElementById('generarTabla');
         tbody.innerHTML = '';
 
-        Object.keys(productos).forEach(eleccion => {
-
-            const producto = productos[eleccion];
+        cesta[userSesion].forEach( (producto, index) => {
+            
             const fila = document.createElement('tr');
 
             //Id del producto añadido al carrito
@@ -70,7 +71,7 @@ async function verProductos(){
             const botonAumentar = document.createElement('button');
             botonAumentar.textContent = 'Aumentar';
             botonAumentar.onclick = function () {
-                aumentarProductoCarrito(eleccion);
+                aumentarProductoCarrito(producto, index);
             };
             celdaBotonAumentar.appendChild(botonAumentar);
             fila.appendChild(celdaBotonAumentar);
@@ -80,7 +81,7 @@ async function verProductos(){
             const botonEliminar = document.createElement('button');
             botonEliminar.textContent = 'Eliminar producto del carrito';
             botonEliminar.onclick = function () {
-                eliminarProductoCarrito(eleccion);
+                eliminarProductoCarrito(producto, index);
             };
             celdaBotonEliminar.appendChild(botonEliminar);
             fila.appendChild(celdaBotonEliminar);
@@ -118,82 +119,150 @@ async function verProductos(){
     }
 }
 
-function aumentarProductoCarrito(eleccion){
+function aumentarProductoCarrito(producto, index){
 
-    productos[eleccion].cantidad++;
-    
-    localStorage.setItem("prod", JSON.stringify({anonymous: productos}));
+    cesta[userSesion][index].cantidad++;
+    localStorage.setItem("cesta", JSON.stringify(cesta));
+
     verProductos();
 
 }
 
-function eliminarProductoCarrito(eleccion){
+function eliminarProductoCarrito(producto, index){
 
-    if (productos[eleccion].cantidad > 1){
-        productos[eleccion].cantidad--;
+    if (cesta[userSesion][index].cantidad > 1){
+        cesta[userSesion][index].cantidad--;
     }else{
-        delete productos[eleccion];
+         cesta[userSesion].splice(index, 1);
     }
-    localStorage.setItem("prod", JSON.stringify({anonymous: productos}));
+    localStorage.setItem("cesta", JSON.stringify(cesta));
     verProductos();
 
-}
-
-async function comprarProductos(pedido){
-    console.log(pedido);
-    try{
-        
-        const response = await fetch("/Retrobits/controller/carritoEdit.php", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(pedido)
-        });
-        
-        const result = await response.json();
-        
-} catch (error) {
-    console.error('Error al realizar la compra', error);
-}
 }
 
 const botonComprar = document.getElementById('botonComprar');
 
 botonComprar.onclick = function () {
     const direccion = document.getElementById('direccionEnvio').value;
-    // const fechaActual = new Date();
-    // const fechaEntrega = new Date(fechaActual);
-    //     fechaEntrega.setDate(fechaActual.getDate() + 3);
-    const usuario = JSON.parse(localStorage.getItem("usuario"));
-    const idUsuario = usuario.id;
+    const obtenerFechaActual = () => {
+        const fecha = new Date();
+        const anio = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, 0);
+        const dia = String(fecha.getDate()).padStart(2, 0);
+        return `${anio}-${mes}-${dia}`;
+    }
+    const fechaActual = obtenerFechaActual();
+    // console.log(fechaActual)
+    const obtenerFechaEntrega = () => {
+        const fecha = new Date();
+        fecha.setDate(fecha.getDate()+3)
+        const anio = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, 0);
+        const dia = String(fecha.getDate()).padStart(2, 0);
+        return `${anio}-${mes}-${dia}`;
+    }
+    const fechaEntrega = obtenerFechaEntrega();
+    
+    // const productosUsuario = cesta.userSesion;
+    // console.log(productosUsuario)
     
     const pedido = {
         direccion: direccion,
-        idUsuario: idUsuario,
-        productos: Object.values(productos).map(producto => ({
-            id: producto.id,
-            cantidad: producto.cantidad
-        }))
-
-        
+        fechaActual: fechaActual,
+        fechaEntrega: fechaEntrega,
+        idUsuario: userSesion
+    }
+   comprarProductos(pedido);     
 }; 
-    comprarProductos(pedido);
+
+async function comprarProductos(pedido){
+    console.log(pedido.direccion);
+    try{
+        
+        const response = await fetch("/Retrobits/controller/carritoEdit.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: 
+                'direccion='+ encodeURIComponent(pedido.direccion) +
+                '&fecha=' + encodeURIComponent(pedido.fechaActual) +
+                '&fechaEntrega=' + encodeURIComponent(pedido.fechaEntrega) +
+                '&idUsuario=' + encodeURIComponent(userSesion)
+        });
+        
+        const result = await response.json();
+        console.log(result);
+        
+    } catch (error) {
+        console.error('Error al realizar la compra', error);
+    }
 }
+
+//Anterior creado con FormData. PRUEBA***************************
+
+// async function comprarProductos(pedido){
+//     console.log(pedido.direccion);
+    
+//     const FormData = new FormData;
+
+//     FormData.append("direccion", pedido.direccion);
+//     FormData.append("fechaActual", pedido.fechaActual);
+//     FormData.append("fechaEntrega", pedido.fechaEntrega);
+//     FormData.append("userSesion", userSesion);
+    
+//     try{
+        
+//         const response = await fetch("/Retrobits/controller/carritoEdit.php", {
+//             method: "POST",
+//             body: 
+//                 FormData
+//         });
+        
+//         const result = await response.json();
+//         console.log(result);
+        
+//     } catch (error) {
+//         console.error('Error al realizar la compra', error);
+//     }
+// }
+
+// const botonComprar = document.getElementById('botonComprar');
+
+// botonComprar.onclick = function () {
+//     const direccion = document.getElementById('direccionEnvio').value;
+//     const fechaActual = new Date();
+//     const fechaEntrega = new Date(fechaActual);
+//         fechaEntrega.setDate(fechaActual.getDate() + 3);
+    
+//     const productosUsuario = cesta.userSesion;
+//     console.log(productosUsuario)
+    
+//     const pedido = {
+//         direccion: direccion,
+//         fecha: fechaActual,
+//         fechaEntrega: fechaEntrega,
+//         idUsuario: userSesion,
+//     }
+
+//    comprarProductos(pedido);     
+// }; 
+    
+
 
 // REVISAR PRIMERO
 
 // async function enviarProductos(){
-    //     try{
-        //         const response = await fetch("/Retrobits/controller/productos.php");
-        //       const productos = await response.json();
-        //     }
-        // }
+//         try{
+//                 const response = await fetch("/Retrobits/controller/productos.php");
+//               const productos = await response.json();
+//             }
+//         }
         
 
 
 
 window.onload = function(){
-    verProductos();
-    comprarProductos();
+    configurarSesion();
+    
 };

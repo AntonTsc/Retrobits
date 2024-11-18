@@ -2,16 +2,29 @@
 
 require(__DIR__ . '/../model/MCarrito.php');
 
-$data = json_decode(file_get_contents("php://input"), true);
+$mCarrito = new MCarrito();
 
-$direccion = $data["direccion"];
-$idUsuario = $data["idUsuario"];
-$productosCarrito = $data["productos"];
+$pedido = [
+    'direccion' => $_POST["direccion"],
+    'fecha' => $_POST["fecha"],
+    'fechaEntrega' => $_POST["fechaEntrega"],
+    'idUsuario' => $_POST["idUsuario"]
+];
 
-$con = new MCarrito();
-$resultado = $con->enviarPedidoCarrito($direccion, $idUsuario, $productosCarrito);
+$datos = [];
+
+    if($mCarrito->enviarPedidoCarrito($pedido)){
+        $datos = [
+            'status' => 'OK',
+            'message' => 'Pedido enviado.'
+        ];
+    } else {
+        $datos = [
+            'status' => 'ERROR',
+            'message' => 'No se ha podido enviar el pedido.'
+        ];
+    }
 
 header('Content-Type: application/json');
-
-echo json_encode(["success" => $resultado]);
+echo json_encode(["Pedido enviado"]);
 
