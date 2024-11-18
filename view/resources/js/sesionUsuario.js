@@ -56,81 +56,62 @@ async function insertUsuario(){
 
     // Validación de los campos utilizando expresiones regulares
     // Username
-    const valUsername = (username) => {
-        return String(username).match(
-            /^[a-zA-Z0-9_]{4,20}$/
-        );
-    };
+    if(!/^[a-zA-Z0-9_]{4,20}$/.test(data.username.value)){
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "error",
+          title: "El nombre de usuario debe tener entre 4 y 20 caracteres y solo puede contener letras, números y guiones bajos"
+        });
+        data.username.style.borderColor = "red";
+
+      return; // Detiene la ejecución si el username es inválido
+    } else {
+      data.username.style.borderColor = "green";
+    }
 
     // Email
-    const valEmail = (email) => {
-        return String(email).toLocaleLowerCase().match(
-            /^[\w.-]+@[\w-]+\.[\w-]{2,}$/
-        );
-    };
+    if(!/^[\w.-]+@[\w-]+\.[\w-]{2,}$/.test(data.email.value)){
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timerProgressBar: true
+        });
+        Toast.fire({
+          icon: "error",
+          title: "Por favor ingrese un correo electrónico válido"
+        });
+        data.email.style.borderColor = "red";
+
+      return; // Detiene la ejecución si el email es inválido
+    } else {
+      data.email.style.borderColor = "green";
+    }
 
     // Password
-    const valPassword = (password) => {
-        return String(password).match(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*()\.]).{8,40}$/
-        );
-    };
-
-    // Validaciones
-    if(!valUsername(data.username.value)){
+    if(!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*()\.]).{8,40}$/.test(data.password.value)){
         const Toast = Swal.mixin({
-            toast: true,
-            position: "top",
-            showConfirmButton: false,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
-          Toast.fire({
-            icon: "error",
-            title: "El nombre de usuario debe tener entre 4 y 20 caracteres y solo puede contener letras, números y guiones bajos"
-          });
-          data.username.style.borderColor = "red";
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timerProgressBar: true
+        });
+        Toast.fire({
+          icon: "error",
+          title: "La contraseña debe tener mínimo 8 caracteres, incluyendo una mayúscula, una minúscula, un número y un carácter especial"
+        });
+        data.password.style.borderColor = "red";
 
-        return; // Detiene la ejecución si el username es inválido
-    } else {
-        data.username.style.borderColor = "green";
-    }
-
-    if(!valEmail(data.email.value)){
-        const Toast = Swal.mixin({
-            toast: true,
-            position: "top",
-            showConfirmButton: false,
-            timerProgressBar: true
-          });
-          Toast.fire({
-            icon: "error",
-            title: "Por favor ingrese un correo electrónico válido"
-          });
-          data.email.style.borderColor = "red";
-
-        return; // Detiene la ejecución si el email es inválido
-    } else {
-        data.email.style.borderColor = "green";
-    }
-
-    if(!valPassword(data.password.value)){
-        const Toast = Swal.mixin({
-            toast: true,
-            position: "top",
-            showConfirmButton: false,
-            timerProgressBar: true
-          });
-          Toast.fire({
-            icon: "error",
-            title: "La contraseña debe tener mínimo 8 caracteres, incluyendo una mayúscula, una minúscula, un número y un carácter especial"
-          });
-          data.password.style.borderColor = "red";
-
-        return; // Detiene la ejecución si la password es inválida
+      return; // Detiene la ejecución si la password es inválida
     }
 
     try{
@@ -218,58 +199,45 @@ async function modificarUsuario(){
 
     // Validación de los campos utilizando expresiones regulares
     // Username
-    const valUsername = (username) => {
-        return String(username).match(
-            /^[a-zA-Z0-9_]{4,20}$/
-        );
-    };
-
-    // Email
-    const valEmail = (email) => {
-        return String(email).toLocaleLowerCase().match(
-            /^[\w.-]+@[\w-]+\.[\w-]{2,}$/
-        );
-    };
-
-    // Validaciones
-    if(!valUsername(data.username.value)){
+    if(!/^[a-zA-Z0-9_]{4,20}$/.test(data.username.value)){
         const Toast = Swal.mixin({
-            toast: true,
-            position: "top",
-            showConfirmButton: false,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
-          Toast.fire({
-            icon: "error",
-            title: "El nombre de usuario debe tener entre 4 y 20 caracteres y solo puede contener letras, números y guiones bajos"
-          });
-          data.username.style.borderColor = "red";
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "error",
+          title: "El nombre de usuario debe tener entre 4 y 20 caracteres y solo  puede contener letras, números y guiones bajos"
+        });
+        data.username.style.borderColor = "red";
 
-        return; // Detiene la ejecución si el username es inválido
+      return; // Detiene la ejecución si el username es inválido
     } else {
-        data.username.style.borderColor = "green";
+      data.username.style.borderColor = "green";
     }
 
-    if(!valEmail(data.email.value)){
+    // Email
+    if(!/^[\w.-]+@[\w-]+\.[\w-]{2,}$/.test(data.email.value)){
         const Toast = Swal.mixin({
-            toast: true,
-            position: "top",
-            showConfirmButton: false,
-            timerProgressBar: true
-          });
-          Toast.fire({
-            icon: "error",
-            title: "Por favor ingrese un correo electrónico válido"
-          });
-          data.email.style.borderColor = "red";
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timerProgressBar: true
+        });
+        Toast.fire({
+          icon: "error",
+          title: "Por favor ingrese un correo electrónico válido"
+        });
+        data.email.style.borderColor = "red";
 
-        return; // Detiene la ejecución si el email es inválido
+      return; // Detiene la ejecución si el email es inválido
     } else {
-        data.email.style.borderColor = "green";
+      data.email.style.borderColor = "green";
     }
 
     try{
@@ -351,26 +319,20 @@ async function modificarContrasena(){
     }
 
     // Password
-    const valPassword = (password) => {
-        return String(password).match(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*()\.]).{8,40}$/
-        );
-    };
-
-    if(!valPassword(passNew.value)){
+    if(!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*()\.]).{8,40}$/.test(passNew.value)) {
         const Toast = Swal.mixin({
-            toast: true,
-            position: "top",
-            showConfirmButton: false,
-            timerProgressBar: true
-          });
-          Toast.fire({
-            icon: "error",
-            title: "La contraseña debe tener mínimo 8 caracteres, incluyendo una mayúscula, una minúscula, un número y un carácter especial."
-          });
-          passNew.style.borderColor = "red";
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timerProgressBar: true
+        });
+        Toast.fire({
+          icon: "error",
+          title: "La contraseña debe tener mínimo 8 caracteres,   incluyendo una mayúscula, una minúscula, un número y un   carácter especial."
+        });
+        passNew.style.borderColor = "red";
 
-        return; // Detiene la ejecución si la password es inválida
+      return; // Detiene la ejecución si la password es inválida
     }
 
     try{
@@ -417,6 +379,10 @@ async function modificarContrasena(){
     } catch (error) {
         console.error("Error: ", error);
     }
+}
+
+async function cargarPedidos(){
+  const bodyTable = document.getElementById("bodyTable");
 }
 
 async function comprobarSesion(){
@@ -552,9 +518,6 @@ if (fm){
     fm.addEventListener('submit', (e) => {
         e.preventDefault();
         modificarUsuario();
-        // if(comprobarSesion()){
-        //     modificarUsuario();
-        // }
     });
 }
 if (fp){
