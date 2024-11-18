@@ -2,6 +2,7 @@
 let cesta = {
     anonymous: {
       0:{
+        idUsuario: 5,
         cantidad: 2,
         deleted: "0",
         descripcion: "Laptop de alto rendimiento para profesionales",
@@ -138,28 +139,9 @@ function eliminarProductoCarrito(eleccion){
 
 }
 
-async function comprarProductos(){
+async function comprarProductos(pedido){
+    console.log(pedido);
     try{
-        
-        const botonComprar = document.getElementById('botonComprar');
-        
-        botonComprar.onclick = async function () {
-            const direccion = document.getElementById('direccionEnvio').value;
-            // const fechaActual = new Date();
-            // const fechaEntrega = new Date(fechaActual);
-            //     fechaEntrega.setDate(fechaActual.getDate() + 3);
-            const usuario = JSON.parse(localStorage.getItem("usuario"));
-            const idUsuario = usuario.id;
-            
-            const pedido = {
-                direccion: direccion,
-                idUsuario: idUsuario,
-                productos: Object.values(productos).map(producto => ({
-                    id: producto.id,
-                    cantidad: producto.cantidad
-                }))
-
-        };  
         
         const response = await fetch("/Retrobits/controller/carritoEdit.php", {
             method: "POST",
@@ -168,25 +150,46 @@ async function comprarProductos(){
             },
             body: JSON.stringify(pedido)
         });
-
+        
         const result = await response.json();
-           
-        };
+        
+} catch (error) {
+    console.error('Error al realizar la compra', error);
+}
+}
 
-    } catch (error) {
-        console.error('Error al realizar la compra', error);
-    }
+const botonComprar = document.getElementById('botonComprar');
+
+botonComprar.onclick = function () {
+    const direccion = document.getElementById('direccionEnvio').value;
+    // const fechaActual = new Date();
+    // const fechaEntrega = new Date(fechaActual);
+    //     fechaEntrega.setDate(fechaActual.getDate() + 3);
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const idUsuario = usuario.id;
+    
+    const pedido = {
+        direccion: direccion,
+        idUsuario: idUsuario,
+        productos: Object.values(productos).map(producto => ({
+            id: producto.id,
+            cantidad: producto.cantidad
+        }))
+
+        
+}; 
+    comprarProductos(pedido);
 }
 
 // REVISAR PRIMERO
 
 // async function enviarProductos(){
-//     try{
-//         const response = await fetch("/Retrobits/controller/productos.php");
-//       const productos = await response.json();
-//     }
-// }
-
+    //     try{
+        //         const response = await fetch("/Retrobits/controller/productos.php");
+        //       const productos = await response.json();
+        //     }
+        // }
+        
 
 
 
