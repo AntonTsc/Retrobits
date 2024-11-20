@@ -382,12 +382,27 @@ async function modificarContrasena(){
 }
 
 async function tablaPedidosPerfil(){
+  const tabla = document.getElementById("bodyTable");
+  tabla.innerHTML = "";
+
   try{
       const response = await fetch("/Retrobits/controller/pedidos.php");
       const pedidos = await response.json();
 
-      const tabla = document.getElementById("bodyTable");
-      tabla.innerHTML = "";
+      if (Array.isArray(pedidos) && pedidos.length === 0) {
+        const filaVacia = document.createElement("tr");
+        const contenido = document.createElement("td");
+
+        contenido.colSpan = 4; // Ajusta esto al número de columnas de la tabla
+        contenido.textContent = "No tienes ningún pedido";
+        contenido.style.textAlign = "center";
+        contenido.style.backgroundColor = "#d3d3d3";
+
+        filaVacia.appendChild(contenido);
+        tabla.appendChild(filaVacia);
+
+        return; // Salir ya que no hay pedidos
+    }
 
       pedidos.forEach(pedido => {
           const fila = generadorFila(pedido);
@@ -399,11 +414,11 @@ async function tablaPedidosPerfil(){
   }
 }
 
-function generadorFila(pedido){
+function generadorFila(pedido){ 
   // Crear el elemento <tr>
   const fila = document.createElement("tr");
 
-  // Iterar sobre las propiedades del pedido para agregar los <td>
+  // Iterar sobre las propiedades del pedido para agregar los <th> / <td>
   Object.values(pedido).forEach((valor, index) => {
       const contenido = document.createElement(index === 0 ? "th" : "td");
       contenido.textContent = valor; // Asignar el value de cada propiedad
