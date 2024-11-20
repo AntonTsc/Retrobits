@@ -381,8 +381,36 @@ async function modificarContrasena(){
     }
 }
 
-async function cargarPedidos(){
-  const bodyTable = document.getElementById("bodyTable");
+async function tablaPedidosPerfil(){
+  try{
+      const response = await fetch("/Retrobits/controller/pedidos.php");
+      const pedidos = await response.json();
+
+      const tabla = document.getElementById("bodyTable");
+      tabla.innerHTML = "";
+
+      pedidos.forEach(pedido => {
+          const fila = generadorFila(pedido);
+          tabla.appendChild(fila);
+      })
+
+  } catch (error) {
+      console.error("Error: ", error);
+  }
+}
+
+function generadorFila(pedido){
+  // Crear el elemento <tr>
+  const fila = document.createElement("tr");
+
+  // Iterar sobre las propiedades del pedido para agregar los <td>
+  Object.values(pedido).forEach((valor, index) => {
+      const contenido = document.createElement(index === 0 ? "th" : "td");
+      contenido.textContent = valor; // Asignar el value de cada propiedad
+      fila.appendChild(contenido);
+  })
+
+  return fila;
 }
 
 async function comprobarSesion(){
@@ -451,8 +479,6 @@ function botonesAdmin(){
   }
   
   function botonesUser(){
-    console.log("sesion iniciada");
-
     document.getElementById("btnOprcionesPerfil").classList.add("bi-person-circle");
   
     const separador = document.createElement("div");
@@ -531,5 +557,6 @@ window.onload = function () {
     cestaComp();
     if(pagPerfil == "perfil.html") {
             comprobarSesion();
+            tablaPedidosPerfil()
     }
   };
