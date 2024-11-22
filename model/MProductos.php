@@ -16,6 +16,19 @@ class MProductos extends Conexion{
         return $productos;
     }
 
+    public function getOneProducto($id) {
+        $sentencia = $this->getCon()->prepare('SELECT * FROM productos WHERE id = ?');
+        $sentencia->bind_param("i", $id);
+        $sentencia->execute();
+        $resultado = $sentencia->get_result();
+        $producto = null;
+        if ($fila = $resultado->fetch_assoc()) {
+            $producto = $fila;
+        }
+        $sentencia->close();
+        return $producto;
+    }
+
     public function eliminarProducto($id){
         $query = $this->getCon()->prepare("DELETE FROM `productos` WHERE id = ?;");
         $query->bind_param("i", $id);

@@ -227,6 +227,9 @@ function generador(producto, seccion) {
     button.appendChild(img);
     button.appendChild(pNombre);
     button.appendChild(pPrecio);
+    button.onclick = () => {
+      window.location.href = "/retrobits/view/unProducto.html?" + producto.id;
+    };
     let cardList = document.getElementById(`card-list-${seccion}`);
     cardList.insertBefore(button, cardList.firstChild);
   }

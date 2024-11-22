@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-11-2024 a las 09:15:07
+-- Tiempo de generación: 22-11-2024 a las 17:49:18
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -46,6 +46,14 @@ CREATE TABLE `pedidos` (
   `fechaEntrega` date DEFAULT NULL,
   `idUsuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pedidos`
+--
+
+INSERT INTO `pedidos` (`id`, `direccion`, `fecha`, `fechaEntrega`, `idUsuario`) VALUES
+(1, 'Amorebieta', '2000-02-02', '2024-05-05', 26),
+(3, 'Bs As', '1999-12-12', '2000-05-05', 26);
 
 -- --------------------------------------------------------
 
@@ -172,7 +180,7 @@ CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
   `username` varchar(25) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `password` varchar(20) NOT NULL,
+  `password` varchar(100) NOT NULL,
   `admin` tinyint(4) NOT NULL,
   `deleted` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -182,11 +190,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `username`, `email`, `password`, `admin`, `deleted`) VALUES
-(1, 'Juanpe', 'juan@example.com', 'password123', 1, 0),
-(2, 'Analo', 'ana@example.com', 'pass456', 0, 0),
-(3, 'Carlosga', 'carlos@example.com', 'secure789', 0, 1),
-(4, 'Martadi', 'marta@example.com', 'martapass', 1, 0),
-(5, 'Luissa', 'luis@example.com', 'luispass', 0, 0);
+(26, 'admin', 'admin@admin.admin', '$2y$10$NGQwZPII1I4yVSrFGUcSx.GSNcMSCYvizE1AXBegnBq55wrSUZni2', 1, 0);
 
 --
 -- Índices para tablas volcadas
@@ -239,7 +243,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
@@ -257,7 +261,7 @@ ALTER TABLE `seccion`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Restricciones para tablas volcadas

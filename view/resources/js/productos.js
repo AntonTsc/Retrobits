@@ -1,6 +1,7 @@
 //* GLOBALES =========================================================
   const despleglable = document.getElementById("botonesUsuario");
   const cestaNumero = document.getElementById("cestaNumero");
+  console.log(cestaNumero);
   const cardList = document.getElementById(`listaCartas`);
   const collapseSecciones = document.getElementById(`secciones`);
   let sidebarVisible = false; 
@@ -354,7 +355,8 @@ function botonesAnon(){
     imagen.alt = "...";
 
     const linkCarrito = document.createElement("a");
-    linkCarrito.onclick = () => {
+    linkCarrito.onclick = (event) => {
+      event.stopPropagation(); // Detiene la propagación del clic hacia el contenedor padre
       guardarProductoCesta(producto);
     };
     linkCarrito.classList = "position-absolute end-0 bottom-0 d-none bi bi-bag-plus-fill fs-4";
@@ -408,6 +410,9 @@ function botonesAnon(){
 
     div2.appendChild(contenido);
     div1.appendChild(div2);
+    div1.onclick = () => {
+      window.location.href = "/retrobits/view/unProducto.html?" + producto.id;
+    };
 
     cardList.appendChild(div1);
   }

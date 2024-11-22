@@ -129,7 +129,7 @@ searchInput.addEventListener("keyup", (e) => {
 
             // Establecer el comportamiento de clic en cada sugerencia
             suggestionElement.onclick = () => {
-                console.log(`PAGINA DE ${producto.nombre}`);
+                window.location.href = "/retrobits/view/unProducto.html?" + producto.id;
             };
 
             suggestionsContainer.appendChild(suggestionElement);
