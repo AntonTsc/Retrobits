@@ -11,20 +11,12 @@ $pedido = [
     'idUsuario' => $_POST["idUsuario"]
 ];
 
-$datos = [];
+$productos = json_decode($_POST["productos"], true);
 
-    if($mCarrito->enviarPedidoCarrito($pedido)){
-        $datos = [
-            'status' => 'OK',
-            'message' => 'Pedido enviado.'
-        ];
-    } else {
-        $datos = [
-            'status' => 'ERROR',
-            'message' => 'No se ha podido enviar el pedido.'
-        ];
-    }
+$mCarrito->enviarPedidoCarrito($pedido, $productos);
 
 header('Content-Type: application/json');
-echo json_encode(["Pedido enviado"]);
-
+echo json_encode([
+    'status' => 'OK',
+    'message' => 'Pedido enviado.'
+]);
