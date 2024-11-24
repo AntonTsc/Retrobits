@@ -8,7 +8,8 @@ $pedido = [
     'direccion' => $_POST["direccion"],
     'fecha' => $_POST["fecha"],
     'fechaEntrega' => $_POST["fechaEntrega"],
-    'idUsuario' => $_POST["idUsuario"]
+    'idUsuario' => $_POST["idUsuario"],
+    'descuento' => $_POST["descuento"]
 ];
 
 $productos = json_decode($_POST["productos"], true);

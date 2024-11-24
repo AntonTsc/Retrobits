@@ -381,134 +381,178 @@ async function modificarContrasena(){
     }
 }
 
-async function tablaPedidosPerfil(){
+async function tablaPedidosPerfil() {
   const tabla = document.getElementById("bodyTable");
   tabla.innerHTML = "";
 
-  try{
-      const response = await fetch("/Retrobits/controller/pedidos.php");
-      const pedidos = await response.json();
+  try {
+    const response = await fetch("/Retrobits/controller/pedidos.php");
+    const pedidos = await response.json();
 
-      if (Array.isArray(pedidos) && pedidos.length === 0) {
-        const filaVacia = document.createElement("tr");
-        const contenido = document.createElement("td");
+    if (Array.isArray(pedidos) && pedidos.length === 0) {
+      const filaVacia = document.createElement("tr");
+      const contenido = document.createElement("td");
 
-        contenido.colSpan = 4; // Ajusta esto al número de columnas de la tabla
-        contenido.textContent = "No tienes ningún pedido";
-        contenido.style.textAlign = "center";
-        contenido.style.backgroundColor = "#d3d3d3";
+      contenido.colSpan = 6; // Ajusta esto al número de columnas de la tabla (incluyendo la nueva columna de precio total)
+      contenido.textContent = "No tienes ningún pedido";
+      contenido.style.textAlign = "center";
+      contenido.style.backgroundColor = "#d3d3d3";
 
-        filaVacia.appendChild(contenido);
-        tabla.appendChild(filaVacia);
+      filaVacia.appendChild(contenido);
+      tabla.appendChild(filaVacia);
 
-        return; // Salir ya que no hay pedidos
+      return; // Salir ya que no hay pedidos
     }
 
-      // Generar filas para cada pedido
-      pedidos.forEach(pedido => {
-          const fila = generadorFila(pedido);
+    // Generar filas para cada pedido
+    for (const pedido of pedidos) {
+      const totalPedido = await calcularPrecioTotalPedido(pedido.id);
+      const fila = generadorFila(pedido, totalPedido);
 
-          // Asociar el evento click para cada fila
-          fila.addEventListener("click", () => mostrarDetalles(pedido.id, fila));
-          tabla.appendChild(fila);
-      })
-
+      // Asociar el evento click para cada fila
+      fila.addEventListener("click", () => mostrarDetalles(pedido.id, fila));
+      tabla.appendChild(fila);
+    }
   } catch (error) {
-      console.error("Error: ", error);
+    console.error("Error: ", error);
   }
 }
 
-function generadorFila(pedido){ 
-  // Crear el elemento <tr>
+function generadorFila(pedido, totalPedido) {
   const fila = document.createElement("tr");
   fila.classList.add("fila-click");
 
-  // Iterar sobre las propiedades del pedido para agregar los <th> / <td>
+  // Agregar las propiedades del pedido
   Object.values(pedido).forEach((valor, index) => {
-      const contenido = document.createElement(index === 0 ? "th" : "td");
-      contenido.textContent = valor; // Asignar el value de cada propiedad
-      fila.appendChild(contenido);
-  })
+    const contenido = document.createElement(index === 0 ? "th" : "td");
+    if(index != 4) {
+      contenido.textContent = valor;
+    }else{
+      contenido.textContent = `-${valor}%`;
+    }
+    fila.appendChild(contenido);
+  });
+  // Agregar la columna de precio total al final
+  const totalContenido = document.createElement("td");
+  console.log(pedido);
+  totalContenido.textContent = `${(totalPedido * (1 - pedido.descuento / 100)).toFixed(2)}€`; // Formatear con 2 decimales
+  fila.appendChild(totalContenido);
 
   return fila;
 }
 
-async function mostrarDetalles(idPedido, fila){ 
-  // Verifica si ya tiene una fila de detalles desplegada
+async function calcularPrecioTotalPedido(idPedido) {
+  try {
+    const response = await fetch("/Retrobits/controller/productos_pedidos.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: "id=" + encodeURIComponent(idPedido),
+    });
+
+    const productosPedidos = await response.json();
+
+    let total = 0;
+
+    for (const productoPedido of productosPedidos) {
+      const productoResponse = await fetch("/Retrobits/controller/productosDetalles.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: "idProducto=" + encodeURIComponent(productoPedido.idProducto),
+      });
+
+      const producto = await productoResponse.json();
+
+      // Calcular el precio total para este producto considerando la cantidad y el descuento
+      const precioConDescuento = producto.precio * (1 - producto.descuento / 100);
+      total += precioConDescuento * productoPedido.cantidad;
+    }
+
+    return total;
+  } catch (error) {
+    console.error("Error al calcular el precio total del pedido: ", error);
+    return 0; // Retornar 0 en caso de error
+  }
+}
+
+async function mostrarDetalles(idPedido, fila) {
   if (fila.nextElementSibling?.classList.contains("detalles")) {
-    fila.nextElementSibling.remove(); // Eliminar fila de detalles
+    fila.nextElementSibling.remove();
     return;
   }
 
   try {
-      const response = await fetch("/Retrobits/controller/productos_pedidos.php", {
-        method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: 'id=' + encodeURIComponent(idPedido)
-      });
+    const response = await fetch("/Retrobits/controller/productos_pedidos.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: "id=" + encodeURIComponent(idPedido),
+    });
 
-      const productosPedidos = await response.json();
+    const productosPedidos = await response.json();
 
-      // Obtener detalles de los productos relacionados
-      const productosDetalles = await Promise.all(
-        productosPedidos.map(async productoPedido => {
-          const productoResponse = await fetch("/Retrobits/controller/productosDetalles.php", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: "idProducto=" + encodeURIComponent(productoPedido.idProducto),
-          });
+    const productosDetalles = await Promise.all(
+      productosPedidos.map(async (productoPedido) => {
+        const productoResponse = await fetch("/Retrobits/controller/productosDetalles.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: "idProducto=" + encodeURIComponent(productoPedido.idProducto),
+        });
 
-          const producto = await productoResponse.json();
+        const producto = await productoResponse.json();
 
-          // Combinar datos del producto y del pedido
-          return{
-            nombre: producto.nombre,
-            precio: producto.precio,
-            descuento: producto.descuento,
-            cantidad: productoPedido.cantidad,
-          };
-        })
-      );
-      
-      // Crear la fila de detalles
-      const detallesFila = document.createElement("tr");
-      detallesFila.classList.add("detalles");
+        return {
+          nombre: producto.nombre,
+          precio: producto.precio,
+          descuento: producto.descuento,
+          cantidad: productoPedido.cantidad,
+        };
+      })
+    );
 
-      const detallesCont = document.createElement("td");
-      detallesCont.colSpan = 4;
+    const detallesFila = document.createElement("tr");
+    detallesFila.classList.add("detalles");
 
-      // Generar contenido basado en los productos relacionados
-      if(productosDetalles.length > 0) {
-        detallesCont.innerHTML = `
+    const detallesCont = document.createElement("td");
+    detallesCont.colSpan = 6;
+
+    if (productosDetalles.length > 0) {
+      detallesCont.innerHTML = `
         <div>
           <strong>Detalles del pedido ID: ${idPedido}</strong>
           <ul>
-            ${productosDetalles.map(producto => `
+            ${productosDetalles
+              .map(
+                (producto) => `
               <li>
                 <strong>Producto:</strong> ${producto.nombre} <br>
                 <strong>Precio:</strong> ${producto.precio}€ ud. <br>
                 <strong>Descuento:</strong> ${producto.descuento}% <br>
                 <strong>Cantidad:</strong> ${producto.cantidad} <br><br>
               </li>
-            `).join("")}
+            `
+              )
+              .join("")}
           </ul>
         </div>
       `;
-      } else {
-        detallesCont.innerHTML = "<div>No hay detalles para este pedido.</div>";
-      }
+    } else {
+      detallesCont.innerHTML = "<div>No hay detalles para este pedido.</div>";
+    }
 
-      detallesFila.appendChild(detallesCont);
-      fila.insertAdjacentElement("afterend", detallesFila); // Insertar debajo de la fila clickeada
-
+    detallesFila.appendChild(detallesCont);
+    fila.insertAdjacentElement("afterend", detallesFila);
   } catch (error) {
-      console.error("Error: ", error);
+    console.error("Error: ", error);
   }
 }
+
 
 async function comprobarSesion(){
     const userInput = document.getElementById("floatingUsername");

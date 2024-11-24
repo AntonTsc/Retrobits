@@ -3,7 +3,7 @@ require_once("Conexion.php");
 
 class MPedido extends Conexion{
     public function getPedidosXid($id){
-        $query = $this->getCon()->prepare("SELECT id, direccion, fecha, fechaEntrega FROM pedidos WHERE idUsuario = ?");
+        $query = $this->getCon()->prepare("SELECT id, direccion, fecha, fechaEntrega, descuento FROM pedidos WHERE idUsuario = ?");
         $query->bind_param("i", $id);
         $query->execute();
 

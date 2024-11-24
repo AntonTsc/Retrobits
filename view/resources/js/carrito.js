@@ -1,6 +1,8 @@
 let userSesion = "anonymous";
 const cesta = JSON.parse(localStorage.getItem("cesta"));
 const despleglable = document.getElementById("botonesUsuario");
+let descuento = 0;
+let descuentoAplicado = false;
 
 async function configurarSesion(){
     try{
@@ -209,7 +211,59 @@ async function verProductos(){
     comprarProductos(pedido);     
 };
 
+async function aplicarDescuento(){
+    if (descuentoAplicado) {
+        Swal.fire({
+            text: "Ya se ha aplicado un descuento",
+            icon: "info"
+          });
+        return;
+    }
+    const codigo = document.getElementById("codigoDescuento");
+    if (codigo.value === ""){
+        codigo.style.border = "1px solid red";
+        return;
+    }else codigo.style.border = "";
+    try {
+        const response = await fetch("/Retrobits/controller/codigoDescuento.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: 'cd=' + encodeURIComponent(codigo.value)
+        });
+
+        const result = await response.json();
+        if (result== "") {
+            alert('El código de descuento no es válido.');
+            return;
+        }else{
+            const pDescuentos = document.getElementById("descuento");
+            pDescuentos.innerHTML = `Descuento:(${result.codigo}) -${result.porcentaje}%`
+
+            let total = parseFloat(document.getElementById('totalFinal').textContent.replace(/[^\d.-]/g, ''))
+            total = total * (1 - result.porcentaje/100);
+            document.getElementById('totalFinal').textContent = `Total: ${total.toFixed(2)}€`;
+            descuento = result.porcentaje;
+            descuentoAplicado = true;
+        }
+       
+    } catch (error) {
+        console.error('Error', error);
+    }
+
+}
+
 async function comprarProductos(pedido) {
+    const direccion = document.getElementById("direccionEnvio");
+    if (direccion.value === ""){
+        direccion.style.border = "1px solid red";
+        Swal.fire({
+            text: "Por favor introduzca una dirección de envio.",
+            icon: "error"
+          });
+        return;
+    }
     try {
         // Obtiene los productos del usuario actual
         const productos = cesta[userSesion]; 
@@ -229,6 +283,7 @@ async function comprarProductos(pedido) {
                   '&fecha=' + encodeURIComponent(pedido.fechaActual) +
                   '&fechaEntrega=' + encodeURIComponent(pedido.fechaEntrega) +
                   '&idUsuario=' + encodeURIComponent(userSesion) +
+                  '&descuento=' + encodeURIComponent(descuento) +
                   '&productos=' + encodeURIComponent(JSON.stringify(productos))
         });
 
