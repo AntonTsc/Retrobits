@@ -39,7 +39,7 @@ const swiperConsolas = new Swiper('.slider-wrapper', {
 
 async function comprobarSesion(){
     try{
-        const response = await fetch("/Retrobits/controller/sesionComp.php");
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/sesionComp.php");
         const sesion = await response.json();
 
         if (sesion.status === 'OK') {
@@ -121,7 +121,7 @@ async function comprobarSesion(){
   async function obtenerProducto() {
     let prodId = window.location.search.substring(1);
     try {
-      const response = await fetch("/Retrobits/controller/productos.php", {
+      const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/productos.php", {
         method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -188,7 +188,7 @@ async function comprobarSesion(){
 
   async function obtenerProductosRelacionados() {
     try {
-        const response = await fetch('/Retrobits/controller/productos.php');
+        const response = await fetch('https://2aw4.zornotzafpcloud.eus/controller/productos.php');
         const productos = await response.json();
         for (let i = 0; i < productos.length; i++) {
             if(productos[i].idSeccion == producto.idSeccion && productos[i].id != producto.id){

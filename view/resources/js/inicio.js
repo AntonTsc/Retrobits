@@ -77,7 +77,7 @@ let cestaSesion = {};
 
 async function comprobarSesion(){
   try{
-      const response = await fetch("/Retrobits/controller/sesionComp.php");
+      const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/sesionComp.php");
       const sesion = await response.json();
 
       if (sesion.status === 'OK') {
@@ -98,7 +98,7 @@ async function comprobarSesion(){
 // Función para obtener y mostrar todos los productos en una tabla
 async function obtenerProductos() {
     try {
-        const response = await fetch('/Retrobits/controller/productos.php');
+        const response = await fetch('https://2aw4.zornotzafpcloud.eus/controller/productos.php');
         const productos = await response.json();
 
         let count1 = 0, count2 = 0, count3 = 0, count4 = 0, count5 = 0, count6 = 0;
@@ -228,7 +228,7 @@ function generador(producto, seccion) {
     button.appendChild(pNombre);
     button.appendChild(pPrecio);
     button.onclick = () => {
-      window.location.href = "/retrobits/view/unProducto.html?" + producto.id;
+      window.location.href = "https://2aw4.zornotzafpcloud.eus/view/unProducto.html?" + producto.id;
     };
     let cardList = document.getElementById(`card-list-${seccion}`);
     cardList.insertBefore(button, cardList.firstChild);

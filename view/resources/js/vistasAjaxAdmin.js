@@ -445,7 +445,7 @@ async function mostrarDetalles(fila) {
     idPedido = fila.id;
   
     try {
-      const response = await fetch("/Retrobits/controller/productos_pedidos.php", {
+      const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/productos_pedidos.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -457,7 +457,7 @@ async function mostrarDetalles(fila) {
   
       const productosDetalles = await Promise.all(
         productosPedidos.map(async (productoPedido) => {
-          const productoResponse = await fetch("/Retrobits/controller/productosDetalles.php", {
+          const productoResponse = await fetch("https://2aw4.zornotzafpcloud.eus/controller/productosDetalles.php", {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
@@ -634,7 +634,7 @@ async function nuevoProducto() {
     //Hago la llamada al controlador
     try {
         //Como le voy a mandar un formData, no es necesario especificar el tipo de encabezado
-        const response = await fetch("/Retrobits/controller/registrarProducto.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/registrarProducto.php", {
             method: 'POST',
             body: formData
         });
@@ -687,7 +687,7 @@ async function nuevoUsuario() {
     //Hago la llamada al controlador
     try {
         //Como le voy a mandar un formData, no es necesario especificar el tipo de encabezado
-        const response = await fetch("/Retrobits/controller/registrarUsuario.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/registrarUsuario.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -738,7 +738,7 @@ async function nuevoCodigo() {
     //Hago la llamada al controlador
     try {
         //Como le voy a mandar un formData, no es necesario especificar el tipo de encabezado
-        const response = await fetch("/Retrobits/controller/registrarCodigo.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/registrarCodigo.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -795,7 +795,7 @@ async function entregado(btn) {
     }
     try{
         //Hago la llamada al controlador para eliminar el producto, con un header de tipo formulario
-        const response = await fetch("/Retrobits/controller/entregarPedido.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/entregarPedido.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -872,7 +872,7 @@ async function eliminarProducto(id){
     vaciarIntervalos();
     try{
         //Hago la llamada al controlador para eliminar el producto, con un header de tipo formulario
-        const response = await fetch("/Retrobits/controller/eliminarProducto.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/eliminarProducto.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -914,7 +914,7 @@ async function eliminarUsuario(id){
     vaciarIntervalos();
     try{
         //Hago la llamada al controlador para eliminar el producto, con un header de tipo formulario
-        const response = await fetch("/Retrobits/controller/eliminarUsuario.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/eliminarUsuario.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -956,7 +956,7 @@ async function eliminarCodigo(id){
     vaciarIntervalos();
     try{
         //Hago la llamada al controlador para eliminar el producto, con un header de tipo formulario
-        const response = await fetch("/Retrobits/controller/eliminarCodigo.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/eliminarCodigo.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -1141,7 +1141,7 @@ async function ejecutarEdicionProducto(fila){
     //Si no hay imagen o los input no cumplen el filtro, cancelo la peticion
     if (!comp) return;
     try{
-        const response = await fetch("/Retrobits/controller/editarProducto.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/editarProducto.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -1227,7 +1227,7 @@ async function ejecutarEdicionUsuario(fila){
     }
 
     try{
-        const response = await fetch("/Retrobits/controller/modificarUsuario.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/modificarUsuario.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -1309,7 +1309,7 @@ async function ejecutarEdicionCodigo(fila){
     }
 
     try{
-        const response = await fetch("/Retrobits/controller/modificarCodigo.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/modificarCodigo.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -1406,7 +1406,7 @@ async function cambiarContrasena(btn) {
 
 async function ejecutarCambioContrasena(userId, password){
     try{
-        const response = await fetch("/Retrobits/controller/modificarContrasena.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/modificarContrasena.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'

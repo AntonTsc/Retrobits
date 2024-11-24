@@ -15,7 +15,7 @@ let cestaSesion = {};
 
 async function configurarSesion(){
     try{
-        const response = await fetch("/Retrobits/controller/sesionComp.php");
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/sesionComp.php");
         const sesion = await response.json();
   
         if (sesion.status === 'OK') {
@@ -115,7 +115,7 @@ async function insertUsuario(){
     }
 
     try{
-        const response = await fetch("/Retrobits/controller/registrarUsuario.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/registrarUsuario.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -158,7 +158,7 @@ async function loginUsuario(){
     }
 
     try{
-        const response = await fetch("/Retrobits/controller/cargarUsuario.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/cargarUsuario.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -241,7 +241,7 @@ async function modificarUsuario(){
     }
 
     try{
-        const response = await fetch("/Retrobits/controller/modificarUsuario.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/modificarUsuario.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -336,7 +336,7 @@ async function modificarContrasena(){
     }
 
     try{
-        const response = await fetch("/Retrobits/controller/modificarContrasena.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/modificarContrasena.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -386,7 +386,7 @@ async function tablaPedidosPerfil() {
   tabla.innerHTML = "";
 
   try {
-    const response = await fetch("/Retrobits/controller/pedidos.php");
+    const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/pedidos.php");
     const pedidos = await response.json();
 
     if (Array.isArray(pedidos) && pedidos.length === 0) {
@@ -443,7 +443,7 @@ function generadorFila(pedido, totalPedido) {
 
 async function calcularPrecioTotalPedido(idPedido) {
   try {
-    const response = await fetch("/Retrobits/controller/productos_pedidos.php", {
+    const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/productos_pedidos.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -456,7 +456,7 @@ async function calcularPrecioTotalPedido(idPedido) {
     let total = 0;
 
     for (const productoPedido of productosPedidos) {
-      const productoResponse = await fetch("/Retrobits/controller/productosDetalles.php", {
+      const productoResponse = await fetch("https://2aw4.zornotzafpcloud.eus/controller/productosDetalles.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -485,7 +485,7 @@ async function mostrarDetalles(idPedido, fila) {
   }
 
   try {
-    const response = await fetch("/Retrobits/controller/productos_pedidos.php", {
+    const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/productos_pedidos.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -497,7 +497,7 @@ async function mostrarDetalles(idPedido, fila) {
 
     const productosDetalles = await Promise.all(
       productosPedidos.map(async (productoPedido) => {
-        const productoResponse = await fetch("/Retrobits/controller/productosDetalles.php", {
+        const productoResponse = await fetch("https://2aw4.zornotzafpcloud.eus/controller/productosDetalles.php", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -559,7 +559,7 @@ async function comprobarSesion(){
     const emailInput = document.getElementById("floatingEmail");
 
     try{
-        const response = await fetch("/Retrobits/controller/sesionComp.php");
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/sesionComp.php");
         const sesion = await response.json();
         
         if (sesion.status === 'OK') {

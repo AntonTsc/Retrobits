@@ -6,7 +6,7 @@ let descuentoAplicado = false;
 
 async function configurarSesion(){
     try{
-        const response = await fetch("/Retrobits/controller/sesionComp.php");
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/sesionComp.php");
         const sesion = await response.json();
     
         if (sesion.status === 'OK') {
@@ -225,7 +225,7 @@ async function aplicarDescuento(){
         return;
     }else codigo.style.border = "";
     try {
-        const response = await fetch("/Retrobits/controller/codigoDescuento.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/codigoDescuento.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -274,7 +274,7 @@ async function comprarProductos(pedido) {
             return;
         }
 
-        const response = await fetch("/Retrobits/controller/carritoEdit.php", {
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/carritoEdit.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"

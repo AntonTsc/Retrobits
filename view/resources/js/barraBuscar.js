@@ -7,7 +7,7 @@ const overlay = document.getElementById("overlay");
 obtenerProductosBusqueda();
 async function obtenerProductosBusqueda() {
     try {
-      const response = await fetch("/Retrobits/controller/productos.php");
+      const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/productos.php");
       const productos = await response.json();
 
       productos.forEach(prod => {
@@ -64,7 +64,7 @@ searchInput.addEventListener("keyup", (e) => {
             suggestionElement.style.height = "60px";
 
             const imagen = document.createElement("img");
-            let dir = "/retrobits/view/resources/images/productos/";
+            let dir = "https://2aw4.zornotzafpcloud.eus/view/resources/images/productos/";
             imagen.src = `${dir}${producto.id}.jpg` ;
             imagen.onerror = function() {
                 
@@ -129,7 +129,7 @@ searchInput.addEventListener("keyup", (e) => {
 
             // Establecer el comportamiento de clic en cada sugerencia
             suggestionElement.onclick = () => {
-                window.location.href = "/retrobits/view/unProducto.html?" + producto.id;
+                window.location.href = "https://2aw4.zornotzafpcloud.eus/view/unProducto.html?" + producto.id;
             };
 
             suggestionsContainer.appendChild(suggestionElement);

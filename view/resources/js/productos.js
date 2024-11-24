@@ -43,7 +43,7 @@
 //* FUNCIONES =========================================================
   async function comprobarSesion(){
     try{
-        const response = await fetch("/Retrobits/controller/sesionComp.php");
+        const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/sesionComp.php");
         const sesion = await response.json();
 
         if (sesion.status === 'OK') {
@@ -122,7 +122,7 @@
   }
   async function obtenerProductos(filtro) {
     try {
-      const response = await fetch("/Retrobits/controller/productos.php");
+      const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/productos.php");
       const productos = await response.json();
 
       cardList.innerHTML = "";
@@ -166,7 +166,7 @@
   }
   async function obtenerSecciones() {
     try {
-      const response = await fetch("/Retrobits/controller/secciones.php");
+      const response = await fetch("https://2aw4.zornotzafpcloud.eus/controller/secciones.php");
       const secciones = await response.json();
 
       for (let i = 0; i < secciones.length; i++) {
@@ -411,7 +411,7 @@ function botonesAnon(){
     div2.appendChild(contenido);
     div1.appendChild(div2);
     div1.onclick = () => {
-      window.location.href = "/retrobits/view/unProducto.html?" + producto.id;
+      window.location.href = "https://2aw4.zornotzafpcloud.eus/view/unProducto.html?" + producto.id;
     };
 
     cardList.appendChild(div1);
