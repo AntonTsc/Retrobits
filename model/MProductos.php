@@ -29,6 +29,19 @@ class MProductos extends Conexion{
         return $producto;
     }
 
+    public function getProductoDetalles($id){
+        $query = $this->getCon()->prepare("SELECT nombre, precio, descuento FROM productos WHERE id = ?");
+        $query->bind_param("i", $id);
+        $query->execute();
+
+        $result = $query->get_result();
+        $productoDetalles = $result->fetch_assoc();
+
+        $query->close();
+
+        return $productoDetalles;
+    }
+
     public function eliminarProducto($id){
         $query = $this->getCon()->prepare("DELETE FROM `productos` WHERE id = ?;");
         $query->bind_param("i", $id);
