@@ -1,10 +1,159 @@
 
-container{
-    display:flex;
-    gap: 20px;
+body {
+    font-family: monospace;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
 }
+
+main .titulo {
+    text-align: center;
+    margin-top: 20px; 
+}
+
+main .container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.tabla-container {
+    flex: 0 0 70%;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-right: 20px; 
+    font-family: monospace;
+}
+
 .tablaCarrito {
-    width: 70%;
+    width: 100%;
     border-collapse: collapse;
 }
 
+.tablaCarrito th, .tablaCarrito td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-family: monospace;}
+
+.tablaCarrito th {
+    background-color: #f0f0f0;
+}
+
+.tablaCarrito td img {
+    width: 50px; 
+    height: auto;
+}
+
+.resumen {
+    flex: 0 0 28%; 
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.resumen h3 {
+    margin-bottom: 20px;
+}
+
+.resumen p {
+    margin: 10px 0;
+}
+
+.direccion {
+    margin-top: 20px;
+    padding: 20px;
+    display:flex;
+    justify-content: center;
+}
+
+.direccion input {
+    width: 50%; 
+    max-width: 400px; 
+    padding: 8px;
+    border: 1px solid #ccc; 
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.direccion label {
+    font-size: 14px; 
+    margin-top: 6px;
+    margin-bottom: 5px; 
+    line-height: 1.5;
+    text-align: center;
+}
+main .btn {
+    color: #000000;
+    border: 1px solid rgb(231, 231, 231);
+    border-radius: 0;
+    font-family: monospace;
+}
+
+main .btn:hover {
+    background-color: #9c222656;
+}
+#botonComprar {
+    width: 200px;
+    height: 50px;
+    font-size: 18px;
+    margin: 20px auto;
+    display: block;
+    cursor: pointer;
+    font-family: monospace;
+}
+#botonComprar:hover {
+    background-color: #9c222656;
+}
+
+@media (max-width: 993px) {
+    main .container {
+        flex-direction: column;
+        align-items: center; 
+    }
+
+    .tabla-container, .resumen {
+        flex: 0 0 100%; 
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .tablaCarrito td img {
+        width: 40px;
+    }
+
+    #botonComprar {
+        width: 100%; 
+    }
+}
+
+@media (max-width: 576px) {
+    main .titulo {
+        font-size: 18px; 
+    }
+
+    .tablaCarrito th, .tablaCarrito td {
+        padding: 5px; 
+        font-size: 12px; 
+    }
+
+    .tablaCarrito td img {
+        width: 30px; 
+    }
+
+    .direccion {
+        flex-direction: column; 
+        text-align: center;
+    }
+
+    .direccion input {
+        width: 90%; 
+    }
+    #botonComprar {
+        font-size: 16px;
+        height: 40px; 
+    }
+}
