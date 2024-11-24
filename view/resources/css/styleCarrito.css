@@ -6,12 +6,12 @@ body {
     background-color: #f4f4f4;
 }
 
-.titulo {
+main .titulo {
     text-align: center;
     margin-top: 20px; 
 }
 
-.container {
+main .container {
     display: flex;
     justify-content: space-between;
     padding: 20px;
@@ -86,14 +86,14 @@ body {
     line-height: 1.5;
     text-align: center;
 }
-.btn {
+main .btn {
     color: #000000;
     border: 1px solid rgb(231, 231, 231);
     border-radius: 0;
     font-family: monospace;
 }
 
-.btn:hover {
+main .btn:hover {
     background-color: #9c222656;
 }
 #botonComprar {
@@ -110,7 +110,7 @@ body {
 }
 
 @media (max-width: 993px) {
-    .container {
+    main .container {
         flex-direction: column;
         align-items: center; 
     }
@@ -131,7 +131,7 @@ body {
 }
 
 @media (max-width: 576px) {
-    .titulo {
+    main .titulo {
         font-size: 18px; 
     }
 

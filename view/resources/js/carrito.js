@@ -1,5 +1,6 @@
 let userSesion = "anonymous";
 const cesta = JSON.parse(localStorage.getItem("cesta"));
+const despleglable = document.getElementById("botonesUsuario");
 
 async function configurarSesion(){
     try{
@@ -8,6 +9,11 @@ async function configurarSesion(){
     
         if (sesion.status === 'OK') {
             userSesion = sesion.user.id;
+            if (sesion.user.admin){
+                botonesAdmin();
+              }else{
+                botonesUser();
+              }
         }
         verProductos();
     } catch (error) {
@@ -30,7 +36,36 @@ async function verProductos(){
 
             // Id del producto añadido al carrito
             const celdaIdProducto = document.createElement('td');
-            celdaIdProducto.textContent = producto.id;
+            //celdaIdProducto.textContent = producto.id;
+            const imagen = document.createElement("img");
+            let dir = "resources/images/productos/";
+            imagen.src = `${dir}${producto.id}.jpg` ;
+            imagen.onerror = function() {
+                switch (producto.idSeccion) {
+                case "1":
+                    imagen.src = `${dir}defaultConsolas.jpg`;
+                    break;
+                case "2":
+                    imagen.src = `${dir}defaultComputadoras.jpg`;
+                    break;
+                case "3":
+                    imagen.src = `${dir}defaultCamaras.jpg`;
+                    break;
+                case "4":
+                    imagen.src = `${dir}defaultRadios.jpg`;
+                    break;
+                case "5":
+                    imagen.src = `${dir}defaultTelefonos.jpg`;
+                    break;
+                case "6":
+                    imagen.src = `${dir}defaultElectrodomesticos.jpg`;
+                    break;
+                default:
+                    imagen.src = `${dir}default.jpg`;
+                    break;
+                }
+            };
+            celdaIdProducto.appendChild(imagen);
             fila.appendChild(celdaIdProducto);
             
             // Muestra el nombre del producto añadido al carrito
@@ -212,6 +247,66 @@ async function comprarProductos(pedido) {
         console.error('Error al realizar la compra', error);
     }
 }
+
+function botonesAdmin(){
+
+    document.getElementById("btnOprcionesPerfil").classList.add("bi-person-circle");
+  
+    const separador = document.createElement("div");
+    separador.classList = "border"
+  
+    const li1 = document.createElement("li");
+    const btnLogin = document.createElement("a");
+    btnLogin.classList = "dropdown-item mt-1 mb-2";
+    btnLogin.href = "perfil.html";
+    btnLogin.innerHTML = "Ver perfil";
+    li1.appendChild(btnLogin);
+    
+    const li2 = document.createElement("li");
+    const btnPanelAdmin = document.createElement("a");
+    btnPanelAdmin.classList = "d-flex justify-content-center btn btn-primary rounded-2 m-2";
+    btnPanelAdmin.href = "panelAdmin.php";
+    btnPanelAdmin.innerHTML = "Panel Admin";
+    li2.appendChild(btnPanelAdmin);
+  
+    const li3 = document.createElement("li");
+    const btnSignin = document.createElement("a");
+    btnSignin.classList = "d-flex justify-content-center btn btn-danger rounded-2 mx-2 mt-2";
+    btnSignin.href = "../controller/logout.php";
+    btnSignin.innerHTML = "Cerrar sesión";
+    li3.appendChild(btnSignin);
+  
+    despleglable.insertBefore(li3, despleglable.firstChild);
+    despleglable.insertBefore(separador, despleglable.firstChild);
+    despleglable.insertBefore(li2, despleglable.firstChild);
+    despleglable.insertBefore(li1, despleglable.firstChild);
+  }
+  
+  function botonesUser(){
+  
+    document.getElementById("btnOprcionesPerfil").classList.add("bi-person-circle");
+  
+    const separador = document.createElement("div");
+    separador.classList = "border"
+  
+    const li1 = document.createElement("li");
+    const btnLogin = document.createElement("a");
+    btnLogin.classList = "dropdown-item mt-1 mb-2";
+    btnLogin.href = "perfil.html";
+    btnLogin.innerHTML = "Ver perfil";
+    li1.appendChild(btnLogin);
+  
+    const li2 = document.createElement("li");
+    const btnSignin = document.createElement("a");
+    btnSignin.classList = "d-flex justify-content-center btn btn-danger rounded-2 mx-2 mt-2";
+    btnSignin.href = "../controller/logout.php";
+    btnSignin.innerHTML = "Cerrar sesión";
+    li2.appendChild(btnSignin);
+  
+    despleglable.insertBefore(li2, despleglable.firstChild);
+    despleglable.insertBefore(separador, despleglable.firstChild);
+    despleglable.insertBefore(li1, despleglable.firstChild);
+  }
 
 window.onload = function(){
     configurarSesion();
