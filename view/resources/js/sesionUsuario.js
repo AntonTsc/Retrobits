@@ -425,6 +425,11 @@ function generadorFila(pedido, totalPedido) {
   // Agregar las propiedades del pedido
   Object.values(pedido).forEach((valor, index) => {
     const contenido = document.createElement(index === 0 ? "th" : "td");
+    if(index == 1) {
+      contenido.classList.add("text-truncate");
+      contenido.style.maxWidth = "125px";
+      contenido.title = valor;
+    }
     if(index != 4) {
       contenido.textContent = valor;
     }else{

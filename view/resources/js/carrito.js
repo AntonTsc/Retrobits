@@ -30,7 +30,7 @@ async function verProductos(){
         const tbody = document.getElementById('generarTabla');
         tbody.innerHTML = '';
 
-        const envioGratis = 2500;
+        const envioGratis = 100;
 
         cesta[userSesion].forEach((producto, index) => {
 
