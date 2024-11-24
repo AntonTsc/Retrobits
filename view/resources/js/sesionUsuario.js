@@ -404,8 +404,12 @@ async function tablaPedidosPerfil(){
         return; // Salir ya que no hay pedidos
     }
 
+      // Generar filas para cada pedido
       pedidos.forEach(pedido => {
           const fila = generadorFila(pedido);
+
+          // Asociar el evento click para cada fila
+          fila.addEventListener("click", () => mostrarDetalles(pedido.id, fila));
           tabla.appendChild(fila);
       })
 
@@ -417,6 +421,7 @@ async function tablaPedidosPerfil(){
 function generadorFila(pedido){ 
   // Crear el elemento <tr>
   const fila = document.createElement("tr");
+  fila.classList.add("fila-click");
 
   // Iterar sobre las propiedades del pedido para agregar los <th> / <td>
   Object.values(pedido).forEach((valor, index) => {
@@ -426,6 +431,83 @@ function generadorFila(pedido){
   })
 
   return fila;
+}
+
+async function mostrarDetalles(idPedido, fila){ 
+  // Verifica si ya tiene una fila de detalles desplegada
+  if (fila.nextElementSibling?.classList.contains("detalles")) {
+    fila.nextElementSibling.remove(); // Eliminar fila de detalles
+    return;
+  }
+
+  try {
+      const response = await fetch("/Retrobits/controller/productos_pedidos.php", {
+        method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'id=' + encodeURIComponent(idPedido)
+      });
+
+      const productosPedidos = await response.json();
+
+      // Obtener detalles de los productos relacionados
+      const productosDetalles = await Promise.all(
+        productosPedidos.map(async productoPedido => {
+          const productoResponse = await fetch("/Retrobits/controller/productosDetalles.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: "idProducto=" + encodeURIComponent(productoPedido.idProducto),
+          });
+
+          const producto = await productoResponse.json();
+
+          // Combinar datos del producto y del pedido
+          return{
+            nombre: producto.nombre,
+            precio: producto.precio,
+            descuento: producto.descuento,
+            cantidad: productoPedido.cantidad,
+          };
+        })
+      );
+      
+      // Crear la fila de detalles
+      const detallesFila = document.createElement("tr");
+      detallesFila.classList.add("detalles");
+
+      const detallesCont = document.createElement("td");
+      detallesCont.colSpan = 4;
+
+      // Generar contenido basado en los productos relacionados
+      if(productosDetalles.length > 0) {
+        detallesCont.innerHTML = `
+        <div>
+          <strong>Detalles del pedido ID: ${idPedido}</strong>
+          <ul>
+            ${productosDetalles.map(producto => `
+              <li>
+                <strong>Producto:</strong> ${producto.nombre} <br>
+                <strong>Precio:</strong> ${producto.precio}€ ud. <br>
+                <strong>Descuento:</strong> ${producto.descuento}% <br>
+                <strong>Cantidad:</strong> ${producto.cantidad} <br><br>
+              </li>
+            `).join("")}
+          </ul>
+        </div>
+      `;
+      } else {
+        detallesCont.innerHTML = "<div>No hay detalles para este pedido.</div>";
+      }
+
+      detallesFila.appendChild(detallesCont);
+      fila.insertAdjacentElement("afterend", detallesFila); // Insertar debajo de la fila clickeada
+
+  } catch (error) {
+      console.error("Error: ", error);
+  }
 }
 
 async function comprobarSesion(){
