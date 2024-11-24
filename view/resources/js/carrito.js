@@ -291,10 +291,19 @@ async function comprarProductos(pedido) {
         console.log(result);
 
         if (result.status === 'OK') {
-            alert('Pedido enviado correctamente.');
-            // Vaciar el carrito
             localStorage.removeItem("cesta");
-            location.reload();
+            Swal.fire({
+                title: "¡Gracias!",
+                text: "Su pedido ha sido realizado",
+                icon: "success",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Continuar",
+                allowOutsideClick: false
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "../";
+                }
+              });
         } else {
             alert('Error al enviar el pedido: ' + result.message);
         }

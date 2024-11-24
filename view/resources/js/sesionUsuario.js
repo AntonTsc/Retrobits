@@ -394,7 +394,7 @@ async function tablaPedidosPerfil() {
       const contenido = document.createElement("td");
 
       contenido.colSpan = 6; // Ajusta esto al número de columnas de la tabla (incluyendo la nueva columna de precio total)
-      contenido.textContent = "No tienes ningún pedido";
+      contenido.textContent = "No has realizado ningún pedido";
       contenido.style.textAlign = "center";
       contenido.style.backgroundColor = "#d3d3d3";
 

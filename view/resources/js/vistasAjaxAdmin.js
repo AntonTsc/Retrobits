@@ -16,9 +16,12 @@ let modoAuto = true;
 //Se encarga de cargar el contenido por completo reiniciando los comparadores
 function cargarContenidoNuevo(tab, desactualizado = false) {
     document.getElementById("mdImagen").classList.add("d-none");
-    document.getElementById("mdCodigosDescuento").classList.add("d-none");
     document.getElementById("mdContrasena").classList.add("d-none");
+    document.getElementById("mdEditar").classList.remove("d-none");
     document.getElementById("mdEditar").classList.replace("rounded-0", "rounded-bottom-0");
+    document.getElementById("mdEntregado").classList.add("d-none");
+    document.getElementById("mdEliminar").classList.remove("d-none");
+    
 
     vaciarIntervalos();
     //Vacia el contenido que deveriamos ver para poder cargar nuevo contenido
@@ -128,7 +131,12 @@ function gestionarIntervalos(tab) {
             if (!intervaloUsuarios) intervaloUsuarios = setInterval(() => cargarContenido("Usuarios"), 5000);
             break;
         case "Pedidos":
+            funcionesPedidos();
             if (!intervaloPedidos) intervaloPedidos = setInterval(() => cargarContenido("Pedidos"), 5000);
+            break;
+        case "Codigos":
+            funcionesCodigos();
+            if (!intervaloPedidos) intervaloPedidos = setInterval(() => cargarContenido("Codigos"), 5000);
             break;
         default:
             console.warn("Pestaña desconocida:", tab);
@@ -147,6 +155,10 @@ function vaciarIntervalos(gestor = "") {
         intervaloUsuarios = null;
     }
     if (gestor !== "Pedidos" && intervaloPedidos) {
+        clearInterval(intervaloPedidos);
+        intervaloPedidos = null;
+    }
+    if (gestor !== "Codigos" && intervaloPedidos) {
         clearInterval(intervaloPedidos);
         intervaloPedidos = null;
     }
@@ -219,16 +231,18 @@ function mostrarMensajeDatosDesactualizados(tab) {
 
 //Esta funcion hace que si el boton de añadir desaparece de pantalla nos muestra una version pequeña en pantalla
 function configurarBotonAgregar() {
-    const botonPrincipal = document.getElementById("agregar");
-    const botonScroll = document.getElementById("agregarScroll");
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            botonScroll.style.display = !entry.isIntersecting ? "inline-block" : "none";
-        });
-    }, { threshold: 0 });
-
-    observer.observe(botonPrincipal);
+    try{
+        const botonPrincipal = document.getElementById("agregar");
+        const botonScroll = document.getElementById("agregarScroll");
+    
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                botonScroll.style.display = !entry.isIntersecting ? "inline-block" : "none";
+            });
+        }, { threshold: 0 });
+    
+        observer.observe(botonPrincipal);
+    }catch{/*No hay boton añadir*/}
 }
 
 //Devuevle un String, separa las letras con caracter especial y luego elimina el caracter especial
@@ -324,97 +338,180 @@ function clickDerechoAccionContrasena(){
     cambiarContrasena(elementoClickDerecho);
 }
 // Ejecutar acción para eliminar producto
+function clickDerechoAccionEntregado() {
+    entregado(elementoClickDerecho);
+}
+// Ejecutar acción para eliminar producto
 function clickDerechoAccionEliminar() {
     eliminarConfirm(elementoClickDerecho);
 }
 
-//Funciones dedicadar para la pestaña de productos
-function funcionesProductos() {
-    document.getElementById("mdEditar").classList.replace("rounded-bottom-0", "rounded-0");
-    document.getElementById("mdImagen").classList.remove("d-none");
-    const buscador = document.getElementById("buscador");
-    const selector = document.getElementById("selector");
-    const filas = document.querySelectorAll("table tbody tr");
-
-    //Escucha el input del buscador
+// Función genérica para configurar el buscador
+function configurarBuscador(buscador, selector, filas, esNumerico = false) {
     buscador.addEventListener("input", () => {
         const filtro = eliminarTildes(buscador.value.toLowerCase());
         const indice = selector.value;
-    
-        alternarStock = false;
-        const btnStock = document.querySelector("#btnVerStockBajo");
-        if (btnStock) {
-            btnStock.querySelector("i").classList.replace("bi-caret-down-fill", "bi-caret-up-fill");
-        }
 
         filas.forEach(fila => {
             const celda = fila.querySelector(`td:nth-child(${indice})`);
             const textoCelda = celda ? eliminarTildes(celda.textContent.toLowerCase()) : "";
             let mostrarFila = false;
-        
-            // Comprueba si el índice está en las columnas numéricas
-            if (["5", "6", "7"].includes(indice)) {
-                // Convierte el texto de la celda y el filtro a números para comparar
+
+            if (esNumerico && ["5", "6", "7"].includes(indice)) {
                 const valorCelda = parseFloat(textoCelda);
                 const match = filtro.match(/^([<>=])(\d+.?\d{0,2}?)$/);
-        
-                if (match) { //Si ha encontrado un operador (< > =)
-                    const operador = match[1] || ""; // <, >, = o vacío
-                    const valorFiltro = match[2]; //El numero
-        
-                    // Aplica la lógica de comparación según el operador
+
+                if (match) {
+                    const operador = match[1];
+                    const valorFiltro = parseFloat(match[2]);
+
                     switch (operador) {
                         case "<":
-                            mostrarFila = valorCelda <= valorFiltro ? true : false;
-                            break;x
+                            mostrarFila = valorCelda <= valorFiltro;
+                            break;
                         case ">":
-                            mostrarFila = valorCelda >= valorFiltro ? true : false;
+                            mostrarFila = valorCelda >= valorFiltro;
                             break;
                         case "=":
-                            mostrarFila = valorCelda == valorFiltro ? true : false;
+                            mostrarFila = valorCelda == valorFiltro;
                             break;
                     }
-                }else{
-                    // Comportamiento normal si no hay operador
+                } else {
                     mostrarFila = textoCelda.includes(filtro);
                 }
             } else {
-                // Comportamiento normal para otros índices (texto)
                 mostrarFila = textoCelda.includes(filtro);
             }
-            // Muestra u oculta la fila según el resultado
+
             fila.style.display = mostrarFila ? "" : "none";
         });
     });
-
-    configurarCropper();
 }
 
-//Funciones dedicadar para la pestaña de usuarios
-function funcionesUsuarios() {
+// Funciones para cada pestaña
+function funcionesProductos() {
     document.getElementById("mdEditar").classList.replace("rounded-bottom-0", "rounded-0");
-    document.getElementById("mdCodigosDescuento").classList.remove("d-none");
-    document.getElementById("mdContrasena").classList.remove("d-none");
+    document.getElementById("mdImagen").classList.remove("d-none");
+
     const buscador = document.getElementById("buscador");
     const selector = document.getElementById("selector");
     const filas = document.querySelectorAll("table tbody tr");
 
-    //Escucha el input del buscador
-    buscador.addEventListener("input", () => {
-        const filtro = eliminarTildes(buscador.value.toLowerCase());
-        const indice = selector.value;
+    configurarBuscador(buscador, selector, filas, true);
 
-        filas.forEach(fila => {
-            const celda = fila.querySelector(`td:nth-child(${indice})`);
-            const textoCelda = celda ? eliminarTildes(celda.textContent.toLowerCase()) : "";
-            let mostrarFila = textoCelda.includes(filtro);
-        
-            // Muestra u oculta la fila según el resultado
-            fila.style.display = mostrarFila ? "" : "none";
-        });
-         
-    });
+    const btnStock = document.querySelector("#btnVerStockBajo");
+    if (btnStock) {
+        btnStock.querySelector("i").classList.replace("bi-caret-down-fill", "bi-caret-up-fill");
+    }
+
+    configurarCropper();
 }
+
+function funcionesUsuarios() {
+    document.getElementById("mdContrasena").classList.remove("d-none");
+
+    const buscador = document.getElementById("buscador");
+    const selector = document.getElementById("selector");
+    const filas = document.querySelectorAll("table tbody tr");
+
+    configurarBuscador(buscador, selector, filas, false);
+}
+
+function funcionesPedidos() {
+    document.getElementById("mdEditar").classList.add("d-none");
+    document.getElementById("mdEliminar").classList.add("d-none");
+    document.getElementById("mdEntregado").classList.remove("d-none");
+
+    const buscador = document.getElementById("buscador");
+    const selector = document.getElementById("selector");
+    const filas = document.querySelectorAll("table tbody tr");
+
+    configurarBuscador(buscador, selector, filas, false);
+}
+
+function funcionesCodigos() {
+    const buscador = document.getElementById("buscador");
+    const selector = document.getElementById("selector");
+    const filas = document.querySelectorAll("table tbody tr");
+
+    configurarBuscador(buscador, selector, filas, false);
+}
+
+async function mostrarDetalles(fila) {
+    if (fila.nextElementSibling?.classList.contains("detalles")) {
+      fila.nextElementSibling.remove();
+      return;
+    }
+    idPedido = fila.id;
+  
+    try {
+      const response = await fetch("/Retrobits/controller/productos_pedidos.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: "id=" + encodeURIComponent(idPedido),
+      });
+  
+      const productosPedidos = await response.json();
+  
+      const productosDetalles = await Promise.all(
+        productosPedidos.map(async (productoPedido) => {
+          const productoResponse = await fetch("/Retrobits/controller/productosDetalles.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: "idProducto=" + encodeURIComponent(productoPedido.idProducto),
+          });
+  
+          const producto = await productoResponse.json();
+  
+          return {
+            nombre: producto.nombre,
+            precio: producto.precio,
+            descuento: producto.descuento,
+            cantidad: productoPedido.cantidad,
+          };
+        })
+      );
+  
+      const detallesFila = document.createElement("tr");
+      detallesFila.classList.add("detalles");
+  
+      const detallesCont = document.createElement("td");
+      detallesCont.colSpan = 7;
+  
+      if (productosDetalles.length > 0) {
+        detallesCont.innerHTML = `
+          <div>
+            <strong>Detalles del pedido ID: ${idPedido}</strong>
+            <ul>
+              ${productosDetalles
+                .map(
+                  (producto) => `
+                <li>
+                  <strong>Producto:</strong> ${producto.nombre} <br>
+                  <strong>Precio:</strong> ${producto.precio}€ ud. <br>
+                  <strong>Descuento:</strong> ${producto.descuento}% <br>
+                  <strong>Cantidad:</strong> ${producto.cantidad} <br><br>
+                </li>
+              `
+                )
+                .join("")}
+            </ul>
+          </div>
+        `;
+      } else {
+        detallesCont.innerHTML = "<div>No hay detalles para este pedido.</div>";
+      }
+  
+      detallesFila.appendChild(detallesCont);
+      fila.insertAdjacentElement("afterend", detallesFila);
+    } catch (error) {
+      console.error("Error: ", error);
+    }
+  }
 
 function comprobarStock(btn) {
     const filas = document.querySelectorAll("tbody tr");
@@ -620,6 +717,112 @@ async function nuevoUsuario() {
     }
 }
 
+async function nuevoCodigo() {
+    //Obtengo los input
+    const codigo = document.getElementById("nuevoCodigo");
+    const descuento = document.getElementById("nuevoDescuento");
+
+    let comp = true;
+
+     if(codigo.value == ""){
+        comp = false;
+        codigo.style.borderColor = "red";
+     }else codigo.style.borderColor = "green";
+     if(descuento.value == "" || descuento.value > 100 || descuento.value < 0){
+        comp = false;
+        descuento.style.borderColor = "red";
+     }else descuento.style.borderColor = "green";
+
+    if(!comp) return;
+
+    //Hago la llamada al controlador
+    try {
+        //Como le voy a mandar un formData, no es necesario especificar el tipo de encabezado
+        const response = await fetch("/Retrobits/controller/registrarCodigo.php", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'codigo=' + encodeURIComponent(codigo.value) + 
+                  '&descuento=' + encodeURIComponent(descuento.value)
+        });
+        const datos = await response.json();
+        if (datos.status === 'OK') {
+            document.querySelector("#cerrarModal").click();
+            cargarContenidoNuevo('Codigos')
+            Swal.fire({
+                position: "top",
+                title: `${codigo.value} ha sido añadido.`,
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        } else {
+            Swal.fire({icon: "error", text: datos.message });
+        }
+    } catch (error) {
+        codigo.style.borderColor = "red";
+        Swal.fire({
+            position: "top",
+            title: `${codigo.value} ya existe.`,
+            icon: "error",
+            showConfirmButton: false,
+            timer: 2000
+        });
+    }
+}
+
+async function entregado(btn) {
+    const fila = btn.closest('tr'); // Obtiene la fila que contiene el botón
+    const hoy = new Date().toISOString().split('T')[0];
+    if (fila) {
+        // Selecciona la celda de "F. Entrega" (4ª columna, índice 3)
+        const celdaFechaEntrega = fila.querySelector('td:nth-child(4)');
+        const fechaEntrega = celdaFechaEntrega.textContent.trim();
+        console.log(fechaEntrega);
+        console.log(hoy);
+        // Comparar la fecha de entrega con hoy
+        if (fechaEntrega === hoy) {
+            Swal.fire({
+                position: "top",
+                title: `Ese pedido ya fue entregado.`,
+                icon: "error",
+                showConfirmButton: false,
+                timer: 2000
+            });
+            return;// O cualquier otro valor que quieras devolver
+        }
+    }
+    try{
+        //Hago la llamada al controlador para eliminar el producto, con un header de tipo formulario
+        const response = await fetch("/Retrobits/controller/entregarPedido.php", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'id=' + fila.id +
+                  '&hoy=' + hoy
+        }); 
+        const datos = await response.json();
+        if (datos.status === 'OK') {
+            cargarContenidoNuevo("Pedidos");
+            Swal.fire({
+                position: "top",
+                title: datos.message,
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000
+            });
+
+        } else {
+            console.log(datos.message);
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+
+}
+
 //Una confirmacion para eliminar el producto
 function eliminarConfirm(btn){
     const fila = btn.closest('tr');
@@ -636,7 +839,7 @@ function eliminarConfirm(btn){
     Swal.fire({
         position: "top",
         title: "¿Estas seguro?",
-        html: `<b>${fila.querySelector('td:nth-child(2)').innerText}</b> se <b class="text-danger">eliminara</b> de forma permanente!`,
+        html: `<b>${tabulacion != "Codigos" ? fila.querySelector('td:nth-child(2)').innerText : fila.querySelector('td:nth-child(1)').innerText}</b> se <b class="text-danger">eliminara</b> de forma permanente!`,
         icon: "warning",
         showCancelButton: true,
         cancelButtonColor: "#0d6efd",
@@ -653,6 +856,9 @@ function eliminarConfirm(btn){
                     eliminarUsuario(fila.id);
                     break;
                 case "Pedidos":
+                    break;
+                case "Codigos":
+                    eliminarCodigo(fila.id);
                     break;
             }
         }
@@ -740,6 +946,48 @@ async function eliminarUsuario(id){
         } else {
             console.log("ERROR");
             cargarContenidoNuevo("Usuarios");
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+async function eliminarCodigo(id){
+    vaciarIntervalos();
+    try{
+        //Hago la llamada al controlador para eliminar el producto, con un header de tipo formulario
+        const response = await fetch("/Retrobits/controller/eliminarCodigo.php", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'id=' + id
+        }); 
+        const datos = await response.json();
+        if (datos.status === 'OK') {
+            //Le añado una clase con transicion a la fila, y espero a que la transicion acabe para cargar de nuevo los productos
+            document.getElementById(id).classList.add('remove');
+            document.getElementById(id).addEventListener('transitionend', () => {
+                cargarContenidoNuevo("Codigos");
+            });
+            const Toast = Swal.mixin({
+                icon: "success",
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 8000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.onmouseenter = Swal.stopTimer;
+                  toast.onmouseleave = Swal.resumeTimer;
+                }
+              });
+              Toast.fire({
+                title: datos.message
+              });
+        } else {
+            console.log("ERROR");
+            cargarContenidoNuevo("Codigos");
         }
     } catch (error) {
         console.error("Error: ", error);
@@ -840,7 +1088,9 @@ function guardarEdiciones(btn) {
                 break;
             case "Pedidos":
                 break;
-                cargarContenidoNuevo("Pedidos");
+            case "Codigos":
+                cargarContenidoNuevo("Codigos");
+                break;
         }
         return;
     }else{
@@ -852,6 +1102,9 @@ function guardarEdiciones(btn) {
                 ejecutarEdicionUsuario(fila);
                 break;
             case "Pedidos":
+                break;
+            case "Codigos":
+                ejecutarEdicionCodigo(fila);
                 break;
         }
     }
@@ -1020,6 +1273,90 @@ async function ejecutarEdicionUsuario(fila){
 
     } catch (error) {
         console.error("Error: ", error);
+    }
+
+}
+
+async function ejecutarEdicionCodigo(fila){
+    const codigo = fila.querySelector('td:nth-child(1)').children[0];
+    const descuento = fila.querySelector('td:nth-child(2)').children[0];
+
+    let errores = [];
+
+     if(codigo.value == ""){
+        errores.push("Código");
+        codigo.style.borderColor = "red";
+     }else codigo.style.borderColor = "green";
+     if(descuento.value == "" || descuento.value > 100 || descuento.value < 0){
+        errores.push("Descuento");
+        descuento.style.borderColor = "red";
+     }else descuento.style.borderColor = "green";
+
+
+    // Si hay errores, mostrar alerta
+    if (errores.length > 0) {
+        Swal.fire({
+            icon: "error",
+            title: "Campos no válidos:",
+            html: errores.map(error => `<label class="ms-3">•${error}</label><br>`).join(""),
+            timer: 5000,
+            timerProgressBar: true,
+            position: "top-right",
+            showConfirmButton: false,
+            toast: true
+        });
+        return;
+    }
+
+    try{
+        const response = await fetch("/Retrobits/controller/modificarCodigo.php", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'codigo=' + encodeURIComponent(fila.id) + 
+                  '&nuevoCodigo=' + encodeURIComponent(codigo.value) + 
+                  '&descuento=' + encodeURIComponent(descuento.value)
+        }); 
+
+        const datos = await response.json();
+
+        if (datos.status === 'OK') {
+            cargarContenidoNuevo("Codigos");
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-right",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+              });
+              Toast.fire({
+                icon: "success",
+                title: datos.message
+              });
+        } else if(datos.status === 'ERROR'){
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-right",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+              });
+              Toast.fire({
+                icon: "warning",
+                title: datos.message
+              });
+        }
+
+    } catch (error) {
+        codigo.style.borderColor = "red";
+        Swal.fire({
+            position: "top",
+            title: `${codigo.value} ya existe.`,
+            icon: "error",
+            showConfirmButton: false,
+            timer: 2000
+        });
     }
 
 }

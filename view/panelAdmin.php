@@ -59,6 +59,9 @@ if (!isset($_SESSION['admin']) || $_SESSION['admin'] != "1") {
             <li class="nav-item">
                 <button id="Pedidos" class="nav-link text-light" onclick="cargarContenidoNuevo('Pedidos')">PEDIDOS</button>
             </li>
+            <li class="nav-item">
+                <button id="Codigos" class="nav-link text-light" onclick="cargarContenidoNuevo('Codigos')">CÓDIGOS</button>
+            </li>
             <li class="nav-item  ms-auto">
                 <button id="auto" class="nav-link text-light border-0" onclick="alternarModoAuto(this)">Actualizaciones automáticas <img class="giro" src="resources/images/svg/automatico.svg" alt=""></button>
             </li>
@@ -76,10 +79,10 @@ if (!isset($_SESSION['admin']) || $_SESSION['admin'] != "1") {
     <div id="menuDesplegable" class="menu-desplegable border border-1 rounded-2">
         <ul>
             <li id="mdImagen" class="btnMenu btn btn-white bi bi-image rounded-bottom-0 w-100 text-start py-1 ps-3 bg-light d-none" onclick="clickDerechoAccionImagen()" data-bs-toggle="modal" data-bs-target="#modalVerFotoProducto"> Ver imagen</li>
-            <li id="mdCodigosDescuento" class="btnMenu btn btn-white bi bi-upc-scan rounded-bottom-0 w-100 text-start py-1 ps-3 bg-light d-none" onclick="clickDerechoAccionCancelar()" data-bs-toggle="modal" data-bs-target="#-"> Codigos de descuento</li>
             <li id="mdEditar" class="btnMenu btn btn-white bi bi-pencil-fill rounded-bottom-0 w-100 text-start py-1 ps-3 bg-light" onclick="clickDerechoAccionEditar()"> Editar</li>
             <li id="mdCancelar" class="btnMenu btn btn-white bi bi-x-circle-fill rounded-0 w-100 text-start py-1 ps-3 bg-light d-none" onclick="clickDerechoAccionCancelar()"> Cancelar</li>
             <li id="mdContrasena" class="btnMenu btn btn-white bi bi-key-fill rounded-0 w-100 text-start py-1 ps-3 bg-light d-none" onclick="clickDerechoAccionContrasena()"> Cambiar contraseña</li>
+            <li id="mdEntregado" class="btnMenu btn btn-white bi bi-send-check-fill rounded-2 w-100 text-start py-1 ps-3 bg-light d-none" onclick="clickDerechoAccionEntregado()"> Entregado</li>
             <li id="mdEliminar" class="btnMenu btn btn-danger bi bi-trash-fill rounded-top-0 w-100 text-start py-1 ps-3 mt-1 " onclick="clickDerechoAccionEliminar()"> Eliminar</li>
         </ul>
     </div>

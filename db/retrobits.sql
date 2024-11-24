@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-11-2024 a las 17:49:18
+-- Tiempo de generación: 24-11-2024 a las 22:02:12
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -28,10 +28,17 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `descuentos` (
-  `codigo` int(11) NOT NULL,
-  `porcentaje` int(11) NOT NULL,
-  `idUsuario` int(11) NOT NULL
+  `codigo` varchar(20) NOT NULL,
+  `porcentaje` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `descuentos`
+--
+
+INSERT INTO `descuentos` (`codigo`, `porcentaje`) VALUES
+('blackfriday', 25),
+('navidad24', 15);
 
 -- --------------------------------------------------------
 
@@ -44,16 +51,9 @@ CREATE TABLE `pedidos` (
   `direccion` varchar(100) NOT NULL,
   `fecha` date NOT NULL,
   `fechaEntrega` date DEFAULT NULL,
-  `idUsuario` int(11) NOT NULL
+  `idUsuario` int(11) NOT NULL,
+  `descuento` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `pedidos`
---
-
-INSERT INTO `pedidos` (`id`, `direccion`, `fecha`, `fechaEntrega`, `idUsuario`) VALUES
-(1, 'Amorebieta', '2000-02-02', '2024-05-05', 26),
-(3, 'Bs As', '1999-12-12', '2000-05-05', 26);
 
 -- --------------------------------------------------------
 
@@ -200,7 +200,7 @@ INSERT INTO `usuarios` (`id`, `username`, `email`, `password`, `admin`, `deleted
 -- Indices de la tabla `descuentos`
 --
 ALTER TABLE `descuentos`
-  ADD KEY `idUsuario` (`idUsuario`);
+  ADD UNIQUE KEY `codigo` (`codigo`);
 
 --
 -- Indices de la tabla `pedidos`
@@ -243,13 +243,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT de la tabla `seccion`
@@ -261,7 +261,7 @@ ALTER TABLE `seccion`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- Restricciones para tablas volcadas
