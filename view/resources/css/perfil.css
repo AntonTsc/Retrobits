@@ -35,3 +35,7 @@ main #togglePassword{
     top: 50%;
     transform: translateY(-45%)
 }
+
+#bodyTable tr:hover{
+    cursor: pointer;
+}
